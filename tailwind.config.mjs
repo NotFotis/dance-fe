@@ -11,6 +11,9 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        yaro: ['Yaro Bl Bold', 'Arial', 'sans-serif'], // Add your custom font here
+      },
     },
   },
   plugins: [],
