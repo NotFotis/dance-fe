@@ -10,6 +10,7 @@ const ContactForm = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
+  const API_URL = process.env.NEXT_PUBLIC_API_URL
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,7 +28,7 @@ const ContactForm = () => {
 
     try {
       // Send form data to Strapi or any other backend
-      await axios.post(`${NEXT_PUBLIC_API_URL}/contact-forms`, {
+      await axios.post(`${API_URL}/contact-forms`, {
         data: {
           name: formData.name,
           email: formData.email,

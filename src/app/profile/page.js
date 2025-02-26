@@ -8,7 +8,7 @@ export default function ProfilePage() {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [savedEvents, setSavedEvents] = useState([]);
-
+  const API_URL = process.env.NEXT_PUBLIC_API_URL
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (!storedUser) {
@@ -35,7 +35,7 @@ export default function ProfilePage() {
       }
 
       const response = await axios.get(
-        `${NEXT_PUBLIC_API_URL}/saved-events?filters[user][id][$eq]=${userId}&populate=event`,
+        `${API_URL}/saved-events?filters[user][id][$eq]=${userId}&populate=event`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -70,7 +70,7 @@ export default function ProfilePage() {
         return;
       }
 
-      await axios.delete(`${NEXT_PUBLIC_API_URL}/saved-events/${savedEventId}`, {
+      await axios.delete(`${API_URL}/saved-events/${savedEventId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -13,6 +13,7 @@ const AuthForm = ({ type, onSuccess }) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const API_URL = process.env.NEXT_PUBLIC_API_URL
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,14 +33,14 @@ const AuthForm = ({ type, onSuccess }) => {
       let endpoint;
       
       if (type === "register") {
-        endpoint = `${NEXT_PUBLIC_API_URL}/auth/local/register`;
+        endpoint = `${API_URL}/auth/local/register`;
         requestData = {
           username: formData.username,
           email: formData.email,
           password: formData.password,
         };
       } else {
-        endpoint = `${NEXT_PUBLIC_API_URL}/auth/local`;
+        endpoint = `${API_URL}/auth/local`;
         requestData = {
           identifier: formData.identifier, 
           password: formData.password,

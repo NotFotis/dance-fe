@@ -11,11 +11,13 @@ const EventDetails = () => {
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const API_URL = process.env.NEXT_PUBLIC_API_URL
+  const URL = process.env.NEXT_PUBLIC_URL
 
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const response = await axios.get(`${NEXT_PUBLIC_API_URL}/events/${id}?populate=*`);
+        const response = await axios.get(`${API_URL}/events/${id}?populate=*`);
         setEvent(response.data.data);
       } catch (error) {
         console.error("Error fetching event details:", error);
@@ -66,7 +68,7 @@ const EventDetails = () => {
         {eventImage && (
           <div className="w-full h-[500px] mb-12">
             <img
-              src={`${NEXT_PUBLIC_URL}${eventImage}`}
+              src={`${URL}${eventImage}`}
               alt={event.Title}
               className="w-full h-full object-cover rounded-lg shadow-lg"
             />

@@ -5,7 +5,7 @@ import axios from "axios";
 const Profile = () => {
   const [user, setUser] = useState(null);
   const router = useRouter();
-
+  const API_URL = process.env.NEXT_PUBLIC_API_URL
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -14,7 +14,7 @@ const Profile = () => {
     }
 
     axios
-      .get(`${NEXT_PUBLIC_API_URL}/users/me`, {
+      .get(`${API_URL}/users/me`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {

@@ -10,11 +10,13 @@ const Carousel = () => {
   const [events, setEvents] = useState([]);
   const [savedEvents, setSavedEvents] = useState([]); // Track saved events
   const router = useRouter();
+  const API_URL = process.env.NEXT_PUBLIC_API_URL
+  const URL = process.env.NEXT_PUBLIC_URL
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get(`${NEXT_PUBLIC_API_URL}/events?populate=*`);
+        const response = await axios.get(`${API_URL}/events?populate=*`);
         setEvents(response.data.data);
       } catch (error) {
         console.error("Error fetching events:", error);
@@ -32,7 +34,7 @@ const Carousel = () => {
 
       try {
         const response = await axios.get(
-          `${NEXT_PUBLIC_API_URL}/saved-events?filters[user][id][$eq]=${userId}&populate[event]`,
+          `${API_URL}/saved-events?filters[user][id][$eq]=${userId}&populate[event]`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -59,14 +61,14 @@ const Carousel = () => {
     try {
       if (savedEvents.includes(eventId)) {
         // Remove event from saved events
-        await axios.delete(`${NEXT_PUBLIC_API_URL}/saved-events/${eventId}`, {
+        await axios.delete(`${API_URL}/saved-events/${eventId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setSavedEvents(savedEvents.filter((id) => id !== eventId));
       } else {
         // Save new event
         await axios.post(
-          `${NEXT_PUBLIC_API_URL}/saved-events`,
+          `${API_URL}/saved-events`,
           { data: { user: userId, event: eventId } },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -107,7 +109,7 @@ const Carousel = () => {
               >
                 {eventImage && (
                   <img
-                    src={`${NEXT_PUBLIC_URL}${eventImage}`}
+                    src={`${URL}${eventImage}`}
                     alt={event.Title}
                     className="absolute inset-0 w-full h-full object-cover"
                   />
