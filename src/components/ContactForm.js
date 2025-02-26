@@ -27,7 +27,7 @@ const ContactForm = () => {
 
     try {
       // Send form data to Strapi or any other backend
-      await axios.post("http://localhost:1338/api/contact-forms", {
+      await axios.post(`${NEXT_PUBLIC_API_URL}/contact-forms`, {
         data: {
           name: formData.name,
           email: formData.email,

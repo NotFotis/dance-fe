@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:1338/api/auth/local'; // Strapi's local auth endpoint
+const API_URL = `${NEXT_PUBLIC_API_URL}/auth/local`; // Strapi's local auth endpoint
 
 // Login function
 export const login = async (identifier, password) => {

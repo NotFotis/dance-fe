@@ -32,14 +32,14 @@ const AuthForm = ({ type, onSuccess }) => {
       let endpoint;
       
       if (type === "register") {
-        endpoint = "http://localhost:1338/api/auth/local/register";
+        endpoint = `${NEXT_PUBLIC_API_URL}/auth/local/register`;
         requestData = {
           username: formData.username,
           email: formData.email,
           password: formData.password,
         };
       } else {
-        endpoint = "http://localhost:1338/api/auth/local";
+        endpoint = `${NEXT_PUBLIC_API_URL}/auth/local`;
         requestData = {
           identifier: formData.identifier, 
           password: formData.password,

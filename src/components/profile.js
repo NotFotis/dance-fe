@@ -14,7 +14,7 @@ const Profile = () => {
     }
 
     axios
-      .get("http://localhost:1338/api/users/me", {
+      .get(`${NEXT_PUBLIC_API_URL}/users/me`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {

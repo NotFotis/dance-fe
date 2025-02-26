@@ -35,7 +35,7 @@ export default function ProfilePage() {
       }
 
       const response = await axios.get(
-        `http://localhost:1338/api/saved-events?filters[user][id][$eq]=${userId}&populate=event`,
+        `${NEXT_PUBLIC_API_URL}/saved-events?filters[user][id][$eq]=${userId}&populate=event`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -70,7 +70,7 @@ export default function ProfilePage() {
         return;
       }
 
-      await axios.delete(`http://localhost:1338/api/saved-events/${savedEventId}`, {
+      await axios.delete(`${NEXT_PUBLIC_API_URL}/saved-events/${savedEventId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
