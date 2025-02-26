@@ -43,12 +43,15 @@ export default function ProfilePage() {
         }
       );
 
+      console.log(response);
+      
       // Extract and format the saved events properly
       const formattedEvents = response.data.data
         .filter((savedEvent) => savedEvent.event) // Ensure event is not null
         .map((savedEvent) => ({
           savedEventId: savedEvent.id, // ID of the saved-event entry (needed for deletion)
           eventId: savedEvent.event.id,
+          documentId: savedEvent.event.documentId,
           title: savedEvent.event.Title || "No Title",
           date: savedEvent.event.Date ? new Date(savedEvent.event.Date).toLocaleDateString() : "No Date",
           time: savedEvent.event.Time || "No Time",
@@ -116,13 +119,13 @@ export default function ProfilePage() {
             <p className="text-gray-400">You have no saved events.</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {savedEvents.map((event) => (
+              {savedEvents.map((event) => (             
                 <div key={event.savedEventId} className="bg-gray-800 rounded-lg p-4 shadow-md flex flex-col">
                   <h4 className="text-lg font-bold">{event.title}</h4>
                   <p className="text-gray-400">📅 {event.date} | 🕒 {event.time}</p>
                   <p className="text-gray-400">📍 {event.location}</p>
                   <a
-                    href={`/events/${event.eventId}`}
+                    href={`events/${event.documentId}`}
                     className="text-blue-400 mt-2 block hover:underline"
                   >
                     View Details →

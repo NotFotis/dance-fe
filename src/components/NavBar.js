@@ -2,10 +2,9 @@
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 
-export default function Navbar({ toggleDrawer }) {
+export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
   const router = useRouter();
@@ -13,23 +12,19 @@ export default function Navbar({ toggleDrawer }) {
   useEffect(() => {
     const token = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
-  
+
     if (token && storedUser) {
       try {
         const parsedUser = JSON.parse(storedUser);
-        console.log("User Loaded from Storage:", parsedUser); // Debugging
         setUser(parsedUser);
       } catch (error) {
         console.error("Error parsing user data:", error);
         localStorage.removeItem("user"); // Clear corrupted data
       }
     } else {
-      console.log("No user found, showing Login button.");
       setUser(null);
     }
   }, []);
-  
-  
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -58,23 +53,24 @@ export default function Navbar({ toggleDrawer }) {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="w-full bg-black bg-opacity-100 backdrop-blur-md rounded-xl flex flex-col items-center py-4 space-y-10 font-sans mt-2 sm:py-3 sm:space-y-3"
+            className="w-full bg-black bg-opacity-100 backdrop-blur-md rounded-xl flex flex-col items-center py-8 space-y-8 sm:py-4 sm:space-y-4"
           >
             <NavItem href="/" label="Home" onClick={toggleMenu} />
             <NavItem href="#events" label="Events" onClick={toggleMenu} />
             <NavItem href="/gallery" label="Gallery" onClick={toggleMenu} />
             <NavItem href="#contact" label="Contact" onClick={toggleMenu} />
+
             {user ? (
               <button
                 onClick={() => router.push(`/profile`)}
-                className="w-full py-4 bg-blue-600 text-white font-bold text-xl rounded-xl mt-6"
+                className="w-full py-5 bg-white text-black font-bold text-2xl sm:text-lg rounded-xl mt-8 hover:bg-gray-300 transition"
               >
                 Profile
               </button>
             ) : (
               <button
                 onClick={() => router.push(`/login`)}
-                className="w-full py-4 bg-white text-black font-bold text-xl rounded-xl mt-6"
+                className="w-full py-5 bg-white text-black font-bold text-2xl sm:text-lg rounded-xl mt-8 hover:bg-gray-300 transition"
               >
                 Login
               </button>
@@ -90,7 +86,7 @@ const NavItem = ({ href, label, onClick }) => (
   <Link href={href} onClick={onClick}>
     <motion.span
       whileHover={{ scale: 1.1, borderBottom: "2px solid white" }}
-      className="cursor-pointer pb-2 transition-all font-sans text-lg sm:text-xs"
+      className="cursor-pointer pb-3 transition-all font-sans text-3xl sm:text-lg"
     >
       {label}
     </motion.span>
