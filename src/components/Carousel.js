@@ -34,12 +34,13 @@ const Carousel = () => {
 
       try {
         const response = await axios.get(
-          `${API_URL}/saved-events?filters[user][id][$eq]=${userId}&populate[event]`,
+          `${API_URL}/saved-events?filters[user][id][$eq]=${userId}&populate[event][populate][artists][populate]=Socials`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        const savedIds = response.data.data.map((saved) => saved.event.id);
+
+        const savedIds = response.data.data.map((saved) => saved.event?.id);
         setSavedEvents(savedIds);
       } catch (error) {
         console.error("Error fetching saved events:", error);

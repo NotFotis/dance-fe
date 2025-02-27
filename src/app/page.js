@@ -8,6 +8,7 @@ import Carousel from "../components/Carousel";
 import { AuthForm, AuthModal } from "@/components/AuthForm";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import News from "@/components/News";
 
 
 export default function Home() {
@@ -27,6 +28,13 @@ export default function Home() {
       <div className="font-yaro text-white text-center bg-transparent">
           <TypingText />
         </div>
+
+
+      {/* Events Section with enhanced Carousel */}
+      <section id="news" className="my-20 w-full px-6">
+        <h2 className="text-center text-4xl font-bold text-white mb-10">Dance News</h2>
+        <News />
+      </section>
 
       {/* Events Section with enhanced Carousel */}
       <section id="events" className="my-20 w-full px-6">

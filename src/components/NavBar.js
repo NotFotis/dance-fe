@@ -55,10 +55,10 @@ export default function Navbar() {
             exit={{ opacity: 0, y: -10 }}
             className="w-full bg-black bg-opacity-100 backdrop-blur-md rounded-xl flex flex-col items-center py-8 space-y-8 sm:py-4 sm:space-y-4"
           >
-            <NavItem href="/" label="Home" onClick={toggleMenu} />
-            <NavItem href="#events" label="Events" onClick={toggleMenu} />
-            <NavItem href="/gallery" label="Gallery" onClick={toggleMenu} />
-            <NavItem href="#contact" label="Contact" onClick={toggleMenu} />
+            <NavItem href="/" label="HOME" onClick={toggleMenu} />
+            <NavItem href="#events" label="EVENTS" onClick={toggleMenu} />
+            <NavItem href="/news" label="NEWS" onClick={toggleMenu} />
+            <NavItem href="#contact" label="CONTACT" onClick={toggleMenu} />
 
             {user ? (
               <button
