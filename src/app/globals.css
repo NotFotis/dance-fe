@@ -26,17 +26,12 @@ html {
 }
 
 /* globals.css or your global stylesheet */
-
-@font-face {
-  font-family: 'Yaro Bl Bold';
-  src: url('/fonts/YaroRg-Black.woff2') format('woff2'),
-       url('/fonts/YaroRg-Black.woff') format('woff');
-  font-style: normal;
+header{
+  font-family: 'YaroBold', Arial, sans-serif;
 }
-
 /* Apply the font globally (optional) */
 body {
-  font-family: 'Yaro Bl Bold', Arial, sans-serif;
+  font-family: 'YaroBold', Arial, sans-serif;
 }
 
 
@@ -45,25 +40,14 @@ body {
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
-
-.bg-gradient {
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.6) 0%, rgba(209, 145, 16, 0.8) 100%);
-  background-size: 200% 200%;
-  animation: pulseBackground 10s ease-in-out infinite alternate;
-  min-height: 100vh;
+/* styles/globals.css */
+@font-face {
+  font-family: 'YaroBold';
+  src: url('/fonts/YaroBl-Bold.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
 }
 
-@keyframes pulseBackground {
-  0% { background-position: 0% 0%; }
-  50% { background-position: 100% 100%; }
-  100% { background-position: 0% 0%; }
-}
-
-.bg-radial-gradient {
-  background: radial-gradient(circle, rgba(92, 14, 98, 0.6) 0%, rgba(5, 10, 48, 0.8) 100%);
-  background-size: 400% 400%;
-  animation: pulseBackground 8s ease-in-out infinite alternate;
-}
 
 /* Drawer Background */
 .drawer-overlay {

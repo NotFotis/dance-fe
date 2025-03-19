@@ -2,20 +2,19 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
-import { useSwipeable } from "react-swipeable";
+import { motion } from "framer-motion";
 
 export default function NewsComponent() {
   const [news, setNews] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const URL = process.env.NEXT_PUBLIC_URL;
 
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await axios.get(`${API_URL}/dance-new?populate=Image`);
-        setNews(response.data.data);
+        // Fetch all related data with populate=*
+        const response = await axios.get(`${API_URL}/dance-new?populate=*`);
+        setNews(response.data.data.slice(0, 6)); // Max rows = 2 (6 articles)
       } catch (error) {
         console.error("Error fetching news:", error);
       }
@@ -23,87 +22,84 @@ export default function NewsComponent() {
     fetchNews();
   }, []);
 
-  const nextNews = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % news.length);
+  // Helper to extract a text summary from dynamic Content
+  const getSummary = (contentArray) => {
+    if (!Array.isArray(contentArray) || contentArray.length === 0) {
+      return "No content available.";
+    }
+    const richTextBlock = contentArray.find(
+      (block) => block.__component === "shared.rich-text" && block.body
+    );
+    if (richTextBlock) {
+      const plainText = richTextBlock.body.replace(/<[^>]+>/g, "");
+      return plainText.slice(0, 150) + (plainText.length > 150 ? "..." : "");
+    }
+    return "No content available.";
   };
-
-  const prevNews = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + news.length) % news.length);
-  };
-
-  const handlers = useSwipeable({
-    onSwipedLeft: nextNews,
-    onSwipedRight: prevNews,
-    preventScrollOnSwipe: true,
-    trackMouse: true,
-  });
 
   return (
-    <div className="relative bg-transparent text-white py-16 flex flex-col items-center overflow-hidden">
+    <div className="bg-transparent text-white py-16">
+      <div className="container max-w-7xl mx-auto px-6 relative z-10">
+        {/* Header: Dance News on the left, All News button on the right */}
+        <div className="flex items-center justify-between mb-10">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-wide">
+            Dance News
+          </h2>
+          <Link
+            href="/news"
+            className="py-2 px-4 border border-white text-white uppercase tracking-wider font-medium hover:bg-white hover:text-black transition rounded"
+          >
+            All News
+          </Link>
+        </div>
 
+        {/* GRID LAYOUT (Responsive) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
+          {news.map((item, index) => {
+            // Custom layout for large screens
+            let cardClasses =
+              "bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300";
+            let imgHeight = "h-48"; // Default height for images
 
-      {/* Carousel */}
-      <div {...handlers} className="relative max-w-4xl w-full h-[550px] overflow-hidden">
-        <AnimatePresence mode="sync">
-          {news.length > 0 && (
-            <motion.div
-              key={news[currentIndex].id}
-              initial={{ opacity: 0, scale: 0.9, x: 100 }}
-              animate={{ opacity: 1, scale: 1, x: 0 }}
-              exit={{ opacity: 0, scale: 0.9, x: -100 }}
-              transition={{ duration: 0.1, ease: "easeInOut" }}
-              className="absolute w-full h-full rounded-lg overflow-hidden shadow-xl flex flex-col justify-end items-start p-8 bg-cover bg-center"
-              style={{
-                backgroundImage: `url(${URL}${news[currentIndex].Image?.formats?.large?.url || news[currentIndex].Image?.url || "/default-news.jpg"})`,
-              }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
-              <div className="relative z-10">
-                <h3 className="text-3xl font-bold text-white mb-4">
-                  {news[currentIndex].Title}
-                </h3>
-                <p className="text-md text-gray-300 max-w-lg">
-                  {news[currentIndex].Content[0]?.children[0]?.text.slice(0, 150) + "..."}
-                </p>
-                <Link
-                  href={`/news/${news[currentIndex].documentId}`}
-                  className="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg text-lg hover:bg-blue-700 transition"
-                >
-                  Read More →
-                </Link>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+            if (index === 0 || index === 5) {
+              // First article & last article (large format)
+              cardClasses += " lg:col-span-2";
+              imgHeight = "h-64";
+            }
 
-      {/* Navigation Buttons */}
-      <button
-        onClick={prevNews}
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 p-3 rounded-full hover:bg-black/70 transition"
-      >
-        ◀
-      </button>
-      <button
-        onClick={nextNews}
-        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 p-3 rounded-full hover:bg-black/70 transition"
-      >
-        ▶
-      </button>
-
-      {/* Dots Indicators */}
-      <div className="flex justify-center mt-6 space-x-2">
-        {news.map((_, index) => (
-          <motion.span
-            key={index}
-            className={`h-3 w-3 rounded-full transition-all duration-300 cursor-pointer ${
-              index === currentIndex ? "bg-blue-500 scale-125" : "bg-gray-500"
-            }`}
-            onClick={() => setCurrentIndex(index)}
-            animate={{ scale: index === currentIndex ? 1.3 : 1, opacity: index === currentIndex ? 1 : 0.5 }}
-            transition={{ duration: 0.3 }}
-          />
-        ))}
+            return (
+              <Link key={item.id} href={`/news/${item.documentId}`} className="cursor-pointer">
+                <motion.div className={cardClasses} whileHover={{ scale: 1.02 }}>
+                  <div className={`relative ${imgHeight}`}>
+                    {item.Image &&
+                    (item.Image.formats?.medium?.url || item.Image.url) ? (
+                      <img
+                        src={`${URL}${
+                          item.Image.formats?.medium?.url || item.Image.url
+                        }`}
+                        alt={item.Title}
+                        className="object-cover w-full h-full"
+                      />
+                    ) : (
+                      <div className="bg-gray-700 w-full h-full flex items-center justify-center">
+                        <span>No Image</span>
+                      </div>
+                    )}
+                    {/* Gradient overlay to create a smooth transition */}
+                    <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-black to-transparent"></div>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-2xl font-semibold mb-2 text-black">{item.Title}</h3>
+                    <p className="text-sm text-black mb-2">
+                      {new Date(item.Date).toLocaleDateString()}
+                    </p>
+                    <p className="text-black mb-4">{getSummary(item.Content)}</p>
+                  </div>
+                </motion.div>
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

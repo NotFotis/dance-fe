@@ -59,7 +59,7 @@ const EventDetails = () => {
 
   const formattedDesc = event.Desc;
   return (
-    <div className="bg-gradient min-h-screen flex flex-col items-center relative text-white">
+    <div className="bg-black min-h-screen flex flex-col items-center relative text-white mt-20">
       <Navbar />
       <div className="w-full max-w-6xl px-6 mt-20">
         {eventImage && (
