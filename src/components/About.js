@@ -1,30 +1,12 @@
 "use client";
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
-
-const panels = [
-  {
-    title: 'About dancetoday',
-    text: `Idolverse is a dynamic, creative community that celebrates artistry,
-           innovation, and collaboration. Discover a world where art meets technology,
-           and creativity has no limits.`,
-  },
-  {
-    title: 'Our Mission',
-    text: `Our mission is to empower creators and fans alike by providing a platform
-           that inspires innovation and nurtures talent. Join us in shaping the future
-           of digital creativity.`,
-  },
-  {
-    title: 'Join the Community',
-    text: `Whether you're an artist, a fan, or a creative thinker, there's a place for you
-           in Idolverse. Connect, collaborate, and create with like-minded individuals today.`,
-  },
-];
+import axios from 'axios';
 
 const Panel = ({ title, text, zIndex, index }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { threshold: 0.5 });
+  
   // Determine background and text colors based on panel index
   const bgClass = ((index + 1) % 2 === 0) ? "bg-black" : "bg-white";
   const titleTextColor = ((index + 1) % 2 === 0) ? "text-white" : "text-gray-800";
@@ -49,19 +31,71 @@ const Panel = ({ title, text, zIndex, index }) => {
 };
 
 const ScrollPanels = () => {
+  const [panels, setPanels] = useState([]);
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+  // Helper function to map blocks to panel objects
+  const mapBlockToPanel = (block, defaultTitle) => {
+    if (block.__component === 'shared.quote') {
+      return {
+        title: block.title || defaultTitle || "Quote",
+        text: block.body || ""
+      };
+    } else if (block.__component === 'shared.rich-text') {
+      return {
+        title: defaultTitle || "Details",
+        text: block.body || ""
+      };
+    } else if (block.__component === 'shared.media') {
+      // For media, you may want to create a dedicated component.
+      return {
+        title: "Media",
+        text: "Media content is not displayed in this panel."
+      };
+    } else {
+      return {
+        title: defaultTitle || "Info",
+        text: ""
+      };
+    }
+  };
+
+  useEffect(() => {
+    const fetchAbout = async () => {
+      try {
+        // Fetch the about data with populate=*
+        const response = await axios.get(`${API_URL}/about?populate=*`);
+        const aboutData = response.data.data;
+        // Extract document title and blocks array
+        const documentTitle = aboutData.title || "About";
+        const blocks = aboutData.blocks || [];
+        // Map each block into the structure needed for the Panel component
+        const mappedPanels = blocks.map((block) => mapBlockToPanel(block, documentTitle));
+        setPanels(mappedPanels);
+      } catch (error) {
+        console.error("Error fetching about data:", error);
+      }
+    };
+    fetchAbout();
+  }, [API_URL]);
+
   return (
     <div>
-      {/* Title for the entire section */}
+      {/* Section Title (using the document title if available) */}
       <div className="py-10 bg-transparent">
         <h1 className="text-4xl font-bold text-center text-white">
-          Welcome to dancetoday
+          {"Welcome to dancetoday"}
         </h1>
       </div>
       {/* Sticky Panels */}
       <div className="relative">
-        {panels.map((panel, index) => (
-          <Panel key={index} index={index} {...panel} zIndex={index + 1} />
-        ))}
+        {panels.length > 0 ? (
+          panels.map((panel, index) => (
+            <Panel key={index} index={index} {...panel} zIndex={index + 1} />
+          ))
+        ) : (
+          <p className="text-center text-white">Loading...</p>
+        )}
       </div>
     </div>
   );

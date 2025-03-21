@@ -93,7 +93,7 @@ const CalendarPage = () => {
   }, {});
 
   return (
-    <div className="min-h-screen bg-black text-white py-12 px-4">
+    <div className="min-h-screen bg-black text-white py-12 px-4 text-lg">
       <Navbar />
       <div className="max-w-7xl mx-auto mt-40">
         <h1 className="text-5xl font-extrabold mb-8 text-center uppercase tracking-widest">
@@ -102,7 +102,7 @@ const CalendarPage = () => {
         {/* Filter Controls */}
         <div className="flex flex-col md:flex-row md:justify-center items-center mb-12 space-y-4 md:space-y-0 md:space-x-8">
           <div className="flex flex-col">
-            <label className="mb-2 uppercase tracking-wide text-sm">
+            <label className="mb-2 uppercase tracking-wide text-2sm">
               Filter by Month
             </label>
             <select
@@ -118,7 +118,7 @@ const CalendarPage = () => {
             </select>
           </div>
           <div className="flex flex-col">
-            <label className="mb-2 uppercase tracking-wide text-sm">
+            <label className="mb-2 uppercase tracking-wide text-2sm">
               Filter by Genre
             </label>
             <select
@@ -164,17 +164,17 @@ const CalendarPage = () => {
                         />
                       )}
                       <div className="p-4 bg-black bg-opacity-75">
-                        <h3 className="text-xl font-bold">{event.Title}</h3>
-                        <p className="text-sm mt-1">
+                        <h3 className="text-2xl font-bold">{event.Title}</h3>
+                        <p className="text-2sm mt-1">
                           Time: {event.Time.split(".")[0]}
                         </p>
-                        <p className="text-sm mt-1">
+                        <p className="text-2sm mt-1">
                           Location: {event.Loaction || "Not specified"}
                         </p>
                         <div className="mt-4 flex space-x-4">
                           {event.Desc && (
                             <button
-                              className="py-2 px-4 border border-white text-white uppercase tracking-wider font-medium text-sm hover:bg-white hover:text-black transition rounded"
+                              className="py-2 px-4 border border-white text-white uppercase tracking-wider font-medium text-2sm hover:bg-white hover:text-black transition rounded"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 router.push(`/events/${event.documentId}`);
@@ -185,7 +185,7 @@ const CalendarPage = () => {
                           )}
                           {event.tickets && (
                             <button
-                              className="py-2 px-4 border border-white text-white uppercase tracking-wider font-medium text-sm hover:bg-white hover:text-black transition rounded"
+                              className="py-2 px-4 border border-white text-white uppercase tracking-wider font-medium text-2sm hover:bg-white hover:text-black transition rounded"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 window.open(event.tickets, "_blank");

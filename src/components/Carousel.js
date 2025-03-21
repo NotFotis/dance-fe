@@ -5,7 +5,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 // import "slick-carousel/slick/slick.css";
 // import "slick-carousel/slick/slick-theme.css";
-import "../css/slick-custom.css"
+import "../css/slick-custom.css";
 
 const Carousel = () => {
   const [events, setEvents] = useState([]);
@@ -81,13 +81,19 @@ const Carousel = () => {
     autoplay: true,
     autoplaySpeed: 3500,
     responsive: [
-      { breakpoint: 1024, settings: { slidesToShow: 2 } },
-      { breakpoint: 768, settings: { slidesToShow: 1 } },
+      {
+        breakpoint: 1024,
+        settings: { slidesToShow: 2 },
+      },
+      {
+        breakpoint: 768,
+        settings: { slidesToShow: 1 },
+      },
     ],
   };
 
   return (
-    <div className="relative min-h-screen bg-transparent py-12">
+    <div className="relative bg-transparent">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Header with Title, Calendar, and Slider Controls */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
@@ -95,7 +101,7 @@ const Carousel = () => {
             Events & Festivals
           </h2>
           <div className="flex items-center space-x-4">
-          <button
+            <button
               onClick={() => sliderRef.current?.slickPrev()}
               className="py-1 px-3 border border-white text-white rounded-full uppercase tracking-wider font-medium hover:bg-white hover:text-black transition"
             >
@@ -113,7 +119,6 @@ const Carousel = () => {
             >
               Calendar
             </button>
-
           </div>
         </div>
 
@@ -129,70 +134,74 @@ const Carousel = () => {
               return (
                 <div
                   key={event.id}
-                  className="relative group flex flex-col justify-end rounded-xl overflow-hidden shadow-2xl cursor-pointer transition-transform transform hover:scale-105 mx-8 w-[280px] h-[400px]"
+                  className="relative group rounded-xl overflow-hidden shadow-2xl cursor-pointer transition-transform transform hover:scale-105 mx-0 md:mx-8 w-full h-[500px]"
                   onClick={() => router.push(`/events/${event.documentId}`)}
                 >
-                  {eventImage && (
-                    <img
-                      src={`${URL}${eventImage}`}
-                      alt={event.Title}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                  )}
-                  <div className="relative z-10 p-4 bg-gradient-to-t from-black via-transparent to-transparent h-full flex flex-col justify-end">
-                    <h3 className="text-xl font-bold text-white drop-shadow-lg">
-                      {event.Title}
-                    </h3>
-                    <p className="text-xs mt-1 text-gray-200 drop-shadow">
-                      📅{" "}
-                      {new Date(event.Date).toLocaleDateString(undefined, {
-                        month: "long",
-                        day: "numeric",
-                        year: "numeric",
-                      })}{" "}
-                      | 🕒 {event.Time.split(".")[0]}
-                    </p>
-                    <p className="text-xs mt-1 text-gray-200 drop-shadow">
-                      📍 {event.Loaction || "Location not specified"}
-                    </p>
+                  {/* Save Event Button */}
+                  <button
+                    className={`absolute top-3 right-3 text-xl ${
+                      isSaved ? "text-yellow-400" : "text-gray-300"
+                    } hover:text-yellow-300 transition z-20`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSaveEvent(event.id);
+                    }}
+                  >
+                    ★
+                  </button>
 
-                    {/* Save Event Button */}
-                    <button
-                      className={`absolute top-3 right-3 text-xl ${
-                        isSaved ? "text-yellow-400" : "text-gray-300"
-                      } hover:text-yellow-300 transition`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSaveEvent(event.id);
-                      }}
-                    >
-                      ★
-                    </button>
-
-                    {/* Conditional Action Buttons */}
-                    <div className="mt-4 flex space-x-3">
-                      {event.Desc && (
-                        <button
-                          className="py-2 px-4 border border-white text-white uppercase tracking-wider font-medium text-sm hover:bg-white hover:text-black transition rounded-3xl"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            router.push(`/events/${event.documentId}`);
-                          }}
-                        >
-                          Info
-                        </button>
+                  <div className="flex flex-col h-full">
+                    {/* Image Section (66% of container) */}
+                    <div className="h-[66%] relative">
+                      {eventImage && (
+                        <img
+                          src={`${URL}${eventImage}`}
+                          alt={event.Title}
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        />
                       )}
-                      {event.tickets && (
-                        <button
-                          className="py-2 px-4 border border-white text-white uppercase tracking-wider font-medium text-sm hover:bg-white hover:text-black transition rounded-3xl"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            window.open(event.tickets, "_blank");
-                          }}
-                        >
-                          Buy Tickets
-                        </button>
-                      )}
+                    </div>
+                    {/* Text Section (34% of container) */}
+                    <div className="h-[34%] bg-black px-4 py-2 flex flex-col justify-center">
+                      <h3 className="text-2xl font-bold text-white truncate">
+                        {event.Title}
+                      </h3>
+                      <p className="text-sm mt-1 text-gray-200">
+                        📅{" "}
+                        {new Date(event.Date).toLocaleDateString(undefined, {
+                          month: "long",
+                          day: "numeric",
+                          year: "numeric",
+                        })}{" "}
+                        | 🕒 {event.Time.split(".")[0]}
+                      </p>
+                      <p className="text-2sm mt-1 text-gray-200">
+                        📍 {event.Loaction || "Location not specified"}
+                      </p>
+                      <div className="mt-2 flex space-x-3 text-2sm">
+                        {event.Desc && (
+                          <button
+                            className="py-2 px-4 border border-white text-white uppercase tracking-wider font-medium text-sm hover:bg-white hover:text-black transition rounded-3xl"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              router.push(`/events/${event.documentId}`);
+                            }}
+                          >
+                            Info
+                          </button>
+                        )}
+                        {event.tickets && (
+                          <button
+                            className="py-2 px-4 border border-white text-white uppercase tracking-wider font-medium text-sm hover:bg-white hover:text-black transition rounded-3xl"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              window.open(event.tickets, "_blank");
+                            }}
+                          >
+                            Buy Tickets
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>

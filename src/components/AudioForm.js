@@ -3,11 +3,21 @@ import { useRef, useEffect } from "react";
 
 export default function AudioForm() {
   const canvasRef = useRef(null);
+  const mousePosRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
+
+    // Initialize mouse position to the center
+    mousePosRef.current = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+
+    // Listen for mouse movement over the window
+    const handleMouseMove = (e) => {
+      mousePosRef.current = { x: e.clientX, y: e.clientY };
+    };
+    window.addEventListener("mousemove", handleMouseMove);
 
     // Configuration for the wave lines
     const numLines = 5;
@@ -24,9 +34,7 @@ export default function AudioForm() {
       segments: [] // Will store random multipliers for each period
     }));
 
-    // Function declaration for updating wave segments
-    // Each segment covers one period of the wave (2π / frequency)
-    // and provides a random multiplier (between 0.5 and 1.5) for that segment.
+    // Function for updating wave segments
     function updateWaveSegments() {
       waves.forEach((wave) => {
         const periodLength = (2 * Math.PI) / wave.frequency;
@@ -61,9 +69,13 @@ export default function AudioForm() {
           const segValue1 = wave.segments[segIndex] || 1;
           const segValue2 = wave.segments[segIndex + 1] || 1;
           const amplitudeFactor = (1 - segFraction) * segValue1 + segFraction * segValue2;
-          const effectiveAmplitude = wave.amplitude * amplitudeFactor;
-          const y =
-            centerY + wave.offset + effectiveAmplitude * Math.sin(wave.frequency * x + wave.phase);
+          let effectiveAmplitude = wave.amplitude * amplitudeFactor;
+          // Adjust amplitude based on vertical mouse position.
+          // When the mouse is at the top (smaller y), increase amplitude;
+          // when at the bottom, decrease it.
+          const mouseInfluence = 1 + ((centerY - mousePosRef.current.y) / centerY) * 0.5;
+          effectiveAmplitude *= mouseInfluence;
+          const y = centerY + wave.offset + effectiveAmplitude * Math.sin(wave.frequency * x + wave.phase);
           if (x === 0) {
             ctx.moveTo(x, y);
           } else {
@@ -82,6 +94,7 @@ export default function AudioForm() {
 
     return () => {
       window.removeEventListener("resize", setCanvasSize);
+      window.removeEventListener("mousemove", handleMouseMove);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
@@ -95,7 +108,7 @@ export default function AudioForm() {
         left: 0,
         width: "100%",
         height: "100%",
-        pointerEvents: "none", // So it doesn't block user interactions
+        pointerEvents: "none", // Keeps the canvas in the background
         zIndex: -1,
       }}
     />

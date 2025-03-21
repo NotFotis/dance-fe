@@ -4,6 +4,12 @@
 .slick-slide {
     margin: 0 1rem; /* Adjust horizontal spacing between slides */
   }
+
+  @media (max-width: 768px) {
+    .slick-slide {
+      margin: 0 0rem; /* Adjust the value as needed for a better mobile appearance */
+    }
+  }
   
   /* Allow the overflow of arrows if needed */
   .slick-list {
@@ -13,7 +19,6 @@
   /* Customize arrow icons (if using default icons) */
   .slick-prev:before,
   .slick-next:before {
-    font-size: 2.5rem; /* Increase arrow size */
     color: #fff; /* White arrows */
     display: none;
   }
@@ -25,10 +30,4 @@
   }
   
   /* Adjust arrow positions if needed */
-  .slick-prev {
-    left: -3rem; /* Move left arrow further left */
-  }
-  .slick-next {
-    right: -3rem; /* Move right arrow further right */
-  }
   

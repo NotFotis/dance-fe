@@ -8,6 +8,7 @@ import "slick-carousel/slick/slick-theme.css";
 import News from "@/components/News";
 import About from "@/components/About";
 import AudioForm from "@/components/AudioForm";
+import OurServices from "@/components/Services";
 
 export default function Home() {
 
@@ -45,7 +46,9 @@ export default function Home() {
         <Carousel />
       </section>
 
-
+      <section id="servies" className="my-20 w-full px-6 py-[-2rem]">
+        <OurServices />
+      </section>
       {/* Footer Section */}
       <Footer />
 

@@ -80,7 +80,7 @@ export default function NewsDetailsPage() {
   };
 
   return (
-    <div className="bg-black min-h-screen text-white flex flex-col items-center">
+    <div className="bg-black min-h-screen text-white flex flex-col items-center text-xl">
       <Navbar />
       <div className="max-w-4xl w-full px-6 mt-20">
         {/* News Image */}

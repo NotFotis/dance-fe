@@ -38,7 +38,7 @@ export default function NewsComponent() {
   };
 
   return (
-    <div className="bg-transparent text-white py-16">
+    <div className="bg-transparent text-white py-16 mt-20">
       <div className="container max-w-7xl mx-auto px-6 relative z-10">
         {/* Header: Dance News on the left, All News button on the right */}
         <div className="flex items-center justify-between mb-10">
@@ -89,11 +89,11 @@ export default function NewsComponent() {
                     <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-black to-transparent"></div>
                   </div>
                   <div className="p-4">
-                    <h3 className="text-2xl font-semibold mb-2 text-black">{item.Title}</h3>
+                    <h3 className="text-2xl font-semibold mb-2 text-black text-3xl">{item.Title}</h3>
                     <p className="text-sm text-black mb-2">
                       {new Date(item.Date).toLocaleDateString()}
                     </p>
-                    <p className="text-black mb-4">{getSummary(item.Content)}</p>
+                    <p className="text-black mb-4 text-lg">{getSummary(item.Content)}</p>
                   </div>
                 </motion.div>
               </Link>

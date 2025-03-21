@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@300&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -15,32 +16,7 @@
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-/* globals.css or your global stylesheet */
-header{
-  font-family: 'YaroBold', Arial, sans-serif;
-}
-/* Apply the font globally (optional) */
-body {
-  font-family: 'YaroBold', Arial, sans-serif;
-}
-
-
-@keyframes gradientAnimation {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-/* styles/globals.css */
+/* Import YaroBold for headers */
 @font-face {
   font-family: 'YaroBold';
   src: url('/fonts/YaroBl-Bold.otf') format('opentype');
@@ -48,12 +24,35 @@ body {
   font-style: normal;
 }
 
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'League Spartan', Arial, sans-serif;
+  font-weight: 300;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+h1,h2 {
+  font-family: 'YaroBold', Arial, sans-serif;
+}
+/* Header styling: use YaroBold */
+header {
+  font-family: 'YaroBold', Arial, sans-serif;
+}
+
+@keyframes gradientAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 
 /* Drawer Background */
 .drawer-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -63,7 +62,7 @@ body {
 /* Drawer Content */
 .drawer-content {
   background-color: #ffffff;
-  width: 350px; /* Adjust the width as needed */
+  width: 350px;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
