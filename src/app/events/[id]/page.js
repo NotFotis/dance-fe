@@ -3,7 +3,10 @@ import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
 import Navbar from "../../../components/NavBar";
-import parse, { domToReact } from "html-react-parser";
+import parse from "html-react-parser";
+// Import the icons you need from React Icons
+import { FaFacebook, FaInstagram, FaSpotify, FaSoundcloud, FaTwitter } from "react-icons/fa";
+import { SiBeatport } from "react-icons/si";
 
 const EventDetails = () => {
   const { id } = useParams();
@@ -17,7 +20,7 @@ const EventDetails = () => {
     const fetchEvent = async () => {
       try {
         const response = await axios.get(
-          `${API_URL}/events/${id}?populate=Desc&populate=artists.Socials&populate=Image`
+          `${API_URL}/events/${id}?&populate=artists.Socials&populate=Image`
         );
         console.log(response);
         // Extract the nested event data based on the provided response structure
@@ -54,8 +57,6 @@ const EventDetails = () => {
         event.Loaction
       )}`
     : "#";
-
-  // Transform function for html-react-parser: adds target and styling to links.
 
   return (
     <div className="bg-black min-h-screen flex flex-col items-center relative text-white mt-20">
@@ -102,37 +103,21 @@ const EventDetails = () => {
           </div>
         )}
 
-        {/* Render all dynamic zone description components */}
+        {/* Render the description content from the API */}
         <div className="prose prose-lg text-gray-300 leading-relaxed max-w-none text-xl">
-          {Array.isArray(event.Desc) && event.Desc.length > 0 ? (
-            event.Desc.map((component, index) => {
-              // Wrap each component in a container that adds spacing (mb-6)
-              switch (component.__component) {
-                case "shared.rich-text":
-                  return (
-                    <div key={index} className="mb-6">
-                      {parse(component.body)}
-                    </div>
-                  );
-                case "shared.quote":
-                  return (
-                    <div key={index} className="mb-6">
-                      {parse(component.title)}
-                      <blockquote className="border-l-4 border-gray-500 pl-4 italic">
-                        {parse(component.body)}
-                      </blockquote>
-                    </div>
-                  );
-                // Assuming SEO is for metadata only and should not render visible content:
-                case "shared.seo":
-                  return null;
-                default:
-                  return (
-                    <div key={index} className="mb-6">
-                      {component.body ? parse(component.body) : null}
-                    </div>
-                  );
+          {Array.isArray(event.description) && event.description.length > 0 ? (
+            event.description.map((block, index) => {
+              if (block.type === "paragraph" && Array.isArray(block.children)) {
+                const combinedContent = block.children
+                  .map((child) => child.text)
+                  .join("");
+                return (
+                  <p key={index} className="mb-6">
+                    {parse(combinedContent)}
+                  </p>
+                );
               }
+              return null;
             })
           ) : (
             <p>No description available.</p>
@@ -143,23 +128,48 @@ const EventDetails = () => {
         <div className="mt-12">
           <h2 className="text-3xl font-bold mb-4">Lineup</h2>
           {event.artists && event.artists.length > 0 ? (
-            <ul className="text-lg text-gray-300">
+            <ul className="text-xl text-gray-300 ">
               {event.artists.map((artist, index) => (
-                <li key={index} className="mb-2">
+                <li key={index} className="mb-2 flex items-center ">
                   {artist.Name}
                   {artist.Socials && artist.Socials.length > 0 && (
-                    <span className="ml-2 text-blue-400">
-                      {artist.Socials.map((social, idx) => (
-                        <a
-                          key={idx}
-                          href={social.URL}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="ml-2"
-                        >
-                          {social.platform}
-                        </a>
-                      ))}
+                    <span className="ml-2 flex gap-2 ">
+                      {artist.Socials.map((social, idx) => {
+                        let icon;
+                        // Map the social platform to its corresponding icon
+                        switch (social.platform.toLowerCase()) {
+                          case "facebook":
+                            icon = <FaFacebook size={24} />;
+                            break;
+                          case "instagram":
+                            icon = <FaInstagram size={24} />;
+                            break;
+                          case "spotify":
+                            icon = <FaSpotify size={24} />;
+                            break;
+                          case "beatport":
+                            icon = <SiBeatport size={24} />;
+                            break;
+                          case "soundcloud":
+                            icon = <FaSoundcloud size={24} />;
+                            break;
+                          case "x":
+                            icon = <FaTwitter size={24} />;
+                            break;
+                          default:
+                            icon = social.platform;
+                        }
+                        return (
+                          <a
+                            key={idx}
+                            href={social.URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {icon}
+                          </a>
+                        );
+                      })}
                     </span>
                   )}
                 </li>

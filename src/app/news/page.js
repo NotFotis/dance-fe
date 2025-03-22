@@ -78,7 +78,7 @@ export default function NewsListPage() {
 
   return (
     <div className="bg-black min-h-screen text-white flex flex-col items-center">
-      <Navbar />
+      <Navbar brandName="dancenews" />
       <div className="max-w-6xl w-full px-6 mt-20">
         <h1 className="text-4xl font-bold mb-8 text-center mt-20">Dance News</h1>
 

@@ -39,7 +39,8 @@ export default function NewsComponent() {
 
   return (
     <div className="bg-transparent text-white py-16 mt-20">
-      <div className="container max-w-7xl mx-auto px-6 relative z-10">
+      {/* Updated container */}
+      <div className="container mx-auto px-6 relative z-10">
         {/* Header: Dance News on the left, All News button on the right */}
         <div className="flex items-center justify-between mb-10">
           <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-wide">

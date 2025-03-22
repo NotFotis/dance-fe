@@ -46,7 +46,7 @@ export default function Home() {
         <Carousel />
       </section>
 
-      <section id="servies" className="my-20 w-full px-6 py-[-2rem]">
+      <section id="servies" className="my-20 w-full px-6 ">
         <OurServices />
       </section>
       {/* Footer Section */}

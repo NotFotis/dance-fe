@@ -5,7 +5,7 @@ import { Menu, X, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
-export default function Navbar() {
+export default function Navbar({ brandName = "dancetoday" }) {
   const pathname = usePathname();
   const router = useRouter();
   const isHomepage = pathname === "/";
@@ -23,7 +23,7 @@ export default function Navbar() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Load user from localStorage (similar to your ProfilePage)
+  // Load user from localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -31,7 +31,7 @@ export default function Navbar() {
     }
   }, []);
 
-  // Framer Motion scroll animations for the logo
+  // Framer Motion scroll animations for the logo (only on homepage)
   const { scrollY } = useScroll();
   const translateX = useTransform(scrollY, [0, 150], [50, 0]);
   const translateY = useTransform(scrollY, [0, 150], [160, 0]);
@@ -46,7 +46,9 @@ export default function Navbar() {
     return () => unsubscribe();
   }, [scrollY]);
 
-  const navOpacity = useTransform(scrollY, [0, 150], [1, 0]);
+  // Only on homepage do we tie the nav items’ opacity to scroll,
+  // otherwise we keep them fully visible.
+  const navOpacity = isHomepage ? useTransform(scrollY, [0, 150], [1, 0]) : 1;
 
   // Logout clears auth data and redirects to login
   const handleLogout = () => {
@@ -104,7 +106,7 @@ export default function Navbar() {
               } text-4xl md:text-4xl font-bold tracking-wider`}
             >
               <div className="pointer-events-auto">
-                <Link href="/">dancetoday</Link>
+                <Link href="/">{brandName}</Link>
               </div>
             </motion.div>
           </div>
@@ -121,8 +123,8 @@ export default function Navbar() {
           >
             <motion.ul
               style={{
-                opacity: isMobile ? 1 : navOpacity,
-                pointerEvents: isScrolled ? "none" : "auto",
+                opacity: isHomepage ? (isMobile ? 1 : navOpacity) : 1,
+                pointerEvents: isHomepage ? (isScrolled ? "none" : "auto") : "auto",
               }}
               className={`hidden md:flex space-x-8 text-lg transition-all duration-300 ${
                 isScrolled || isMobile ? "text-gray-700" : "text-white"
@@ -149,7 +151,7 @@ export default function Navbar() {
               <li className="hover:text-grey-700 cursor-pointer">
                 <Link href="/about">About</Link>
               </li>
-              {/* User Icon Button as a list item */}
+              {/* User Icon Button */}
               <li className="relative">
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
@@ -261,7 +263,6 @@ export default function Navbar() {
               <li className="hover:text-grey-700 cursor-pointer">
                 <Link href="/about">About</Link>
               </li>
-              {/* Mobile: show authentication items directly */}
               {user ? (
                 <>
                   <li className="hover:text-grey-700 cursor-pointer">

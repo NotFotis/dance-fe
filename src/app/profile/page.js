@@ -14,7 +14,7 @@ export default function ProfilePage() {
   const [savedEvents, setSavedEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [visibleEvents, setVisibleEvents] = useState(6);
-  const [selectedMonth, setSelectedMonth] = useState(format(new Date(), "MMMM yyyy"));
+  const [selectedMonth, setSelectedMonth] = useState("All");
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
@@ -38,41 +38,50 @@ export default function ProfilePage() {
     try {
       const token = localStorage.getItem("token");
       if (!userId || !token) return;
-  
+
       const response = await axios.get(
         `${API_URL}/saved-events?filters[user][id][$eq]=${userId}&populate[event][populate][artists][populate]=Socials`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-  
-      const formattedEvents = response.data.data.map((savedEvent) => ({
-        savedEventId: savedEvent.id,
-        eventId: savedEvent.event?.id,
-        title: savedEvent.event?.Title || "No Title",
-        date: savedEvent.event?.Date ? new Date(savedEvent.event.Date) : new Date(),
-        location: savedEvent.event?.Loaction || "No Location",
-        documentId: savedEvent.event?.documentId,
-        artists: savedEvent.event?.artists?.map((artist) => ({
-          name: artist.Name || "Unknown Artist",
-          socials: artist.Socials?.map((social) => ({
-            platform: social.platform,
-            url: social.URL
-          })) || []
-        })) || []
-      }));
-  
+      console.log(response);
+
+      const formattedEvents = response.data.data.map((savedEvent) => {
+        const eventDate = savedEvent.event?.Date
+          ? new Date(savedEvent.event.Date)
+          : new Date();
+
+        return {
+          savedEventId: savedEvent.id,
+          eventId: savedEvent.event?.id,
+          title: savedEvent.event?.Title || "No Title",
+          date: eventDate,
+          location: savedEvent.event?.Loaction || "No Location",
+          documentId: savedEvent.event?.documentId,
+          artists: savedEvent.event?.artists?.map((artist) => ({
+            name: artist.Name || "Unknown Artist",
+            socials: artist.Socials?.map((social) => ({
+              platform: social.platform,
+              url: social.URL,
+            })) || [],
+          })) || [],
+        };
+      });
+
       setSavedEvents(formattedEvents);
     } catch (error) {
       console.error("Error fetching saved events:", error);
     }
   };
-  
-  
 
   const filterEventsByMonth = (month) => {
-    const filtered = savedEvents.filter(event => 
-      format(event.date, "MMMM yyyy") === month
-    );
-    setFilteredEvents(filtered);
+    if (month === "All") {
+      setFilteredEvents(savedEvents); // Show all events if "All" is selected
+    } else {
+      const filtered = savedEvents.filter((event) =>
+        format(event.date, "MMMM yyyy") === month
+      );
+      setFilteredEvents(filtered);
+    }
     setVisibleEvents(6);
   };
 
@@ -98,6 +107,7 @@ export default function ProfilePage() {
           value={selectedMonth} 
           onChange={(e) => setSelectedMonth(e.target.value)}
         >
+          <option value="All">All</option>
           {[...new Set(savedEvents.map(event => format(event.date, "MMMM yyyy")))].map(month => (
             <option key={month} value={month}>{month}</option>
           ))}
@@ -116,18 +126,17 @@ export default function ProfilePage() {
             <p className="text-gray-300">📅 {format(event.date, "PPPP")}</p>
             <p className="text-gray-300">📍 {event.location}</p>
             <div className="mt-2">
-            <h4 className="text-md font-semibold">Lineup:</h4>
-            <ul className="text-gray-300 text-sm">
-              {event.artists.length > 0 ? (
-                event.artists.map((performer, index) => (
-                  <li key={index}>{performer.name}</li>
-                ))
-              ) : (
-                <li>TBD</li>
-              )}
-            </ul>
-          </div>
-
+              <h4 className="text-md font-semibold">Lineup:</h4>
+              <ul className="text-gray-300 text-sm">
+                {event.artists.length > 0 ? (
+                  event.artists.map((performer, index) => (
+                    <li key={index}>{performer.name}</li>
+                  ))
+                ) : (
+                  <li>TBD</li>
+                )}
+              </ul>
+            </div>
           </motion.div>
         ))}
       </div>

@@ -31,6 +31,12 @@ body {
   font-weight: 300;
 }
 
+
+p {
+  font-family: 'League Spartan', Arial, sans-serif;
+  font-weight: 300;
+}
+
 html {
   scroll-behavior: smooth;
 }

@@ -3,8 +3,6 @@ import React, { useState, useEffect, useRef } from "react";
 import Slider from "react-slick";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-// import "slick-carousel/slick/slick.css";
-// import "slick-carousel/slick/slick-theme.css";
 import "../css/slick-custom.css";
 
 const Carousel = () => {
@@ -94,8 +92,8 @@ const Carousel = () => {
 
   return (
     <div className="relative bg-transparent">
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-        {/* Header with Title, Calendar, and Slider Controls */}
+      {/* Updated container */}
+      <div className="container mx-auto px-6 relative z-10">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
           <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-wide mb-4 md:mb-0">
             Events & Festivals
@@ -122,7 +120,6 @@ const Carousel = () => {
           </div>
         </div>
 
-        {/* Slider */}
         <Slider ref={sliderRef} {...settings}>
           {events.length > 0 ? (
             events.map((event) => {
@@ -137,7 +134,6 @@ const Carousel = () => {
                   className="relative group rounded-xl overflow-hidden shadow-2xl cursor-pointer transition-transform transform hover:scale-105 mx-0 md:mx-8 w-full h-[500px]"
                   onClick={() => router.push(`/events/${event.documentId}`)}
                 >
-                  {/* Save Event Button */}
                   <button
                     className={`absolute top-3 right-3 text-xl ${
                       isSaved ? "text-yellow-400" : "text-gray-300"
@@ -149,9 +145,7 @@ const Carousel = () => {
                   >
                     ★
                   </button>
-
                   <div className="flex flex-col h-full">
-                    {/* Image Section (66% of container) */}
                     <div className="h-[66%] relative">
                       {eventImage && (
                         <img
@@ -161,7 +155,6 @@ const Carousel = () => {
                         />
                       )}
                     </div>
-                    {/* Text Section (34% of container) */}
                     <div className="h-[34%] bg-black px-4 py-2 flex flex-col justify-center">
                       <h3 className="text-2xl font-bold text-white truncate">
                         {event.Title}

@@ -9,8 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@fortawesome/free-brands-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "axios": "^1.7.9",
     "date-fns": "^4.1.0",
+    "fortawesome": "^0.0.1-security",
     "framer-motion": "^12.4.7",
     "html-react-parser": "^5.2.2",
     "lucide-react": "^0.479.0",
