@@ -15,7 +15,7 @@ const Panel = ({ title, text, zIndex, index }) => {
 
   // Hover text colors: invert the original colors
   const hoverTitleTextClass = isBlack ? "group-hover:text-black" : "group-hover:text-white";
-  const hoverBodyTextClass = isBlack ? "group-hover:text-black" : "group-hover:text-white";
+  const hoverBodyTextClass = isBlack ? "group-hover:text-white" : "group-hover:text-black";
 
   // Use white circle on black panels, and black circle on white panels
   const circleColorClass = isBlack ? "bg-white" : "bg-black";
