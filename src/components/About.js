@@ -10,8 +10,8 @@ const Panel = ({ title, text, zIndex, index }) => {
   // Determine background and text colors based on panel index
   const isBlack = ((index + 1) % 2 === 0);
   const bgClass = isBlack ? "bg-black" : "bg-white";
-  const titleTextColor = isBlack ? "text-white" : "text-gray-800";
-  const bodyTextColor = isBlack ? "text-gray-300" : "text-gray-600";
+  const titleTextColor = isBlack ? "text-white" : "text-black";
+  const bodyTextColor = isBlack ? "text-black" : "text-white";
 
   // Hover text colors: invert the original colors
   const hoverTitleTextClass = isBlack ? "group-hover:text-black" : "group-hover:text-white";
