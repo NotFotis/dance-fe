@@ -95,12 +95,12 @@ export default function Carousel() {
         settings: { slidesToShow: 1 },
       },
     ],
-    centerMode: false, 
+      centerMode: false, 
   };
 
   return (
-    <div className="relative bg-transparent mb-0">
-      <div className="container mx-auto px-6 relative z-10 mb-0">
+    <div className="relative bg-transparent mb-8">
+      <div className="container mx-auto px-6 relative z-10 ">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
           <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-wide mb-4 md:mb-0">
             {t("title")}

@@ -3,11 +3,15 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Navbar from "../../../components/NavBar";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 const MusicPage = () => {
   const router = useRouter();
   const t = useTranslations("music");
+  const locale = useLocale();
+
+  // Adjust the locale for the API and date formatting: if locale is "el", use "el-GR"
+  const apiLocale = locale === "el" ? "el-GR" : locale;
 
   const [musicItems, setMusicItems] = useState([]);
   const [genres, setGenres] = useState([]); // state for genres from API
@@ -52,11 +56,13 @@ const MusicPage = () => {
     },
   ];
 
-  // Fetch music items from API
+  // Fetch music items from API with locale query parameter
   useEffect(() => {
     const fetchMusic = async () => {
       try {
-        const response = await axios.get(`${API_URL}/musics?populate=*`);
+        const response = await axios.get(
+          `${API_URL}/musics?populate=*&locale=${apiLocale}`
+        );
         // Sort music items chronologically by release date
         const sortedMusic = response.data.data.sort(
           (a, b) => new Date(a.releaseDate) - new Date(b.releaseDate)
@@ -67,13 +73,15 @@ const MusicPage = () => {
       }
     };
     fetchMusic();
-  }, [API_URL]);
+  }, [API_URL, apiLocale]);
 
-  // Fetch genres from API
+  // Fetch genres from API with locale query parameter
   useEffect(() => {
     const fetchGenres = async () => {
       try {
-        const response = await axios.get(`${API_URL}/Music-Genres`);
+        const response = await axios.get(
+          `${API_URL}/Music-Genres?locale=${apiLocale}`
+        );
         // Assuming genres returned have a "name" property.
         setGenres(response.data.data);
       } catch (error) {
@@ -81,7 +89,7 @@ const MusicPage = () => {
       }
     };
     fetchGenres();
-  }, [API_URL]);
+  }, [API_URL, apiLocale]);
 
   // Create the genre options array with localized "All" as the default option
   const genreOptions = [t("all"), ...genres.map((genre) => genre.name)];
@@ -98,10 +106,10 @@ const MusicPage = () => {
     return monthMatch && genreMatch;
   });
 
-  // Group filtered music items by release month and year
+  // Group filtered music items by release month and year using localized dates
   const groupedMusic = filteredMusic.reduce((groups, music) => {
     const dateObj = new Date(music.releaseDate);
-    const dateKey = dateObj.toLocaleDateString(undefined, {
+    const dateKey = dateObj.toLocaleDateString(apiLocale, {
       month: "long",
       year: "numeric",
     });

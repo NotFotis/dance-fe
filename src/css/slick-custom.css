@@ -1,20 +1,45 @@
 /* slick-custom.css */
 
 /* Increase spacing between slides */
-.slick-slide {
-    margin: 0 1rem ; /* Adjust horizontal spacing between slides */
-  }
+.slick-slide
+{
+    display: none;
+    float: left;
+    padding: 1rem;
+    height: 100%;
+    min-height: 1px;
+}
+
+.slick-list
+{
+    position: relative;
+
+    display: block;
+    overflow: hidden;
+
+    margin: 0;
+    padding: 0;
+}
+
+.slick-track
+{
+    position: relative;
+    top: 0;
+    left: 0;
+
+    display: block;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
 
   @media (max-width: 768px) {
     .slick-slide {
-      margin: 0 0rem; /* Adjust the value as needed for a better mobile appearance */
+      padding: 0 0rem; /* Adjust the value as needed for a better mobile appearance */
     }
   }
   
   /* Allow the overflow of arrows if needed */
-  .slick-list {
-    margin-bottom: 0 !important;
-  }
   
   /* Customize arrow icons (if using default icons) */
   .slick-prev:before,
@@ -23,11 +48,6 @@
     display: none;
   }
   
-  /* Optionally, remove default background/dots if desired */
-  .slick-dots li button:before {
-    font-size: 1.5rem;
-    color: #fff;
-  }
   
   /* Adjust arrow positions if needed */
   

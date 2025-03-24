@@ -25,8 +25,15 @@ export default function Navbar({ brandName = "dancetoday" }) {
 
   // Detect mobile (width < 768px)
   const [isMobile, setIsMobile] = useState(false);
+  // New state: detect mobile and tablet screens (width < 1024px)
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    const handleResize = () => {
+      const width = window.innerWidth;
+      setIsMobile(width < 768);
+      setIsSmallScreen(width < 1025);
+    };
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -70,16 +77,16 @@ export default function Navbar({ brandName = "dancetoday" }) {
     }
   }, [isHomepage]);
 
-  // Framer Motion scroll animations for the logo (always call hooks)
+  // Framer Motion scroll animations for the logo (currently defined but conditionally used)
   const { scrollY } = useScroll();
   const rawLogoX = useTransform(scrollY, [0, 150], [initialLogoX, 0]);
-  const logoX = isMobile || !isHomepage ? 0 : rawLogoX;
-
   const rawTranslateY = useTransform(scrollY, [0, 150], [160, 0]);
-  const translateY = isMobile || !isHomepage ? 0 : rawTranslateY;
-
   const rawScale = useTransform(scrollY, [0, 150], [6, 1]);
-  const scale = isMobile || !isHomepage ? 1 : rawScale;
+
+  // Change logo animation to be static on small screens (mobile and tablet) or when not on homepage
+  const logoX = isSmallScreen || !isHomepage ? 0 : rawLogoX;
+  const translateY = isSmallScreen || !isHomepage ? 0 : rawTranslateY;
+  const scale = isSmallScreen || !isHomepage ? 1 : rawScale;
 
   // Animate nav items container’s x offset from centered to 0 (right aligned)
   const rawNavX = useTransform(scrollY, [0, 150], [initialNavX, 0]);
@@ -166,7 +173,7 @@ export default function Navbar({ brandName = "dancetoday" }) {
             <motion.div
               ref={navRef}
               style={{ x: navX }}
-              className="hidden md:flex items-center justify-end space-x-8 h-full"
+              className="hidden xl:flex items-center justify-end space-x-8 h-full"
             >
               <ul className="flex space-x-8 h-full transition-all">
                 <li className={navItemClasses}>
@@ -265,9 +272,9 @@ export default function Navbar({ brandName = "dancetoday" }) {
                 </li>
               </ul>
             </motion.div>
-            {/* Mobile menu button */}
+            {/* Mobile menu button - now visible on screens smaller than xl (mobile and tablets) */}
             <button
-              className={`md:hidden transition-all duration-300 ${
+              className={`xl:hidden transition-all duration-300 ${
                 isScrolled || isMobile ? "text-black" : "text-white"
               }`}
               onClick={() => setIsOpen(!isOpen)}
@@ -278,7 +285,7 @@ export default function Navbar({ brandName = "dancetoday" }) {
         </div>
       </motion.div>
 
-      {/* Mobile drawer */}
+      {/* Mobile drawer - now also available on tablets (screens smaller than xl) */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -286,7 +293,7 @@ export default function Navbar({ brandName = "dancetoday" }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden bg-white shadow-md mt-[60px]"
+            className="xl:hidden bg-white shadow-md mt-[60px]"
           >
             <ul className="flex flex-col space-y-6 p-6 text-lg text-gray-700">
               <li className="hover:text-grey-700 cursor-pointer">

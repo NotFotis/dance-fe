@@ -44,11 +44,11 @@ export default function Home() {
       </section>
 
       {/* Upcoming Events Section */}
-      <section id="events" className="my-20 w-full px-6 mb-0">
+      <section id="events" className="my-20 w-full px-6 ">
         <Carousel />
       </section>
 
-      <section id="servies" className=" w-full px-6 ">
+      <section id="servies" className="my-20 w-full px-6 ">
         <OurServices />
       </section>
       {/* Footer Section */}

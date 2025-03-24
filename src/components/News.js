@@ -41,19 +41,21 @@ export default function NewsComponent() {
   };
 
   return (
-    <div className="bg-transparent text-white py-16 mt-20">
+    <div className="relative bg-transparent text-white py-16 mt-20">
       <div className="container mx-auto px-6 relative z-10">
         {/* Header: Title on the left, All News button on the right */}
-        <div className="flex items-center justify-between mb-10">
-          <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-wide">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-wide mb-4 md:mb-0">
             {t("title")}
           </h2>
+          <div className="flex items-center space-x-4">
           <Link
             href="/news"
             className="py-2 px-4 border border-white text-white uppercase tracking-wider font-medium hover:bg-white hover:text-black transition rounded"
           >
             {t("allNews")}
           </Link>
+          </div>
         </div>
 
         {/* GRID LAYOUT (Responsive) */}
