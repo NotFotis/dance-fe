@@ -2,7 +2,7 @@
 
 /* Increase spacing between slides */
 .slick-slide {
-    margin: 0 1rem !important; /* Adjust horizontal spacing between slides */
+    margin: 0 1rem ; /* Adjust horizontal spacing between slides */
   }
 
   @media (max-width: 768px) {
