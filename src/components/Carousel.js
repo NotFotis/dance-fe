@@ -1,17 +1,24 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import Slider from "react-slick";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { useTranslations } from "next-intl";
 import "../css/slick-custom.css";
 
-const Carousel = () => {
+// Fallback translation values should your keys not exist
+// (But ideally, you add all keys in your JSON files)
+
+export default function Carousel() {
   const [events, setEvents] = useState([]);
   const [savedEvents, setSavedEvents] = useState([]);
   const router = useRouter();
   const sliderRef = useRef(null);
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const URL = process.env.NEXT_PUBLIC_URL;
+  const t = useTranslations("carousel");
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -88,15 +95,15 @@ const Carousel = () => {
         settings: { slidesToShow: 1 },
       },
     ],
+    centerMode: false, 
   };
 
   return (
-    <div className="relative bg-transparent">
-      {/* Updated container */}
-      <div className="container mx-auto px-6 relative z-10">
+    <div className="relative bg-transparent mb-0">
+      <div className="container mx-auto px-6 relative z-10 mb-0">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
           <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-wide mb-4 md:mb-0">
-            Events & Festivals
+            {t("title")}
           </h2>
           <div className="flex items-center space-x-4">
             <button
@@ -115,7 +122,7 @@ const Carousel = () => {
               onClick={() => router.push("/calendar")}
               className="py-2 px-4 border border-white text-white uppercase tracking-wider font-medium hover:bg-white hover:text-black transition rounded"
             >
-              Calendar
+              {t("calendar")}
             </button>
           </div>
         </div>
@@ -151,7 +158,7 @@ const Carousel = () => {
                         <img
                           src={`${URL}${eventImage}`}
                           alt={event.Title}
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                          className="w-full h-full object-cover transition-transform duration-700"
                         />
                       )}
                     </div>
@@ -159,7 +166,7 @@ const Carousel = () => {
                       <h3 className="text-2xl font-bold text-white truncate">
                         {event.Title}
                       </h3>
-                      <p className="text-sm mt-1 text-gray-200">
+                      <p className="text-gray-300 text-sm mt-1">
                         📅{" "}
                         {new Date(event.Date).toLocaleDateString(undefined, {
                           month: "long",
@@ -168,8 +175,8 @@ const Carousel = () => {
                         })}{" "}
                         | 🕒 {event.Time.split(".")[0]}
                       </p>
-                      <p className="text-2sm mt-1 text-gray-200">
-                        📍 {event.Loaction || "Location not specified"}
+                      <p className="text-2sm mt-1 text-gray-300">
+                        📍 {event.Loaction || t("noLocation")}
                       </p>
                       <div className="mt-2 flex space-x-3 text-2sm">
                         {event.Desc && (
@@ -180,7 +187,7 @@ const Carousel = () => {
                               router.push(`/events/${event.documentId}`);
                             }}
                           >
-                            Info
+                            {t("info")}
                           </button>
                         )}
                         {event.tickets && (
@@ -191,7 +198,7 @@ const Carousel = () => {
                               window.open(event.tickets, "_blank");
                             }}
                           >
-                            Buy Tickets
+                            {t("buyTickets")}
                           </button>
                         )}
                       </div>
@@ -202,7 +209,7 @@ const Carousel = () => {
             })
           ) : (
             <div className="w-full text-center text-white text-xl">
-              Loading events...
+              {t("loadingEvents")}
             </div>
           )}
         </Slider>
@@ -210,5 +217,3 @@ const Carousel = () => {
     </div>
   );
 };
-
-export default Carousel;

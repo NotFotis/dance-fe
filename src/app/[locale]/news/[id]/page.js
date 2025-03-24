@@ -8,6 +8,7 @@ import Link from "next/link";
 import { FaFacebookF, FaInstagram } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXTwitter } from "@fortawesome/free-brands-svg-icons";
+import { useTranslations } from "next-intl";
 
 export default function NewsDetailsPage() {
   const { id } = useParams();
@@ -15,6 +16,7 @@ export default function NewsDetailsPage() {
   const [loading, setLoading] = useState(true);
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const URL = process.env.NEXT_PUBLIC_URL;
+  const t = useTranslations("newsDetails");
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -31,12 +33,12 @@ export default function NewsDetailsPage() {
       }
     };
     if (id) fetchNews();
-  }, [id]);
+  }, [id, API_URL]);
 
   if (loading) {
     return (
       <div className="text-center text-white py-12 text-2xl">
-        Loading news details...
+        {t("loading")}
       </div>
     );
   }
@@ -44,7 +46,7 @@ export default function NewsDetailsPage() {
   if (!news) {
     return (
       <div className="text-center text-red-500 py-12 text-2xl">
-        News article not found
+        {t("notFound")}
       </div>
     );
   }
@@ -77,7 +79,7 @@ export default function NewsDetailsPage() {
   // Render description content by joining each paragraph's text and parsing it
   const renderDescription = () => {
     if (!news.description || !Array.isArray(news.description)) {
-      return <p>No description available.</p>;
+      return <p>{t("noDescription")}</p>;
     }
     return news.description.map((block, index) => {
       if (block.type === "paragraph") {
@@ -155,7 +157,7 @@ export default function NewsDetailsPage() {
               >
                 {genre.attributes && genre.attributes.name
                   ? genre.attributes.name
-                  : "No Genre"}
+                  : t("noGenre")}
               </span>
             ))}
           </div>
@@ -169,7 +171,7 @@ export default function NewsDetailsPage() {
         {/* Back to News */}
         <div className="mt-10 text-center">
           <Link href="/news" className="text-blue-500 hover:underline text-lg">
-            ← Back to News
+            {t("backToNews")}
           </Link>
         </div>
       </div>

@@ -1,10 +1,13 @@
-'use client';
+"use client";
 import { useRouter } from 'next/navigation';
 import AuthForm from '@/components/AuthForm';
 import Navbar from '@/components/NavBar';
+import { useTranslations } from 'next-intl';
 
 export default function LoginPage() {
   const router = useRouter();
+  // Use translations from the "login" namespace.
+  const t = useTranslations("login");
 
   // Handle successful login
   const handleLoginSuccess = (userData) => {
@@ -24,12 +27,12 @@ export default function LoginPage() {
 
           {/* Register Section (Closer Spacing) */}
           <div className="text-center mt-1">
-            <p className="text-white text-sm">Don't have an account?</p>
+            <p className="text-white text-sm">{t("noAccount")}</p>
             <button
               onClick={() => router.push('/register')}
               className="mt-1 px-5 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition"
             >
-              Register
+              {t("register")}
             </button>
           </div>
         </div>

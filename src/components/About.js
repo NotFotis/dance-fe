@@ -13,47 +13,18 @@ const Panel = ({ title, text, zIndex, index }) => {
   const titleTextColor = isBlack ? "text-white" : "text-black";
   const bodyTextColor = isBlack ? "text-white" : "text-black";
 
-  // Hover text colors: invert the original colors
-  const hoverTitleTextClass = isBlack ? "group-hover:text-black" : "group-hover:text-white";
-  const hoverBodyTextClass = isBlack ? "group-hover:text-black" : "group-hover:text-white";
-
-  // Use white circle on black panels, and black circle on white panels
-  const circleColorClass = isBlack ? "bg-white" : "bg-black";
-
-  // Animation variants for the expanding circle
-  const circleVariants = {
-    rest: { scale: 0 },
-    hover: { scale: 20 },
-  };
-
   return (
     <motion.div
       ref={ref}
       style={{ zIndex }}
-      className={`group sticky top-0 min-h-[50vh] flex flex-col justify-center items-center ${bgClass} rounded-2xl relative overflow-hidden`}
-      initial="rest"
-      whileHover="hover"
+      className={`sticky top-0 min-h-[50vh] flex flex-col justify-center items-center ${bgClass} rounded-2xl relative overflow-hidden`}
       animate={{ opacity: isInView ? 1 : 0 }}
       transition={{ duration: 0.5 }}
     >
-      {/* Expanding circle on hover */}
-      <motion.div
-        variants={circleVariants}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        className={`absolute ${circleColorClass} rounded-full z-0`}
-        style={{
-          width: 50,
-          height: 50,
-          top: "50%",
-          left: "50%",
-          x: "-50%",
-          y: "-50%",
-        }}
-      />
-      <h2 className={`text-3xl font-bold mb-4 ${titleTextColor} ${hoverTitleTextClass} relative z-10`}>
+      <h2 className={`text-3xl font-bold mb-4 ${titleTextColor} relative z-10`}>
         {title}
       </h2>
-      <p className={`text-xl text-center max-w-2xl px-4 ${bodyTextColor} ${hoverBodyTextClass} font-body relative z-10`}>
+      <p className={`text-xl text-center max-w-2xl px-4 ${bodyTextColor} font-body relative z-10`}>
         {text}
       </p>
     </motion.div>
@@ -115,9 +86,9 @@ const ScrollPanels = () => {
     <div>
       {/* Section Title using documentTitle from the API */}
       <div className="py-10 bg-transparent">
-        <h1 className="text-4xl font-bold text-center text-white">
-          {documentTitle}
-        </h1>
+      <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-wide mb-4 md:mb-0">
+                  {documentTitle}
+        </h2>
       </div>
       {/* Sticky Panels */}
       <div className="relative">

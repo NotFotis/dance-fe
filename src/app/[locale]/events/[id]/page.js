@@ -2,8 +2,9 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
-import Navbar from "../../../components/NavBar";
+import Navbar from "../../../../components/NavBar";
 import parse from "html-react-parser";
+import { useTranslations } from "next-intl";
 // Import the icons you need from React Icons
 import { FaFacebook, FaInstagram, FaSpotify, FaSoundcloud, FaTwitter } from "react-icons/fa";
 import { SiBeatport } from "react-icons/si";
@@ -15,6 +16,9 @@ const EventDetails = () => {
   const router = useRouter();
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const URL = process.env.NEXT_PUBLIC_URL;
+  
+  // Use translations from the "eventDetails" namespace.
+  const t = useTranslations();
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -33,12 +37,12 @@ const EventDetails = () => {
       }
     };
     if (id) fetchEvent();
-  }, [id]);
+  }, [id, API_URL]);
 
   if (loading) {
     return (
       <div className="text-center text-white py-12 text-2xl">
-        Loading event details...
+        {t("loading")}
       </div>
     );
   }
@@ -46,7 +50,7 @@ const EventDetails = () => {
   if (!event) {
     return (
       <div className="text-center text-red-500 py-12 text-2xl">
-        Event not found
+        {t("notFound")}
       </div>
     );
   }
@@ -86,7 +90,7 @@ const EventDetails = () => {
             rel="noopener noreferrer"
             className="text-white hover:underline mt-2 md:mt-0"
           >
-            📍 {event.Loaction || "Location not specified"}
+            📍 {event.Loaction || t("noLocation")}
           </a>
         </div>
 
@@ -98,7 +102,7 @@ const EventDetails = () => {
               rel="noopener noreferrer"
               className="px-6 py-3 bg-blue-500 text-white font-bold text-lg rounded-lg shadow-lg hover:bg-blue-700 transition"
             >
-              🎟 Buy Tickets
+              🎟 {t("buyTickets")}
             </a>
           </div>
         )}
@@ -120,13 +124,13 @@ const EventDetails = () => {
               return null;
             })
           ) : (
-            <p>No description available.</p>
+            <p>{t("noDescription")}</p>
           )}
         </div>
 
         {/* Lineup Section */}
         <div className="mt-12">
-          <h2 className="text-3xl font-bold mb-4">Lineup</h2>
+          <h2 className="text-3xl font-bold mb-4">{t("lineup")}</h2>
           {event.artists && event.artists.length > 0 ? (
             <ul className="text-xl text-gray-300 ">
               {event.artists.map((artist, index) => (
@@ -176,7 +180,7 @@ const EventDetails = () => {
               ))}
             </ul>
           ) : (
-            <p className="text-gray-500 text-lg">No lineup available</p>
+            <p className="text-gray-500 text-lg">{t("noLineup")}</p>
           )}
         </div>
       </div>

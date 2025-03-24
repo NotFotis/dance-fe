@@ -5,16 +5,18 @@ import axios from "axios";
 import { format } from "date-fns";
 import "tailwindcss/tailwind.css";
 import { motion } from "framer-motion";
-import { FiFilter } from "react-icons/fi";
 import Navbar from "@/components/NavBar";
+import { useTranslations } from "next-intl";
 
 export default function ProfilePage() {
   const router = useRouter();
+  const t = useTranslations("profile");
+
   const [user, setUser] = useState(null);
   const [savedEvents, setSavedEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [visibleEvents, setVisibleEvents] = useState(6);
-  const [selectedMonth, setSelectedMonth] = useState("All");
+  const [selectedMonth, setSelectedMonth] = useState(t("all"));
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
@@ -53,17 +55,19 @@ export default function ProfilePage() {
         return {
           savedEventId: savedEvent.id,
           eventId: savedEvent.event?.id,
-          title: savedEvent.event?.Title || "No Title",
+          title: savedEvent.event?.Title || t("noTitle"),
           date: eventDate,
-          location: savedEvent.event?.Loaction || "No Location",
+          location: savedEvent.event?.Loaction || t("noLocation"),
           documentId: savedEvent.event?.documentId,
-          artists: savedEvent.event?.artists?.map((artist) => ({
-            name: artist.Name || "Unknown Artist",
-            socials: artist.Socials?.map((social) => ({
-              platform: social.platform,
-              url: social.URL,
+          artists:
+            savedEvent.event?.artists?.map((artist) => ({
+              name: artist.Name || t("unknownArtist"),
+              socials:
+                artist.Socials?.map((social) => ({
+                  platform: social.platform,
+                  url: social.URL,
+                })) || [],
             })) || [],
-          })) || [],
         };
       });
 
@@ -74,7 +78,7 @@ export default function ProfilePage() {
   };
 
   const filterEventsByMonth = (month) => {
-    if (month === "All") {
+    if (month === t("all")) {
       setFilteredEvents(savedEvents); // Show all events if "All" is selected
     } else {
       const filtered = savedEvents.filter((event) =>
@@ -102,52 +106,63 @@ export default function ProfilePage() {
 
       {/* Filters */}
       <div className="w-full max-w-4xl flex justify-between items-center my-6">
-        <select 
+        <select
           className="bg-gray-700 text-white px-4 py-2 rounded-lg"
-          value={selectedMonth} 
+          value={selectedMonth}
           onChange={(e) => setSelectedMonth(e.target.value)}
         >
-          <option value="All">All</option>
-          {[...new Set(savedEvents.map(event => format(event.date, "MMMM yyyy")))].map(month => (
-            <option key={month} value={month}>{month}</option>
-          ))}
+          <option value={t("all")}>{t("all")}</option>
+          {[...new Set(savedEvents.map((event) => format(event.date, "MMMM yyyy")))].map(
+            (month) => (
+              <option key={month} value={month}>
+                {month}
+              </option>
+            )
+          )}
         </select>
       </div>
 
       {/* Events List */}
       <div className="w-full max-w-4xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredEvents.sort((a, b) => a.date - b.date).slice(0, visibleEvents).map((event) => (
-          <motion.div 
-            key={event.savedEventId} 
-            className="bg-black p-4 rounded-lg shadow-lg cursor-pointer hover:bg-gray-800 transition"
-            onClick={() => router.push(`/events/${event.documentId}`)}
-          >
-            <h3 className="text-lg font-bold">{event.title}</h3>
-            <p className="text-gray-300">📅 {format(event.date, "PPPP")}</p>
-            <p className="text-gray-300">📍 {event.location}</p>
-            <div className="mt-2">
-              <h4 className="text-md font-semibold">Lineup:</h4>
-              <ul className="text-gray-300 text-sm">
-                {event.artists.length > 0 ? (
-                  event.artists.map((performer, index) => (
-                    <li key={index}>{performer.name}</li>
-                  ))
-                ) : (
-                  <li>TBD</li>
-                )}
-              </ul>
-            </div>
-          </motion.div>
-        ))}
+        {filteredEvents
+          .sort((a, b) => a.date - b.date)
+          .slice(0, visibleEvents)
+          .map((event) => (
+            <motion.div
+              key={event.savedEventId}
+              className="bg-black p-4 rounded-lg shadow-lg cursor-pointer hover:bg-gray-800 transition"
+              onClick={() => router.push(`/events/${event.documentId}`)}
+            >
+              <h3 className="text-lg font-bold">{event.title}</h3>
+              <p className="text-gray-300">
+                📅 {format(event.date, "PPPP")}
+              </p>
+              <p className="text-gray-300">📍 {event.location}</p>
+              <div className="mt-2">
+                <h4 className="text-md font-semibold">
+                  {t("lineupLabel")}:
+                </h4>
+                <ul className="text-gray-300 text-sm">
+                  {event.artists.length > 0 ? (
+                    event.artists.map((performer, index) => (
+                      <li key={index}>{performer.name}</li>
+                    ))
+                  ) : (
+                    <li>{t("tbd")}</li>
+                  )}
+                </ul>
+              </div>
+            </motion.div>
+          ))}
       </div>
 
       {/* Load More Button */}
       {visibleEvents < filteredEvents.length && (
-        <button 
-          className="mt-6 px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition" 
+        <button
+          className="mt-6 px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition"
           onClick={() => setVisibleEvents(visibleEvents + 6)}
         >
-          Load More
+          {t("loadMore")}
         </button>
       )}
     </div>

@@ -2,9 +2,11 @@
 import { useRouter } from "next/navigation";
 import AuthForm from "@/components/AuthForm";
 import Navbar from "@/components/NavBar";
+import { useTranslations } from "next-intl";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const t = useTranslations("register");
 
   // Handle successful registration
   const handleRegisterSuccess = (userData) => {
@@ -24,12 +26,12 @@ export default function RegisterPage() {
 
           {/* Login Button */}
           <div className="text-center mt-1">
-            <p className="text-white text-sm">Already have an account?</p>
+            <p className="text-white text-sm">{t("alreadyHaveAccount")}</p>
             <button
               onClick={() => router.push("/login")}
               className="mt-1 px-5 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition"
             >
-              Login
+              {t("login")}
             </button>
           </div>
         </div>

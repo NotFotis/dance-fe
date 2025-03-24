@@ -1,20 +1,29 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { Menu, X, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { useLocale, useTranslations } from "next-intl";
 
 export default function Navbar({ brandName = "dancetoday" }) {
+  const t = useTranslations();
+  const locale = useLocale();
+
+  // Use a smaller font size for nav items when locale is Greek
+  const navItemSizeClass = locale === 'el' ? 'text-lg font-bold' : 'text-xl font-bold';
+
   const pathname = usePathname();
   const router = useRouter();
-  const isHomepage = pathname === "/";
+  const segments = pathname.split("/").filter(Boolean);
+  const isHomepage = segments.length === 1;
 
   const [isOpen, setIsOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [user, setUser] = useState(null);
 
-  // Determine if we're on mobile (width < 768px)
+  // Detect mobile (width < 768px)
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -31,11 +40,50 @@ export default function Navbar({ brandName = "dancetoday" }) {
     }
   }, []);
 
-  // Framer Motion scroll animations for the logo (only on homepage)
+  // Refs for container, logo, and nav items container to compute initial offsets
+  const containerRef = useRef(null);
+  const logoRef = useRef(null);
+  const navRef = useRef(null);
+
+  const [initialLogoX, setInitialLogoX] = useState(0);
+  const [initialNavX, setInitialNavX] = useState(0);
+
+  // Calculate offset for logo (as before)
+  useEffect(() => {
+    if (isHomepage && containerRef.current && logoRef.current) {
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const logoRect = logoRef.current.getBoundingClientRect();
+      const offset = (window.innerWidth / 2) - (containerRect.left + logoRect.width / 2);
+      setInitialLogoX(offset);
+    }
+  }, [isHomepage]);
+
+  // Calculate offset for nav items so they are centered initially.
+  useEffect(() => {
+    if (isHomepage && containerRef.current && navRef.current) {
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const navRect = navRef.current.getBoundingClientRect();
+      const centeredLeft = (containerRect.width - navRect.width) / 2;
+      const rightAlignedLeft = containerRect.width - navRect.width;
+      const offset = centeredLeft - rightAlignedLeft;
+      setInitialNavX(offset);
+    }
+  }, [isHomepage]);
+
+  // Framer Motion scroll animations for the logo (always call hooks)
   const { scrollY } = useScroll();
-  const translateX = useTransform(scrollY, [0, 150], [50, 0]);
-  const translateY = useTransform(scrollY, [0, 150], [160, 0]);
-  const scale = useTransform(scrollY, [0, 150], [6, 1]);
+  const rawLogoX = useTransform(scrollY, [0, 150], [initialLogoX, 0]);
+  const logoX = isMobile || !isHomepage ? 0 : rawLogoX;
+
+  const rawTranslateY = useTransform(scrollY, [0, 150], [160, 0]);
+  const translateY = isMobile || !isHomepage ? 0 : rawTranslateY;
+
+  const rawScale = useTransform(scrollY, [0, 150], [6, 1]);
+  const scale = isMobile || !isHomepage ? 1 : rawScale;
+
+  // Animate nav items container’s x offset from centered to 0 (right aligned)
+  const rawNavX = useTransform(scrollY, [0, 150], [initialNavX, 0]);
+  const navX = isMobile || !isHomepage ? 0 : rawNavX;
 
   // Navbar background transition based on scroll
   const [isScrolled, setIsScrolled] = useState(false);
@@ -46,11 +94,16 @@ export default function Navbar({ brandName = "dancetoday" }) {
     return () => unsubscribe();
   }, [scrollY]);
 
-  // Only on homepage do we tie the nav items’ opacity to scroll,
-  // otherwise we keep them fully visible.
-  const navOpacity = isHomepage ? useTransform(scrollY, [0, 150], [1, 0]) : 1;
+  // Define nav item classes for the underline hover effect.
+  const navItemClasses = `block py-2 transition-[border-color]  ${navItemSizeClass} border-b-2 border-transparent ${
+    isScrolled || isMobile ? "hover:border-black" : "hover:border-white"
+  }`;
 
-  // Logout clears auth data and redirects to login
+  // Use the same classes for submenu items.
+  const submenuItemClasses = `block px-4 py-2 transition-[border-color]  ${navItemSizeClass} border-b-2 border-transparent ${
+    isScrolled || isMobile ? "hover:border-black" : "hover:border-white"
+  }`;
+
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
@@ -65,7 +118,7 @@ export default function Navbar({ brandName = "dancetoday" }) {
         className="whitespace-nowrap"
         style={{ animation: "marquee 15s linear infinite" }}
       >
-        Your ad text goes here - check out our latest offers! &nbsp;&nbsp;&nbsp; Your ad text goes here - check out our latest offers!
+        {t("Advertise")}
       </div>
       <style jsx>{`
         @keyframes marquee {
@@ -80,24 +133,21 @@ export default function Navbar({ brandName = "dancetoday" }) {
 
       {/* Navigation container */}
       <motion.div
-        className={`w-full fixed top-auto left-0 flex items-center transition-all duration-300 ${
+        className={`w-full fixed top-auto left-0 flex items-center transition-all ${
           isScrolled || isMobile ? "bg-white text-black shadow-md py-4" : "bg-black py-8"
         }`}
       >
-        <div className="max-w-7xl mx-auto flex justify-between items-center px-6 md:px-12 w-full relative">
+        <div
+          ref={containerRef}
+          className="container mx-auto px-6 relative z-10 flex justify-between items-center w-full"
+        >
           {/* Logo container */}
-          <div
-            className={
-              isHomepage
-                ? "absolute left-1/2 -translate-x-1/2 pointer-events-none"
-                : "flex-shrink-0"
-            }
-          >
+          <div ref={logoRef} className="flex-shrink-0">
             <motion.div
               style={{
-                x: isMobile || !isHomepage ? 0 : translateX,
-                y: isMobile || !isHomepage ? 0 : translateY,
-                scale: isMobile || !isHomepage ? 1 : scale,
+                x: logoX,
+                y: translateY,
+                scale: scale,
                 willChange: "transform",
                 transformStyle: "preserve-3d",
               }}
@@ -106,56 +156,47 @@ export default function Navbar({ brandName = "dancetoday" }) {
               } text-4xl md:text-4xl font-bold tracking-wider`}
             >
               <div className="pointer-events-auto">
-                <Link href="/">{brandName}</Link>
+                <Link href="/"><h1>{brandName}</h1></Link>
               </div>
             </motion.div>
           </div>
 
-          {/* Navigation items */}
-          <div
-            className={`flex-1 flex items-center ${
-              isHomepage
-                ? !isScrolled && !isMobile
-                  ? "justify-center"
-                  : "justify-end"
-                : "justify-end"
-            }`}
+          {/* Navigation items & User Icon */}
+          <motion.div
+            ref={navRef}
+            style={{ x: navX }}
+            className="flex items-center justify-end space-x-8 h-full"
           >
             <motion.ul
-              style={{
-                opacity: isHomepage ? (isMobile ? 1 : navOpacity) : 1,
-                pointerEvents: isHomepage ? (isScrolled ? "none" : "auto") : "auto",
-              }}
-              className={`hidden md:flex space-x-8 text-lg transition-all duration-300 ${
-                isScrolled || isMobile ? "text-gray-700" : "text-white"
-              }`}
+              style={{ opacity: 1, pointerEvents: "auto" }}
+              className="hidden md:flex space-x-8 h-full transition-all"
             >
-              <li className="hover:text-grey-700 cursor-pointer">
-                <Link href="/">Home</Link>
-              </li>
-              <li className="hover:text-grey-700 cursor-pointer">
-                <Link href="/news">News</Link>
-              </li>
-              <li className="hover:text-grey-700 cursor-pointer">
-                <Link href="/music">Music</Link>
-              </li>
-              <li className="hover:text-grey-700 cursor-pointer">
-                <Link href="/calendar">Events</Link>
-              </li>
-              <li className="hover:text-grey-700 cursor-pointer">
-                <Link href="/merch">Merch</Link>
-              </li>
-              <li className="hover:text-grey-700 cursor-pointer">
-                <Link href="/advertise">Advertise</Link>
-              </li>
-              <li className="hover:text-grey-700 cursor-pointer">
-                <Link href="/about">About</Link>
-              </li>
-              {/* User Icon Button */}
-              <li className="relative">
+              <li className={navItemClasses}>
+                    <Link href="/"><h2>{t("Home")}</h2></Link>
+                  </li>
+                  <li className={navItemClasses}>
+                    <Link href="/news"><h2>{t("News")}</h2></Link>
+                  </li>
+                  <li className={navItemClasses}>
+                    <Link href="/music"><h2>{t("Music")}</h2></Link>
+                  </li>
+                  <li className={navItemClasses}>
+                    <Link href="/calendar"><h2>{t("Events")}</h2></Link>
+                  </li>
+                  <li className={navItemClasses}>
+                    <Link href="/merch"><h2>{t("Merch")}</h2></Link>
+                  </li>
+                  <li className={navItemClasses}>
+                    <Link href="/advertise"><h2>{t("Advertise")}</h2></Link>
+                  </li>
+                  <li className={navItemClasses}>
+                    <Link href="/about"><h2>{t("About")}</h2></Link>
+                  </li>
+              {/* Person Icon with Submenu */}
+              <li className="relative flex items-center">
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center focus:outline-none"
+                  className="flex items-center focus:outline-none px- h-full"
                 >
                   <User size={32} />
                 </button>
@@ -166,48 +207,56 @@ export default function Navbar({ brandName = "dancetoday" }) {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute top-full right-0 mt-2 w-40 bg-white shadow-md rounded-md overflow-hidden z-50"
+                      className={`absolute top-full right-0 mt-2 w-40 shadow-md rounded-md overflow-hidden z-50 ${
+                        isScrolled || isMobile ? "bg-white" : "bg-black"
+                      }`}
                     >
                       <ul className="flex flex-col">
                         {user ? (
                           <>
-                            <li className="border-b border-gray-200">
+                            <li className="border-b border-black">
                               <Link
                                 href="/profile"
-                                className="block px-4 py-2 hover:bg-gray-800 bg-black"
+                                className={submenuItemClasses}
                                 onClick={() => setShowUserMenu(false)}
                               >
-                                Profile
+                                <h2>{t("Profile")}</h2>
                               </Link>
                             </li>
-                            <li>
+                            <li className="border-b border-black mb-2">
                               <button
+                                className={submenuItemClasses}
                                 onClick={handleLogout}
-                                className="w-full text-left block px-4 py-2 hover:bg-gray-800 bg-black"
                               >
-                                Logout
+                                <h2>{t("Logout")}</h2>
                               </button>
+                            </li>
+                            <li className="px-4 mb-2">
+                              <LanguageSwitcher />
                             </li>
                           </>
                         ) : (
                           <>
-                            <li className="border-b border-gray-200">
+                            <li className="border-b border-black">
                               <Link
                                 href="/login"
-                                className="block px-4 py-2 hover:bg-gray-800 bg-black"
+                                className={submenuItemClasses}
                                 onClick={() => setShowUserMenu(false)}
                               >
-                                Login
+                                <h2>{t("Login")}</h2>
                               </Link>
                             </li>
                             <li>
                               <Link
                                 href="/register"
-                                className="block px-4 py-2 hover:bg-gray-800 bg-black"
+                                className={submenuItemClasses}
                                 onClick={() => setShowUserMenu(false)}
                               >
-                                Register
+                                <h2>{t("Register")}</h2>
                               </Link>
+                            </li>
+                            <li>
+                              <LanguageSwitcher />
                             </li>
                           </>
                         )}
@@ -217,75 +266,9 @@ export default function Navbar({ brandName = "dancetoday" }) {
                 </AnimatePresence>
               </li>
             </motion.ul>
-
-            {/* Mobile menu button */}
-            <button
-              className={`md:hidden transition-all duration-300 ${
-                isScrolled || isMobile ? "text-gray-700" : "text-white"
-              }`}
-              onClick={() => setIsOpen(!isOpen)}
-            >
-              {isOpen ? <X size={32} /> : <Menu size={32} />}
-            </button>
-          </div>
+          </motion.div>
         </div>
       </motion.div>
-
-      {/* Mobile menu */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="md:hidden bg-white shadow-md mt-[60px]"
-          >
-            <ul className="flex flex-col space-y-6 p-6 text-lg text-gray-700">
-              <li className="hover:text-grey-700 cursor-pointer">
-                <Link href="/">Home</Link>
-              </li>
-              <li className="hover:text-grey-700 cursor-pointer">
-                <Link href="/news">News</Link>
-              </li>
-              <li className="hover:text-grey-700 cursor-pointer">
-                <Link href="/music">Music</Link>
-              </li>
-              <li className="hover:text-grey-700 cursor-pointer">
-                <Link href="/calendar">Events</Link>
-              </li>
-              <li className="hover:text-grey-700 cursor-pointer">
-                <Link href="/merch">Merch</Link>
-              </li>
-              <li className="hover:text-grey-700 cursor-pointer">
-                <Link href="/advertise">Advertise</Link>
-              </li>
-              <li className="hover:text-grey-700 cursor-pointer">
-                <Link href="/about">About</Link>
-              </li>
-              {user ? (
-                <>
-                  <li className="hover:text-grey-700 cursor-pointer">
-                    <Link href="/profile">Profile</Link>
-                  </li>
-                  <li className="hover:text-grey-700 cursor-pointer">
-                    <button onClick={handleLogout}>Logout</button>
-                  </li>
-                </>
-              ) : (
-                <>
-                  <li className="hover:text-grey-700 cursor-pointer">
-                    <Link href="/login">Login</Link>
-                  </li>
-                  <li className="hover:text-grey-700 cursor-pointer">
-                    <Link href="/register">Register</Link>
-                  </li>
-                </>
-              )}
-            </ul>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </header>
   );
 }

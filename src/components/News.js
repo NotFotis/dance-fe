@@ -3,29 +3,32 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 export default function NewsComponent() {
   const [news, setNews] = useState([]);
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const URL = process.env.NEXT_PUBLIC_URL;
+  const t = useTranslations("newsComponent");
 
   useEffect(() => {
     const fetchNews = async () => {
       try {
         // Fetch all related data with populate=*
         const response = await axios.get(`${API_URL}/dance-new?populate=*`);
-        setNews(response.data.data.slice(0, 6)); // Max rows = 2 (6 articles)
+        // Limit to 6 articles
+        setNews(response.data.data.slice(0, 6));
       } catch (error) {
         console.error("Error fetching news:", error);
       }
     };
     fetchNews();
-  }, []);
+  }, [API_URL]);
 
-  // Helper to extract a text summary from dynamic Content
+  // Helper to extract a text summary from dynamic content
   const getSummary = (contentArray) => {
     if (!Array.isArray(contentArray) || contentArray.length === 0) {
-      return "No content available.";
+      return t("noContent");
     }
     const richTextBlock = contentArray.find(
       (block) => block.__component === "shared.rich-text" && block.body
@@ -34,23 +37,22 @@ export default function NewsComponent() {
       const plainText = richTextBlock.body.replace(/<[^>]+>/g, "");
       return plainText.slice(0, 150) + (plainText.length > 150 ? "..." : "");
     }
-    return "No content available.";
+    return t("noContent");
   };
 
   return (
     <div className="bg-transparent text-white py-16 mt-20">
-      {/* Updated container */}
       <div className="container mx-auto px-6 relative z-10">
-        {/* Header: Dance News on the left, All News button on the right */}
+        {/* Header: Title on the left, All News button on the right */}
         <div className="flex items-center justify-between mb-10">
           <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-wide">
-            Dance News
+            {t("title")}
           </h2>
           <Link
             href="/news"
             className="py-2 px-4 border border-white text-white uppercase tracking-wider font-medium hover:bg-white hover:text-black transition rounded"
           >
-            All News
+            {t("allNews")}
           </Link>
         </div>
 
@@ -83,18 +85,18 @@ export default function NewsComponent() {
                       />
                     ) : (
                       <div className="bg-gray-700 w-full h-full flex items-center justify-center">
-                        <span>No Image</span>
+                        <span>{t("noImage")}</span>
                       </div>
                     )}
                     {/* Gradient overlay to create a smooth transition */}
                     <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-black to-transparent"></div>
                   </div>
                   <div className="p-4">
-                    <h3 className="text-2xl font-semibold mb-2 text-black text-3xl">{item.Title}</h3>
+                    <h3 className="text-3xl font-semibold mb-2 text-black">{item.Title}</h3>
                     <p className="text-sm text-black mb-2">
                       {new Date(item.Date).toLocaleDateString()}
                     </p>
-                    <p className="text-black mb-4 text-lg">{getSummary(item.Content)}</p>
+                    <p className="text-lg text-black mb-4">{getSummary(item.Content)}</p>
                   </div>
                 </motion.div>
               </Link>

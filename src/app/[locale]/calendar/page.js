@@ -2,35 +2,41 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import Navbar from "../../components/NavBar";
+import Navbar from "@/components/NavBar";
+import { useTranslations } from "next-intl";
 
 const CalendarPage = () => {
-  const [events, setEvents] = useState([]);
-  const [genres, setGenres] = useState([]); // state for genres from API
-  const [selectedMonth, setSelectedMonth] = useState("All");
-  const [selectedGenre, setSelectedGenre] = useState("All");
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
-  const URL = process.env.NEXT_PUBLIC_URL;
+  // Use the "calendar" namespace from your translation JSON
+  const t = useTranslations();
   const router = useRouter();
 
-  // Month options array
+  const [events, setEvents] = useState([]);
+  const [genres, setGenres] = useState([]); // genres from API
+  // Initialize selectedMonth with the localized "All" text.
+  const [selectedMonth, setSelectedMonth] = useState(t("all"));
+  const [selectedGenre, setSelectedGenre] = useState(t("all"));
+
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  const URL = process.env.NEXT_PUBLIC_URL;
+
+  // Localized Month options array
   const months = [
-    "All",
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    t("all"),
+    t("january"),
+    t("february"),
+    t("march"),
+    t("april"),
+    t("may"),
+    t("june"),
+    t("july"),
+    t("august"),
+    t("september"),
+    t("october"),
+    t("november"),
+    t("december"),
   ];
 
-  // Fetch events
+  // Fetch events from API
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -52,7 +58,7 @@ const CalendarPage = () => {
     const fetchGenres = async () => {
       try {
         const response = await axios.get(`${API_URL}/Music-Genres`);
-        // Assuming the genres are returned directly with a "name" property.
+        // Assuming each genre object has a "name" property.
         setGenres(response.data.data);
       } catch (error) {
         console.error("Error fetching genres:", error);
@@ -61,22 +67,22 @@ const CalendarPage = () => {
     fetchGenres();
   }, [API_URL]);
 
-  // Create the genre options array with "All" as the default option
-  const genreOptions = ["All", ...genres.map((genre) => genre.name)];
+  // Create the genre options array with localized "All" as the default option.
+  const genreOptions = [t("all"), ...genres.map((genre) => genre.name)];
 
-  // Filter events based on selected month and genre
+  // Filter events based on selected month and genre.
   const filteredEvents = events.filter((event) => {
     const eventDate = new Date(event.Date);
     const eventMonth = eventDate.toLocaleString("default", { month: "long" });
-    const monthMatch = selectedMonth === "All" || eventMonth === selectedMonth;
+    const monthMatch = selectedMonth === t("all") || eventMonth === selectedMonth;
     const genreMatch =
-      selectedGenre === "All" ||
+      selectedGenre === t("all") ||
       (Array.isArray(event.music_genres) &&
         event.music_genres.some((genre) => genre.name === selectedGenre));
     return monthMatch && genreMatch;
   });
 
-  // Group filtered events by formatted date
+  // Group filtered events by formatted date.
   const groupedEvents = filteredEvents.reduce((groups, event) => {
     const dateObj = new Date(event.Date);
     const dateKey = dateObj.toLocaleDateString(undefined, {
@@ -97,13 +103,13 @@ const CalendarPage = () => {
       <Navbar />
       <div className="max-w-7xl mx-auto mt-40">
         <h1 className="text-5xl font-extrabold mb-8 text-center uppercase tracking-widest">
-          Events Calendar
+          {t("title")}
         </h1>
         {/* Filter Controls */}
         <div className="flex flex-col md:flex-row md:justify-center items-center mb-12 space-y-4 md:space-y-0 md:space-x-8">
           <div className="flex flex-col">
             <label className="mb-2 uppercase tracking-wide text-2sm">
-              Filter by Month
+              {t("filterMonth")}
             </label>
             <select
               value={selectedMonth}
@@ -119,7 +125,7 @@ const CalendarPage = () => {
           </div>
           <div className="flex flex-col">
             <label className="mb-2 uppercase tracking-wide text-2sm">
-              Filter by Genre
+              {t("filterGenre")}
             </label>
             <select
               value={selectedGenre}
@@ -137,7 +143,7 @@ const CalendarPage = () => {
 
         {/* Grouped Events */}
         {Object.keys(groupedEvents).length === 0 ? (
-          <div className="text-center text-xl">No events found.</div>
+          <div className="text-center text-xl">{t("noEvents")}</div>
         ) : (
           Object.keys(groupedEvents).map((dateKey) => (
             <div key={dateKey} className="mb-12">
@@ -166,10 +172,10 @@ const CalendarPage = () => {
                       <div className="p-4 bg-black bg-opacity-75">
                         <h3 className="text-2xl font-bold">{event.Title}</h3>
                         <p className="text-2sm mt-1">
-                          Time: {event.Time.split(".")[0]}
+                          {t("time")}: {event.Time.split(".")[0]}
                         </p>
                         <p className="text-2sm mt-1">
-                          Location: {event.Loaction || "Not specified"}
+                          {t("location")}: {event.Loaction || "Not specified"}
                         </p>
                         <div className="mt-4 flex space-x-4">
                           {event.Desc && (
@@ -180,7 +186,7 @@ const CalendarPage = () => {
                                 router.push(`/events/${event.documentId}`);
                               }}
                             >
-                              Info
+                              {t("info")}
                             </button>
                           )}
                           {event.tickets && (
@@ -191,7 +197,7 @@ const CalendarPage = () => {
                                 window.open(event.tickets, "_blank");
                               }}
                             >
-                              Buy Tickets
+                              {t("buyTickets")}
                             </button>
                           )}
                         </div>

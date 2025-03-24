@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "@/components/NavBar";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export default function NewsListPage() {
   const [news, setNews] = useState([]);
@@ -11,6 +12,7 @@ export default function NewsListPage() {
   const [loading, setLoading] = useState(true);
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const URL = process.env.NEXT_PUBLIC_URL;
+  const t = useTranslations("news");
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -28,7 +30,6 @@ export default function NewsListPage() {
     const fetchGenres = async () => {
       try {
         const response = await axios.get(`${API_URL}/Music-Genres`);
-        // Assuming each genre has a "name" property
         setGenres(response.data.data);
       } catch (error) {
         console.error("Error fetching genres:", error);
@@ -42,7 +43,7 @@ export default function NewsListPage() {
   if (loading) {
     return (
       <div className="text-center text-white py-12 text-2xl">
-        Loading news...
+        {t("loadingNews")}
       </div>
     );
   }
@@ -50,16 +51,15 @@ export default function NewsListPage() {
   if (!news || news.length === 0) {
     return (
       <div className="text-center text-red-500 py-12 text-2xl">
-        No news articles found.
+        {t("noNewsFound")}
       </div>
     );
   }
 
-  // Create genre options array with "All" as the default option
+  // Create genre options array with "All" as the default option.
   const genreOptions = ["All", ...genres.map((genre) => genre.name)];
 
   // Filter news articles based on selected genre.
-  // Here we assume each article has a "music_genres" array with objects containing a "name" property.
   const filteredNews = news.filter((article) => {
     if (selectedGenre === "All") return true;
     return (
@@ -77,16 +77,18 @@ export default function NewsListPage() {
   const otherArticles = sortedNews.slice(1);
 
   return (
-    <div className="bg-black min-h-screen text-white flex flex-col items-center">
+    <div className="bg-black min-h-screen text-white flex flex-col items-center px-6">
       <Navbar brandName="dancenews" />
       <div className="max-w-6xl w-full px-6 mt-20">
-        <h1 className="text-4xl font-bold mb-8 text-center mt-20">Dance News</h1>
+        <h1 className="text-4xl font-bold mb-8 text-center mt-20">
+          {t("title")}
+        </h1>
 
         {/* Genre Filter Controls */}
         <div className="flex flex-col md:flex-row md:justify-center items-center mb-8 space-y-4 md:space-y-0 md:space-x-8">
           <div className="flex flex-col">
             <label className="mb-2 uppercase tracking-wide text-sm">
-              Filter by Genre
+              {t("filterGenre")}
             </label>
             <select
               value={selectedGenre}
@@ -105,7 +107,7 @@ export default function NewsListPage() {
         {/* Featured Article */}
         {featuredArticle && (
           <Link href={`/news/${featuredArticle.documentId}`}>
-            <div className="cursor-pointer mb-10">
+            <div className="cursor-pointer mb-10 px-6">
               <div className="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
                 {featuredArticle.Image && featuredArticle.Image.url && (
                   <img

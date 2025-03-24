@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import * as FaIcons from "react-icons/fa"; // Import all Font Awesome icons
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 // Fallback icon if none is found
 const FallbackIcon = FaIcons.FaCode;
@@ -52,6 +53,7 @@ const circleVariants = {
 export default function OurServices() {
   const [services, setServices] = useState([]);
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  const t = useTranslations("ourServices");
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -71,14 +73,14 @@ export default function OurServices() {
     <section className="bg-transparent">
       <div className="container mx-auto px-6 relative z-10">
         <div className="flex items-center justify-between mb-10">
-          <h2 className="text-left  text-4xl md:text-5xl font-extrabold text-white tracking-wide mb-4 md:mb-0">
-            Our Services
+          <h2 className="text-left text-4xl md:text-5xl font-extrabold text-white tracking-wide mb-4 md:mb-0">
+            {t("title")}
           </h2>
           <Link
             href="/advertise"
             className="py-2 px-4 text-lg border border-white text-white uppercase tracking-wider font-medium hover:bg-white hover:text-black transition rounded"
           >
-              Advertise
+            {t("advertise")}
           </Link>
         </div>
         
