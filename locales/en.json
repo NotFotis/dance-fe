@@ -109,7 +109,8 @@
       "title": "Dance News",
       "allNews": "All News",
       "noContent": "No content available.",
-      "noImage": "No Image"
+      "noImage": "No Image",
+      "noGenre":"No Genre"
     },
     "ourServices": {
       "title": "Our Services",
@@ -122,5 +123,15 @@
       "noLocation": "Location not specified",
       "info": "Info",
       "buyTickets": "Buy Tickets"
+    },
+    "authForm": {
+      "register": "Register",
+      "login": "Login",
+      "username": "Username",
+      "email": "Email",
+      "emailOrUsername": "Email or Username",
+      "password": "Password",
+      "processing": "Processing...",
+      "errorOccurred": "An error occurred"
     }
 }

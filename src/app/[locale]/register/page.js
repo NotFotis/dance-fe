@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import AuthForm from "@/components/AuthForm";
 import Navbar from "@/components/NavBar";
 import { useTranslations } from "next-intl";
+import AudioForm from "@/components/AudioForm";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -17,10 +18,11 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="bg-gradient min-h-[80vh] flex flex-col items-center">
+    <div className="bg-gradient min-h-screen flex flex-col items-center">
       <Navbar />
-
-      <div className="flex items-center justify-center w-full px-6 mt-10">
+      <AudioForm/>
+      
+      <div className="flex-grow flex items-center justify-center w-full px-6 ">
         <div className="w-full max-w-sm bg-transparent p-6 rounded-2xl text-white">
           <AuthForm type="register" onSuccess={handleRegisterSuccess} />
 
@@ -29,7 +31,7 @@ export default function RegisterPage() {
             <p className="text-white text-sm">{t("alreadyHaveAccount")}</p>
             <button
               onClick={() => router.push("/login")}
-              className="mt-1 px-5 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition"
+              className="mt-1 px-5 py-2 bg-white text-black font-bold rounded-lg hover:bg-black hover:text-white transition"
             >
               {t("login")}
             </button>

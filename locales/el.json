@@ -102,14 +102,15 @@
         "loadMore": "Φόρτωση Περισσότερων"
       },
       "register": {
-        "alreadyHaveAccount": "Already have an account?",
-        "login": "Login"
+        "alreadyHaveAccount": "Έχετε ήδη λογαριασμό;",
+        "login": "Σύνδεση"
       },
       "newsComponent": {
         "title": "Τελευταία Νέα",
         "allNews": "Όλα τα Νέα",
         "noContent": "Δεν υπάρχει διαθέσιμο περιεχόμενο.",
-        "noImage": "Χωρίς Εικόνα"
+        "noImage": "Χωρίς Εικόνα",
+        "noGenre": "Χωρίς είδος"
       },
       "ourServices": {
         "title": "Υπηρεσίες",
@@ -122,5 +123,15 @@
         "noLocation": "Τοποθεσία μη προσδιορισμένη",
         "info": "Πληροφορίες",
         "buyTickets": "Αγορά Εισιτηρίων"
+      },
+      "authForm": {
+        "register": "Εγγραφή",
+        "login": "Σύνδεση",
+        "username": "Όνομα Χρήστη",
+        "email": "Email",
+        "emailOrUsername": "Email ή Όνομα Χρήστη",
+        "password": "Κωδικός",
+        "processing": "Επεξεργασία...",
+        "errorOccurred": "Παρουσιάστηκε σφάλμα"
       }
 }

@@ -260,7 +260,7 @@ export default function Navbar({ brandName = "dancetoday" }) {
                                   <h2>{t("Register")}</h2>
                                 </Link>
                               </li>
-                              <li>
+                              <li className="mb-2 pt-2 px-4 border-t border-black">
                                 <LanguageSwitcher />
                               </li>
                             </>
