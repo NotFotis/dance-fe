@@ -95,12 +95,12 @@ export default function Navbar({ brandName = "dancetoday" }) {
   }, [scrollY]);
 
   // Define nav item classes for the underline hover effect.
-  const navItemClasses = `block py-2 transition-[border-color]  ${navItemSizeClass} border-b-2 border-transparent ${
+  const navItemClasses = `block py-2 transition-[border-color] ${navItemSizeClass} border-b-2 border-transparent ${
     isScrolled || isMobile ? "hover:border-black" : "hover:border-white"
   }`;
 
   // Use the same classes for submenu items.
-  const submenuItemClasses = `block px-4 py-2 transition-[border-color]  ${navItemSizeClass} border-b-2 border-transparent ${
+  const submenuItemClasses = `block px-4 py-2 transition-[border-color] ${navItemSizeClass} border-b-2 border-transparent ${
     isScrolled || isMobile ? "hover:border-black" : "hover:border-white"
   }`;
 
@@ -161,114 +161,181 @@ export default function Navbar({ brandName = "dancetoday" }) {
             </motion.div>
           </div>
 
-          {/* Navigation items & User Icon */}
-          <motion.div
-            ref={navRef}
-            style={{ x: navX }}
-            className="flex items-center justify-end space-x-8 h-full"
-          >
-            <motion.ul
-              style={{ opacity: 1, pointerEvents: "auto" }}
-              className="hidden md:flex space-x-8 h-full transition-all"
+          {/* Navigation items & Mobile Menu Button */}
+          <div className="flex items-center">
+            <motion.div
+              ref={navRef}
+              style={{ x: navX }}
+              className="hidden md:flex items-center justify-end space-x-8 h-full"
             >
-              <li className={navItemClasses}>
-                    <Link href="/"><h2>{t("Home")}</h2></Link>
-                  </li>
-                  <li className={navItemClasses}>
-                    <Link href="/news"><h2>{t("News")}</h2></Link>
-                  </li>
-                  <li className={navItemClasses}>
-                    <Link href="/music"><h2>{t("Music")}</h2></Link>
-                  </li>
-                  <li className={navItemClasses}>
-                    <Link href="/calendar"><h2>{t("Events")}</h2></Link>
-                  </li>
-                  <li className={navItemClasses}>
-                    <Link href="/merch"><h2>{t("Merch")}</h2></Link>
-                  </li>
-                  <li className={navItemClasses}>
-                    <Link href="/advertise"><h2>{t("Advertise")}</h2></Link>
-                  </li>
-                  <li className={navItemClasses}>
-                    <Link href="/about"><h2>{t("About")}</h2></Link>
-                  </li>
-              {/* Person Icon with Submenu */}
-              <li className="relative flex items-center">
-                <button
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center focus:outline-none px- h-full"
-                >
-                  <User size={32} />
-                </button>
-                <AnimatePresence>
-                  {showUserMenu && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.2 }}
-                      className={`absolute top-full right-0 mt-2 w-40 shadow-md rounded-md overflow-hidden z-50 ${
-                        isScrolled || isMobile ? "bg-white" : "bg-black"
-                      }`}
-                    >
-                      <ul className="flex flex-col">
-                        {user ? (
-                          <>
-                            <li className="border-b border-black">
-                              <Link
-                                href="/profile"
-                                className={submenuItemClasses}
-                                onClick={() => setShowUserMenu(false)}
-                              >
-                                <h2>{t("Profile")}</h2>
-                              </Link>
-                            </li>
-                            <li className="border-b border-black mb-2">
-                              <button
-                                className={submenuItemClasses}
-                                onClick={handleLogout}
-                              >
-                                <h2>{t("Logout")}</h2>
-                              </button>
-                            </li>
-                            <li className="px-4 mb-2">
-                              <LanguageSwitcher />
-                            </li>
-                          </>
-                        ) : (
-                          <>
-                            <li className="border-b border-black">
-                              <Link
-                                href="/login"
-                                className={submenuItemClasses}
-                                onClick={() => setShowUserMenu(false)}
-                              >
-                                <h2>{t("Login")}</h2>
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                href="/register"
-                                className={submenuItemClasses}
-                                onClick={() => setShowUserMenu(false)}
-                              >
-                                <h2>{t("Register")}</h2>
-                              </Link>
-                            </li>
-                            <li>
-                              <LanguageSwitcher />
-                            </li>
-                          </>
-                        )}
-                      </ul>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </li>
-            </motion.ul>
-          </motion.div>
+              <ul className="flex space-x-8 h-full transition-all">
+                <li className={navItemClasses}>
+                  <Link href="/"><h2>{t("Home")}</h2></Link>
+                </li>
+                <li className={navItemClasses}>
+                  <Link href="/news"><h2>{t("News")}</h2></Link>
+                </li>
+                <li className={navItemClasses}>
+                  <Link href="/music"><h2>{t("Music")}</h2></Link>
+                </li>
+                <li className={navItemClasses}>
+                  <Link href="/calendar"><h2>{t("Events")}</h2></Link>
+                </li>
+                <li className={navItemClasses}>
+                  <Link href="/merch"><h2>{t("Merch")}</h2></Link>
+                </li>
+                <li className={navItemClasses}>
+                  <Link href="/advertise"><h2>{t("Advertise")}</h2></Link>
+                </li>
+                <li className={navItemClasses}>
+                  <Link href="/about"><h2>{t("About")}</h2></Link>
+                </li>
+                {/* Person Icon with Submenu */}
+                <li className="relative flex items-center">
+                  <button
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    className="flex items-center focus:outline-none"
+                  >
+                    <User size={32} />
+                  </button>
+                  <AnimatePresence>
+                    {showUserMenu && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                        className={`absolute top-full right-0 mt-2 w-40 shadow-md rounded-md overflow-hidden z-50 ${
+                          isScrolled || isMobile ? "bg-white" : "bg-black"
+                        }`}
+                      >
+                        <ul className="flex flex-col">
+                          {user ? (
+                            <>
+                              <li className="border-b border-black">
+                                <Link
+                                  href="/profile"
+                                  className={submenuItemClasses}
+                                  onClick={() => setShowUserMenu(false)}
+                                >
+                                  <h2>{t("Profile")}</h2>
+                                </Link>
+                              </li>
+                              <li className="border-b border-black mb-2">
+                                <button
+                                  className={submenuItemClasses}
+                                  onClick={handleLogout}
+                                >
+                                  <h2>{t("Logout")}</h2>
+                                </button>
+                              </li>
+                              <li className="px-4 mb-2">
+                                <LanguageSwitcher />
+                              </li>
+                            </>
+                          ) : (
+                            <>
+                              <li className="border-b border-black">
+                                <Link
+                                  href="/login"
+                                  className={submenuItemClasses}
+                                  onClick={() => setShowUserMenu(false)}
+                                >
+                                  <h2>{t("Login")}</h2>
+                                </Link>
+                              </li>
+                              <li>
+                                <Link
+                                  href="/register"
+                                  className={submenuItemClasses}
+                                  onClick={() => setShowUserMenu(false)}
+                                >
+                                  <h2>{t("Register")}</h2>
+                                </Link>
+                              </li>
+                              <li>
+                                <LanguageSwitcher />
+                              </li>
+                            </>
+                          )}
+                        </ul>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </li>
+              </ul>
+            </motion.div>
+            {/* Mobile menu button */}
+            <button
+              className={`md:hidden transition-all duration-300 ${
+                isScrolled || isMobile ? "text-black" : "text-white"
+              }`}
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              {isOpen ? <X size={32} /> : <Menu size={32} />}
+            </button>
+          </div>
         </div>
       </motion.div>
+
+      {/* Mobile drawer */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="md:hidden bg-white shadow-md mt-[60px]"
+          >
+            <ul className="flex flex-col space-y-6 p-6 text-lg text-gray-700">
+              <li className="hover:text-grey-700 cursor-pointer">
+                <Link href="/"><h2>{t("Home")}</h2></Link>
+              </li>
+              <li className="hover:text-grey-700 cursor-pointer">
+                <Link href="/news"><h2>{t("News")}</h2></Link>
+              </li>
+              <li className="hover:text-grey-700 cursor-pointer">
+                <Link href="/music"><h2>{t("Music")}</h2></Link>
+              </li>
+              <li className="hover:text-grey-700 cursor-pointer">
+                <Link href="/calendar"><h2>{t("Events")}</h2></Link>
+              </li>
+              <li className="hover:text-grey-700 cursor-pointer">
+                <Link href="/merch"><h2>{t("Merch")}</h2></Link>
+              </li>
+              <li className="hover:text-grey-700 cursor-pointer">
+                <Link href="/advertise"><h2>{t("Advertise")}</h2></Link>
+              </li>
+              <li className="hover:text-grey-700 cursor-pointer">
+                <Link href="/about"><h2>{t("About")}</h2></Link>
+              </li>
+              {user ? (
+                <>
+                  <li className="hover:text-grey-700 cursor-pointer">
+                    <Link href="/profile"><h2>{t("Profile")}</h2></Link>
+                  </li>
+                  <li className="hover:text-grey-700 cursor-pointer">
+                    <button onClick={handleLogout}><h2>{t("Logout")}</h2></button>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li className="hover:text-grey-700 cursor-pointer">
+                    <Link href="/login"><h2>{t("Login")}</h2></Link>
+                  </li>
+                  <li className="hover:text-grey-700 cursor-pointer">
+                    <Link href="/register"><h2>{t("Register")}</h2></Link>
+                  </li>
+                </>
+              )}
+              <li>
+                <LanguageSwitcher />
+              </li>
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
