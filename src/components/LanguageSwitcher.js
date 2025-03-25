@@ -1,49 +1,31 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
-export default function LanguageSwitcher() {
-  const pathname = usePathname();
-  const supportedLocales = ["en", "el"];
+export default function LanguageSwitcher({ currentLocale }) {
+  const supportedLocales = ['en', 'el'];
+console.log(currentLocale);
 
-  // Get the current locale from the pathname. Assumes the first segment is the locale.
-  const pathSegments = pathname.split("/").filter(Boolean);
-  const currentLocale = supportedLocales.includes(pathSegments[0])
-    ? pathSegments[0]
-    : "en";
-
-  // Function to generate a new pathname for a target locale.
-  const generateLocalizedPath = (targetLocale) => {
-    const segments = pathname.split("/").filter(Boolean);
-    // If there's no segment, then return /targetLocale
-    if (segments.length === 0) {
-      return `/${targetLocale}`;
-    }
-    // If the first segment is a locale, replace it
-    if (supportedLocales.includes(segments[0])) {
-      segments[0] = targetLocale;
-    } else {
-      // Otherwise, add the targetLocale at the start
-      segments.unshift(targetLocale);
-    }
-    return `/${segments.join("/")}`;
+  // When user clicks a locale, store it in a cookie.
+  const handleLocaleChange = (locale) => {
+    document.cookie = `NEXT_LOCALE=${locale}; path=/; max-age=31536000`;
+    // Manually change the URL or let the navigation mechanism (Link) update the URL.
+    window.location.pathname = `/${locale}${window.location.pathname.replace(/^\/(en|el)/, '')}`;
   };
 
   return (
     <div className="flex space-x-2">
       {supportedLocales.map((locale) => (
-        <Link
+        <button
           key={locale}
-          href={generateLocalizedPath(locale)}
-          locale={locale}
+          onClick={() => handleLocaleChange(locale)}
           className={`px-2 py-1 border rounded ${
             locale === currentLocale
-              ? "bg-white text-black"
-              : "bg-black text-white"
+            ? "bg-white text-black"
+            : "bg-black text-white"
           }`}
         >
-          <h2>{locale.toUpperCase()}</h2>
-        </Link>
+          {locale.toUpperCase()}
+        </button>
       ))}
     </div>
   );

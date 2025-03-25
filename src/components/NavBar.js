@@ -18,6 +18,7 @@ export default function Navbar({ brandName = "dancetoday" }) {
   const router = useRouter();
   const segments = pathname.split("/").filter(Boolean);
   const isHomepage = segments.length === 1;
+  const currentLocale = segments[0] || "en";
 
   const [isOpen, setIsOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -237,7 +238,7 @@ export default function Navbar({ brandName = "dancetoday" }) {
                                 </button>
                               </li>
                               <li className="px-4 mb-2">
-                                <LanguageSwitcher />
+                              <LanguageSwitcher currentLocale={currentLocale} />
                               </li>
                             </>
                           ) : (
@@ -261,7 +262,7 @@ export default function Navbar({ brandName = "dancetoday" }) {
                                 </Link>
                               </li>
                               <li className="mb-2 pt-2 px-4 border-t border-black">
-                                <LanguageSwitcher />
+                              <LanguageSwitcher currentLocale={currentLocale} />
                               </li>
                             </>
                           )}
@@ -337,7 +338,7 @@ export default function Navbar({ brandName = "dancetoday" }) {
                 </>
               )}
               <li>
-                <LanguageSwitcher />
+              <LanguageSwitcher currentLocale={currentLocale} />              
               </li>
             </ul>
           </motion.div>
