@@ -10,6 +10,7 @@ import About from "@/components/About";
 import AudioForm from "@/components/AudioForm";
 import OurServices from "@/components/Services";
 import { useTranslations } from "next-intl";
+import JourneySection from "@/components/Journey";
 
 export default function Home() {
   const t = useTranslations();
@@ -46,6 +47,11 @@ export default function Home() {
       {/* Upcoming Events Section */}
       <section id="events" className="my-20 w-full px-6 ">
         <Carousel />
+      </section>
+
+
+      <section id="journey" className="my-20 w-full px-6 ">
+        <JourneySection />
       </section>
 
       <section id="servies" className="my-20 w-full px-6 ">

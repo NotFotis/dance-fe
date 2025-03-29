@@ -93,13 +93,31 @@
       "noGenre": "No Genre"
     },
     "profile": {
+      "savedEventsTitle": "Saved Events",
+      "filterMonth": "Filter by Month",
+      "filterGenre": "Filter by Genre",
       "all": "All",
-      "noTitle": "No Title",
-      "noLocation": "No Location",
-      "unknownArtist": "Unknown Artist",
-      "lineupLabel": "Lineup",
-      "tbd": "TBD",
-      "loadMore": "Load More"
+      "january": "January",
+      "february": "February",
+      "march": "March",
+      "april": "April",
+      "may": "May",
+      "june": "June",
+      "july": "July",
+      "august": "August",
+      "september": "September",
+      "october": "October",
+      "november": "November",
+      "december": "December",
+      "noEvents": "No events found",
+      "time": "Time",
+      "location": "Location",
+      "notSpecified": "Not specified",
+      "info": "More Info",
+      "buyTickets": "Buy Tickets",
+      "savedArtists": "Saved Artists",
+      "noSavedArtists": "No saved artists found",
+      "unknownArtist": "Unknown Artist"
     },
     "register": {
       "alreadyHaveAccount": "Already have an account?",
@@ -133,5 +151,39 @@
       "password": "Password",
       "processing": "Processing...",
       "errorOccurred": "An error occurred"
-    }
+    },
+    "about": {
+      "aboutUs": "About Us",
+      "ourStoryTitle": "Our Story",
+      "ourStoryDescription": "We started with a passion for connecting communities through unforgettable experiences. Since day one, we've been driven by creativity and unity.",
+      "missionVisionTitle": "Our Mission & Vision",
+      "missionDescription": "Our mission is to empower people to connect through dance, music, and shared experiences.",
+      "visionDescription": "We envision a world where every step, beat, and moment brings us closer together.",
+      "teamTitle": "Meet the Team",
+      "founderName": "Alex Rivera",
+      "founderRole": "Founder & CEO",
+      "founderBio": "Alex has been at the heart of the community, building bridges through events and digital innovation.",
+      "coFounderName": "Jamie Lee",
+      "coFounderRole": "Co-Founder & Creative Director",
+      "coFounderBio": "Jamie brings the magic with a background in design and a love for storytelling through visuals.",
+      "joinUsTitle": "Want to Join Us?",
+      "joinUsDescription": "We're always looking for passionate collaborators and new partners. Get in touch and let’s create something amazing.",
+      "contactUs": "Contact Us"
+    },
+      "journeySection": {
+        "headline": "DISCOVER OUR JOURNEY OF EXCELLENCE WITH EXPERT COACHES, DIVERSE SESSIONS, AND A THRIVING COMMUNITY.",
+        "stat1Value": "984",
+        "stat1Label": "Members",
+        "stat1Description": "Active members in our fitness community.",
+        "stat2Value": "24",
+        "stat2Label": "Sessions",
+        "stat2Description": "Diverse workouts for every level.",
+        "stat3Value": "15+",
+        "stat3Label": "Coaches",
+        "stat3Description": "Expert coaches for your fitness success.",
+        "imageSrc": "/images/dumbbells.jpg"
+      }    
+    
+    
+    
 }
