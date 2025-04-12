@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
 
 @tailwind base;
 @tailwind components;
@@ -28,21 +30,21 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: 'League Spartan', Arial, sans-serif;
+  font-family: 'Montserrat', Arial, sans-serif;
   font-weight: 300;
 }
 
 
 p {
-  font-family: 'League Spartan', Arial, sans-serif;
+  font-family: 'Montserrat', Arial, sans-serif;
   font-weight: 300;
 }
 
 html {
   scroll-behavior: smooth;
 }
-h2 {
-  font-family: 'League Spartan', Arial, sans-serif;
+h2,h3 {
+  font-family: 'Montserrat', Arial, sans-serif;
   font-weight: 500;
 }
 /* Header styling: use YaroBold */
@@ -139,4 +141,17 @@ header {
 
 .social-btn:hover {
   background-color: #e0e0e0;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.active {
+  cursor: grabbing !important;
 }

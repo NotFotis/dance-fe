@@ -19,25 +19,14 @@ export default function Home() {
     
     <div className="bg-transparent min-h-screen flex flex-col items-center justify-center relative">
       {/* Moving Ad Panel */}
-      <div className="w-full bg-black text-white py-1 overflow-hidden">
-        <div
-          className="whitespace-nowrap"
-          style={{ animation: "marquee 15s linear infinite" }}
-        >
-          {/* Replace the text below with your ad or custom content */}
-          Your ad text goes here - check out our latest offers! &nbsp;&nbsp;&nbsp; Your ad text goes here - check out our latest offers!
-        </div>
-      </div>
+
 
       {/* Navbar */}
       <Navbar />
       <AudioForm/>
       {/* Hero Section with background image */}
       <TypingText />
-      {/* Contact Form Section */}
-      <div className="font-yaro text-white text-center bg-transparent">
-        <About />
-      </div>
+
 
       {/* Dance News Section */}
       <section id="news" className="my-20 w-full px-6">
@@ -49,7 +38,11 @@ export default function Home() {
         <Carousel />
       </section>
 
-
+      {/* Contact Form Section */}
+      <section id="events" className="my-20 px-6 ">
+                <About />
+      </section>
+      
       <section id="journey" className="my-20 w-full px-6 ">
         <JourneySection />
       </section>

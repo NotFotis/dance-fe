@@ -1,106 +1,141 @@
 "use client";
 import { useRef, useEffect } from "react";
 
-export default function AudioForm() {
+export default function AnimatedBackground() {
   const canvasRef = useRef(null);
-  const mousePosRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
 
-    // Initialize mouse position to the center
-    mousePosRef.current = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-
-    // Listen for mouse movement over the window
-    const handleMouseMove = (e) => {
-      mousePosRef.current = { x: e.clientX, y: e.clientY };
+    // ===== Initialize the blob object =====
+    const blob = {
+      baseRadius: 200,
+      hue: Math.random() * 360,
+      hueShiftSpeed: 0.3,
+      centerX: 0, // Updated during canvas size setting.
+      centerY: 0, // Updated during canvas size setting.
+      points: [],
     };
-    window.addEventListener("mousemove", handleMouseMove);
 
-    // Configuration for the wave lines
-    const numLines = 5;
-    const baseFrequency = 0.01; // Base frequency for the waves
-    const lineSpacing = 15; // Vertical spacing between lines
-
-    // Create wave configurations
-    const waves = Array.from({ length: numLines }, (_, i) => ({
-      phase: Math.random() * Math.PI * 2,
-      speed: 0.005 + Math.random() * 0.01,
-      amplitude: 30 + Math.random() * 20, // Base amplitude for the wave
-      frequency: baseFrequency + (Math.random() - 0.5) * 0.005,
-      offset: (i - Math.floor(numLines / 2)) * lineSpacing,
-      segments: [] // Will store random multipliers for each period
-    }));
-
-    // Function for updating wave segments
-    function updateWaveSegments() {
-      waves.forEach((wave) => {
-        const periodLength = (2 * Math.PI) / wave.frequency;
-        const numSegments = Math.ceil(canvas.width / periodLength) + 1;
-        wave.segments = Array.from({ length: numSegments }, () => 0.5 + Math.random());
-      });
+    // Create points for an irregular blob shape.
+    const numPoints = 12;
+    for (let i = 0; i < numPoints; i++) {
+      const angle = (i / numPoints) * 2 * Math.PI;
+      const randomOffset = Math.random() * 30 - 15; // vary the radius slightly
+      blob.points.push({ angle, radius: blob.baseRadius + randomOffset });
     }
 
-    // Function to set canvas dimensions and update wave segments
+    // Set and update canvas size.
     const setCanvasSize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      updateWaveSegments();
+      blob.centerX = canvas.width / 2;
+      blob.centerY = canvas.height / 2;
     };
     setCanvasSize();
     window.addEventListener("resize", setCanvasSize);
 
+    // ===== Smooth scroll setup =====
+    let targetScroll = window.scrollY;
+    let smoothScroll = window.scrollY;
+    const handleScroll = () => {
+      targetScroll = window.scrollY;
+    };
+    window.addEventListener("scroll", handleScroll);
+
+    // When scroll reaches this value, lines disappear completely.
+    const disappearanceScroll = 300;
+
     let animationFrameId;
 
+    // ===== Render Loop =====
     const render = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const centerY = canvas.height / 2;
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = "rgba(0, 150, 136, 0.7)";
+      const { width, height } = canvas;
+      // Smoothly interpolate the scroll value.
+      smoothScroll += (targetScroll - smoothScroll) * 0.1;
 
-      waves.forEach((wave) => {
-        ctx.beginPath();
-        for (let x = 0; x <= canvas.width; x += 2) {
-          const periodLength = (2 * Math.PI) / wave.frequency;
-          const segIndex = Math.floor(x / periodLength);
-          const segFraction = (x % periodLength) / periodLength;
-          const segValue1 = wave.segments[segIndex] || 1;
-          const segValue2 = wave.segments[segIndex + 1] || 1;
-          const amplitudeFactor = (1 - segFraction) * segValue1 + segFraction * segValue2;
-          let effectiveAmplitude = wave.amplitude * amplitudeFactor;
-          // Adjust amplitude based on vertical mouse position.
-          // When the mouse is at the top (smaller y), increase amplitude;
-          // when at the bottom, decrease it.
-          const mouseInfluence = 1 + ((centerY - mousePosRef.current.y) / centerY) * 0.5;
-          effectiveAmplitude *= mouseInfluence;
-          const y = centerY + wave.offset + effectiveAmplitude * Math.sin(wave.frequency * x + wave.phase);
-          if (x === 0) {
-            ctx.moveTo(x, y);
-          } else {
-            ctx.lineTo(x, y);
-          }
-        }
-        ctx.stroke();
-        // Update phase so that the wave animates independently
-        wave.phase += wave.speed;
-      });
+      // Clear the canvas.
+      ctx.globalCompositeOperation = "source-over";
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, width, height);
+
+      // ---------- Draw the central blob with a shifting gradient ----------
+      // blob.hue = (blob.hue + blob.hueShiftSpeed) % 360;
+      // const gradient = ctx.createRadialGradient(
+      //   blob.centerX,
+      //   blob.centerY,
+      //   0,
+      //   blob.centerX,
+      //   blob.centerY,
+      //   blob.baseRadius + 30
+      // );
+      // gradient.addColorStop(0, `hsla(${blob.hue}, 100%, 60%, 0.6)`);
+      // gradient.addColorStop(0.5, `hsla(${(blob.hue + 30) % 360}, 100%, 60%, 0.3)`);
+      // gradient.addColorStop(1, `hsla(${(blob.hue + 60) % 360}, 100%, 60%, 0)`);
+
+      // ctx.globalCompositeOperation = "lighter";
+      // ctx.beginPath();
+      // for (let i = 0; i < blob.points.length; i++) {
+      //   const { angle, radius } = blob.points[i];
+      //   const x = blob.centerX + Math.cos(angle) * radius;
+      //   const y = blob.centerY + Math.sin(angle) * radius;
+      //   if (i === 0) ctx.moveTo(x, y);
+      //   else ctx.lineTo(x, y);
+      // }
+      // ctx.closePath();
+      // ctx.fillStyle = gradient;
+      // ctx.fill();
+
+      // ---------- Draw 4 white lines at a fixed 90° orientation ----------
+      const maxLineLength = Math.min(width, height) / 3;
+      // Calculate a factor (1 to 0) based on scroll: when smoothScroll reaches disappearanceScroll the lines vanish.
+      const factor = Math.max(1 - smoothScroll / disappearanceScroll, 0);
+      const visibleLength = maxLineLength * factor;
+
+      ctx.strokeStyle = "white";
+      ctx.lineWidth = 3;
+
+      // Left line: on the left edge, upper half, horizontal (extending right).
+      ctx.beginPath();
+      ctx.moveTo(0, height * 0.25);
+      ctx.lineTo(visibleLength, height * 0.25);
+      ctx.stroke();
+
+      // Right line: on the right edge, bottom half, horizontal (extending left).
+      ctx.beginPath();
+      ctx.moveTo(width, height * 0.75);
+      ctx.lineTo(width - visibleLength, height * 0.75);
+      ctx.stroke();
+
+      // Top line: on the top edge, right-half, vertical (extending downward).
+      ctx.beginPath();
+      ctx.moveTo(width * 0.75, 0);
+      ctx.lineTo(width * 0.75, visibleLength);
+      ctx.stroke();
+
+      // Bottom line: on the bottom edge, left-half, vertical (extending upward).
+      ctx.beginPath();
+      ctx.moveTo(width * 0.25, height);
+      ctx.lineTo(width * 0.25, height - visibleLength);
+      ctx.stroke();
 
       animationFrameId = requestAnimationFrame(render);
     };
 
     render();
 
+    // ===== Cleanup =====
     return () => {
       window.removeEventListener("resize", setCanvasSize);
-      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("scroll", handleScroll);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
 
   return (
-    <canvas className="bg-black"
+    <canvas
       ref={canvasRef}
       style={{
         position: "fixed",
@@ -108,7 +143,7 @@ export default function AudioForm() {
         left: 0,
         width: "100%",
         height: "100%",
-        pointerEvents: "none", // Keeps the canvas in the background
+        pointerEvents: "none",
         zIndex: -1,
       }}
     />
