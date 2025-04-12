@@ -37,7 +37,7 @@ export default function Navbar({ brandName = "dancetoday" }) {
     { href: "/news", label: t("News") },
     { href: "/music", label: t("Music") },
     { href: "/calendar", label: t("Events") },
-    { href: "/merch", label: t("Merch") },
+    { href: "/community", label: t("Community") },
     { href: "/advertise", label: t("Advertise") },
     { href: "/about", label: t("About") },
   ];

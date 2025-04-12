@@ -3,7 +3,7 @@
   "News": "NEWS",
   "Music": "MUSIC",
   "Events": "EVENTS",
-  "Merch": "COMMUNITY",
+  "Community": "COMMUNITY",
   "Advertise": "ADVERTISE",
   "About": "ABOUT",
   "Profile": "Profile",
@@ -53,6 +53,8 @@
   "lineup": "Lineup",
   "noLineup": "No lineup available",
   "noLocation": "Location not specified",
+  "calendarView" : "Calendar",
+  "listView": "List",
   "login" : {
     "noAccount": "Don't have an account?",
     "register": "Register"
@@ -84,7 +86,9 @@
       "loadingNews": "Loading news...",
       "noNewsFound": "No news articles found.",
       "title": "Dance News",
-      "filterGenre": "Filter by Genre"
+      "filterGenre": "Filter by Genre",
+      "previous": "Previous",
+      "next" : "Next"
     },
     "newsDetails": {
       "loading": "Loading news details...",
@@ -142,7 +146,9 @@
       "loadingEvents": "Loading events...",
       "noLocation": "Location not specified",
       "info": "Info",
-      "buyTickets": "Buy Tickets"
+      "buyTickets": "Buy Tickets",
+      "saved": "Saved",
+      "save": "Save"
     },
     "authForm": {
       "register": "Register",

@@ -7,6 +7,8 @@ import { useTranslations } from "next-intl";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+// Import Instagram-style bookmark icons from react-icons
+import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 // Import Swiper styles
 import "swiper/css";
 // Import the modal component (ensure you have this component implemented)
@@ -121,7 +123,7 @@ export default function Carousel() {
           modules={[Autoplay]}
           spaceBetween={30}
           slidesPerView={1}
-          loop={true}
+          loop={false}
           speed={600}
           autoplay={{ delay: 3500, disableOnInteraction: true }}
           breakpoints={{
@@ -140,20 +142,9 @@ export default function Carousel() {
               return (
                 <SwiperSlide key={event.id}>
                   <div
-                    className="relative group rounded-xl overflow-hidden shadow-2xl cursor-pointer transition-transform transform hover:scale-105 mx-0 md:mx-8 w-full h-[500px]"
+                    className="relative group rounded-xl overflow-hidden shadow-2xl cursor-pointer transition-transform transform hover:scale-95 mx-0 md:mx-8 w-full h-[500px]"
                     onClick={() => openModal(event.documentId)}
                   >
-                    <button
-                      className={`absolute top-3 right-3 text-xl ${
-                        isSaved ? "text-yellow-400" : "text-gray-300"
-                      } hover:text-yellow-300 transition z-20`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSaveEvent(event.id);
-                      }}
-                    >
-                      ★
-                    </button>
                     <div className="flex flex-col h-full">
                       <div className="h-[66%] relative">
                         {eventImage && (
@@ -181,17 +172,6 @@ export default function Carousel() {
                           📍 {event.Loaction || t("noLocation")}
                         </p>
                         <div className="mt-2 flex space-x-3 text-2sm">
-                          {event.Desc && (
-                            <button
-                              className="py-2 px-4 border border-white text-white uppercase tracking-wider font-medium text-sm hover:bg-white hover:text-black transition rounded-3xl"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                openModal(event.documentId);
-                              }}
-                            >
-                              {t("info")}
-                            </button>
-                          )}
                           {event.tickets && (
                             <button
                               className="py-2 px-4 border border-white text-white uppercase tracking-wider font-medium text-sm hover:bg-white hover:text-black transition rounded-3xl"
@@ -203,6 +183,27 @@ export default function Carousel() {
                               {t("buyTickets")}
                             </button>
                           )}
+                          {/* Save Button placed next to Buy Tickets */}
+                          <button
+                            className={`py-2 px-4 border border-white uppercase tracking-wider font-medium text-sm transition rounded-3xl flex items-right space-x-1 ${
+                              isSaved
+                                ? "bg-white text-black"
+                                : "bg-gblack text-white"
+                            } hover:bg-white hover:text-black`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleSaveEvent(event.id);
+                            }}
+                          >
+                            {isSaved ? (
+                              <BsBookmarkFill size={20} />
+                            ) : (
+                              <BsBookmark size={20} />
+                            )}
+                            <span>
+                              {isSaved ? t("saved") || "Saved" : t("save") || "Save"}
+                            </span>
+                          </button>
                         </div>
                       </div>
                     </div>

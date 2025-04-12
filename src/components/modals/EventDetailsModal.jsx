@@ -140,7 +140,7 @@ export default function EventDetailsModal({ eventId, onClose }) {
                 href={event.tickets}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-6 py-3 bg-blue-500 text-white font-bold text-lg rounded-lg shadow-lg hover:bg-blue-700 transition"
+                className="px-6 py-3 bg-white text-black font-bold text-lg rounded-lg shadow-lg hover:bg-gray-200 transition"
               >
                 🎟 {t("buyTickets")}
               </a>

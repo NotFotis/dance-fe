@@ -5,7 +5,7 @@ const withNextIntl = createNextIntlPlugin();
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-      domains: ['localhost'],
+      domains: ['localhost','https://dance-production-c62a.up.railway.app'],
     },
   };
  

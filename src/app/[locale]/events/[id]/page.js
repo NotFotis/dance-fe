@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 // Import the icons you need from React Icons
 import { FaFacebook, FaInstagram, FaSpotify, FaSoundcloud, FaTwitter } from "react-icons/fa";
 import { SiBeatport } from "react-icons/si";
+import Footer from "@/components/Footer";
 
 const EventDetails = () => {
   const { id } = useParams();
@@ -184,6 +185,8 @@ const EventDetails = () => {
           )}
         </div>
       </div>
+      <Footer/>
+
     </div>
   );
 };
