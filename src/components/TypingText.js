@@ -19,7 +19,7 @@ export default function TypingText() {
 
   return (
     <div className="flex h-screen items-center justify-center bg-transparent">
-      <header className="font-bold text-4xl sm:text-6xl md:text-8xl">
+      <header className="font-bold text-4xl text-white sm:text-6xl md:text-8xl">
         {displayText}
       </header>
     </div>

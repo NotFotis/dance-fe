@@ -120,7 +120,7 @@ export default function NewsDetailsModal({ documentId, onClose }) {
 
         {/* News Image on Top */}
         {Image && Image.url && (
-          <div className="w-full h-64 sm:h-80 overflow-hidden">
+          <div className="w-full h-64 sm:h-full overflow-hidden">
             <img
               src={`${URL}${Image.url}`}
               alt={Title}
@@ -132,7 +132,7 @@ export default function NewsDetailsModal({ documentId, onClose }) {
         {/* Details Content */}
         <div className="py-6 px-4 sm:px-6 md:px-8 pb-8 text-center">
           <h2 className="text-5xl font-bold mb-6">{Title}</h2>
-          {Date && (
+          {publishedAt && (
             <p className="text-gray-400 text-sm mb-4">
               {new Date(Date).toLocaleDateString()}
             </p>
