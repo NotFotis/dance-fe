@@ -108,7 +108,7 @@ export default function NewsCarousel() {
                 <SwiperSlide key={item.id}>
                   <div
                     onClick={() => openModal(item.documentId)}
-                    className="relative group rounded-xl overflow-hidden shadow-2xl cursor-pointer transition-transform transform hover:scale-95 w-full h-[500px]"
+                    className="relative group rounded-xl overflow-hidden drop-shadow-2xl cursor-pointer transition-transform transform hover:scale-95 w-full h-[500px]"
                   >
                     {imageUrl ? (
                       <img

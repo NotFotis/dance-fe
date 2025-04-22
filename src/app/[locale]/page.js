@@ -11,6 +11,7 @@ import AudioForm from "@/components/AudioForm";
 import OurServices from "@/components/Services";
 import { useTranslations } from "next-intl";
 import JourneySection from "@/components/Journey";
+import SwipeableStack from "@/components/About";
 
 export default function Home() {
   const t = useTranslations();
@@ -39,8 +40,8 @@ export default function Home() {
       </section>
 
       {/* Contact Form Section */}
-      <section id="events" className="my-20 px-6 ">
-                <About />
+      <section id="about" className="my-20 w-full px-6 ">
+      <SwipeableStack apiUrl={process.env.NEXT_PUBLIC_API_URL} />
       </section>
       
       <section id="journey" className="my-20 w-full px-6 ">

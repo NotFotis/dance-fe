@@ -5,9 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-// Import Instagram-style bookmark icons from react-icons
+// Import Instagram‑style bookmark icons from react‑icons
 import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 // Import Swiper styles
 import "swiper/css";
@@ -120,12 +119,10 @@ export default function Carousel() {
         {/* Swiper Carousel */}
         <Swiper
           onSwiper={(swiper) => (sliderRef.current = swiper)}
-          modules={[Autoplay]}
           spaceBetween={30}
           slidesPerView={1}
           loop={false}
           speed={600}
-          autoplay={{ delay: 3500, disableOnInteraction: true }}
           breakpoints={{
             768: { slidesPerView: 1 },
             1024: { slidesPerView: 4 },
@@ -142,7 +139,7 @@ export default function Carousel() {
               return (
                 <SwiperSlide key={event.id}>
                   <div
-                    className="relative group rounded-xl overflow-hidden shadow-2xl cursor-pointer transition-transform transform hover:scale-95 mx-0 md:mx-8 w-full h-[500px]"
+                    className="relative group rounded-xl overflow-hidden drop-shadow-2xl cursor-pointer transition-transform transform hover:scale-95 mx-0 md:mx-8 w-full h-[500px]"
                     onClick={() => openModal(event.documentId)}
                   >
                     <div className="flex flex-col h-full">
@@ -201,7 +198,9 @@ export default function Carousel() {
                               <BsBookmark size={20} />
                             )}
                             <span>
-                              {isSaved ? t("saved") || "Saved" : t("save") || "Save"}
+                              {isSaved
+                                ? t("saved") || "Saved"
+                                : t("save") || "Save"}
                             </span>
                           </button>
                         </div>
