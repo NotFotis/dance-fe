@@ -4,7 +4,8 @@ import axios from "axios";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
+// — remove Autoplay import —
+// import { Autoplay } from "swiper/modules";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import "swiper/css";
 
@@ -57,7 +58,7 @@ export default function NewsCarousel() {
   return (
     <div className="relative bg-transparent text-white py-16 mt-20">
       <div className="container mx-auto px-6 relative z-10">
-        {/* Header & Custom Navigation */}
+        {/* Header & Custom Navigation */}  
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
           <h2 className="text-4xl md:text-5xl font-extrabold tracking-wide mb-4 md:mb-0">
             {t("title")}
@@ -86,8 +87,7 @@ export default function NewsCarousel() {
 
         <Swiper
           ref={sliderRef}
-          modules={[Autoplay]}
-          autoplay={{ delay: 3500, disableOnInteraction: true }}
+          // — remove autoplay and the Autoplay module —
           spaceBetween={30}
           slidesPerView={1}
           breakpoints={{
