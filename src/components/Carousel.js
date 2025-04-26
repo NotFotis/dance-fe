@@ -1,169 +1,147 @@
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ChevronLeft, ChevronRight } from "lucide-react";
-import { Instagram } from "lucide-react";
-import { FaDiscord } from "react-icons/fa";
-import Link from "next/link";
-import LanguageSwitcher from "./LanguageSwitcher";
-import { useTranslations, useLocale } from "next-intl";
-import { useEvents } from "@/hooks/useEvents";
+"use client";
+import { useState, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import "swiper/css";
-import EventDetailsModal from "@/components/modals/EventDetailsModal";
+import { useEvents } from "@/hooks/useEvents";
+import EventDetailsModal from "./modals/EventDetailsModal";
+import { useTranslations } from "next-intl";
+import Link from "next/link";
 
-export default function Navbar({ brandName = "dancetoday", showCarousel = true }) {
-  const t = useTranslations();
-  const locale = useLocale();
+export default function EventsCarousel() {
+  const t = useTranslations("carousel");
   const URL = process.env.NEXT_PUBLIC_URL;
 
-  const { events = [], isLoading } = useEvents();
-  const specialEvents = events.filter(evt => evt.specialEvent);
+  // Fetch all events via SWR hook
+  const { events: rawEvents = [], isLoading } = useEvents();
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const swiperRef = useRef(null);
+  // Sort by descending date and take up to 6
+  const events = rawEvents
+    .sort((a, b) => new Date(b.Date) - new Date(a.Date))
+    .slice(0, 6);
 
-  // modal state
-  const [modalEventId, setModalEventId] = useState(null);
+  const [selectedEventId, setSelectedEventId] = useState(null);
+  const sliderRef = useRef(null);
 
-  // refs for the button and drawer
-  const buttonRef = useRef(null);
-  const drawerRef = useRef(null);
-
-  const toggleMenu = () => setIsOpen(open => !open);
-
-  // close on outside click
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (
-        isOpen &&
-        drawerRef.current &&
-        !drawerRef.current.contains(event.target) &&
-        buttonRef.current &&
-        !buttonRef.current.contains(event.target)
-      ) {
-        setIsOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isOpen]);
-
-  const navItems = [
-    { href: "/", label: t("Home") },
-    { href: "/news", label: t("News") },
-    { href: "/music", label: t("Music") },
-    { href: "/calendar", label: t("Events") },
-    { href: "/community", label: t("Community") },
-    { href: "/advertise", label: t("Advertise") },
-    { href: "/about", label: t("About") },
-  ];
-
-  const handleEventClick = (id) => {
-    setModalEventId(id);
-    setIsOpen(false);
-  };
-
-  const closeModal = () => setModalEventId(null);
+  const slidePrev = () => sliderRef.current?.swiper.slidePrev();
+  const slideNext = () => sliderRef.current?.swiper.slideNext();
+  const openModal = (id) => setSelectedEventId(id);
+  const closeModal = () => setSelectedEventId(null);
 
   return (
-    <>
-      <header className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[80vw] max-w-xl">
-        <div className="bg-white text-black rounded-full px-8 py-3 flex items-center justify-between shadow-lg">
-          <Link href="/" className="text-2xl font-bold">
-            {brandName}
-          </Link>
-          <button ref={buttonRef} onClick={toggleMenu} className="focus:outline-none">
-            {isOpen ? <X size={32} /> : <Menu size={32} />}
-          </button>
+    <div className="relative bg-transparent text-white py-16 mt-20">
+      <div className="container mx-auto px-6 relative z-10">
+        {/* Header & Navigation */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+          <h2 className="text-4xl md:text-5xl font-extrabold tracking-wide mb-4 md:mb-0">
+            {t("title")}
+          </h2>
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={slidePrev}
+              className="py-2 px-2 border border-white text-white rounded-full uppercase tracking-wider font-medium hover:bg-white hover:text-black transition"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <button
+              onClick={slideNext}
+              className="py-2 px-2 border border-white text-white rounded-full uppercase tracking-wider font-medium hover:bg-white hover:text-black transition"
+            >
+              <ChevronRight size={20} />
+            </button>
+            <Link
+              href="/calendar"
+              className="py-2 px-4 border border-white text-white uppercase tracking-wider font-medium hover:bg-white hover:text-black transition rounded"
+            >
+              {t("calendar")}
+            </Link>
+          </div>
         </div>
-      </header>
 
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            ref={drawerRef}
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.1 }}
-            className="fixed inset-x-0 top-5 mx-auto w-[80vw] max-w-xl z-20 overflow-y-auto bg-white text-black shadow-lg rounded-3xl px-6 py-12 max-h-[calc(100vh-2rem)]"
-          >
-            <div className="w-full">
-              <ul className="p-10 space-y-5">
-                {navItems.map(item => (
-                  <li key={item.href} className="text-center">
-                    <Link href={item.href} onClick={() => setIsOpen(false)} className="block transition-opacity duration-200 opacity-70 hover:opacity-100">
-                      <h2 className="text-2xl sm:text-3xl font-bold">{item.label}</h2>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-
-              {showCarousel && !isLoading && specialEvents.length > 0 && (
-                <div className="relative my-6">
-                  <Swiper
-                    onSwiper={swiper => { swiperRef.current = swiper; setActiveIndex(swiper.activeIndex); }}
-                    onSlideChange={swiper => setActiveIndex(swiper.activeIndex)}
-                    spaceBetween={10}
-                    slidesPerView={1}
-                    className="overflow-visible"
-                  >
-                    {specialEvents.map((evt, idx) => {
-                      const imgPath = evt.Image?.[0]?.formats?.small?.url || evt.Image?.[0]?.url;
-                      const src = imgPath ? `${URL}${imgPath}` : null;
-                      return (
-                        <SwiperSlide key={evt.documentId} className="px-2">
-                          <div onClick={() => handleEventClick(evt.documentId)} className="relative block h-32 rounded-lg overflow-hidden shadow-lg cursor-pointer">
-                            {src && <img src={src} alt={evt.Title} className="w-full h-full object-cover" />}
-                            <div className="absolute bottom-0 w-full bg-gradient-to-t from-black via-transparent to-transparent p-2 text-center">
-                              <h3 className="text-white text-lg sm:text-xl font-semibold drop-shadow-lg leading-tight">{evt.Title}</h3>
-                              <p className="text-gray-300 text-sm drop-shadow-lg">
-                                {new Date(evt.Date).toLocaleDateString(undefined, { day: "2-digit", month: "2-digit", year: "numeric" })}
-                              </p>
-                            </div>
-                          </div>
-                        </SwiperSlide>
-                      );
-                    })}
-                  </Swiper>
-
-                  <button onClick={() => swiperRef.current.slidePrev()} className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white p-1 rounded-full shadow">
-                    <ChevronLeft size={16} />
-                  </button>
-                  <button onClick={() => swiperRef.current.slideNext()} className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white p-1 rounded-full shadow">
-                    <ChevronRight size={16} />
-                  </button>
-
-                  <div className="flex justify-center mt-2 space-x-2">
-                    {specialEvents.map((_, idx) => (
-                      <span key={idx} onClick={() => swiperRef.current.slideTo(idx)} className={`h-2 w-2 rounded-full cursor-pointer transition-colors duration-200 ${activeIndex === idx ? "bg-black" : "bg-gray-300"}`} />
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <div className="mt-10 border-t border-gray-300 pt-5 px-5 flex flex-col sm:flex-row justify-between items-center">
-                <LanguageSwitcher currentLocale={locale} className="mb-4 sm:mb-0" />
-                <div className="flex space-x-4 mb-4 sm:mb-0">
-                  <a href="https://www.instagram.com/dancetodaygr/" target="_blank" rel="noopener noreferrer" className="transition-opacity duration-200 opacity-70 hover:opacity-100">
-                    <Instagram size={24} />
-                  </a>
-                  <a href="https://discord.gg/6EG7SweXUV" target="_blank" rel="noopener noreferrer" className="transition-opacity duration-200 opacity-70 hover:opacity-100">
-                    <FaDiscord size={24} />
-                  </a>
-                </div>
-                <Link href="/contact" onClick={() => setIsOpen(false)} className="inline-block px-4 py-2 rounded-full bg-black text-white text-sm font-medium transition-opacity duration-200 opacity-90 hover:opacity-100">
-                  {t("contactUs")}
-                </Link>
+        <Swiper
+          ref={sliderRef}
+          spaceBetween={30}
+          slidesPerView={1}
+          breakpoints={{
+            768: { slidesPerView: 2 },
+            1024: { slidesPerView: 3 },
+            1280: { slidesPerView: 4 },
+          }}
+          className="mySwiper"
+        >
+          {isLoading ? (
+            <SwiperSlide>
+              <div className="w-full text-center text-white text-xl">
+                {t("loadingEvents")}
               </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </SwiperSlide>
+          ) : (
+            events.map((evt) => {
+              const imgUrl =
+                evt.Image?.[0]?.formats?.medium?.url ||
+                evt.Image?.[0]?.url
+                  ? `${URL}${evt.Image[0].formats?.medium?.url || evt.Image[0].url}`
+                  : "";
+              return (
+                <SwiperSlide key={evt.id}>
+                  <div
+                    onClick={() => openModal(evt.documentId)}
+                    className="cursor-pointer transition-transform transform hover:scale-95 w-full h-[500px] relative z-0 rounded-2xl overflow-hidden shadow-[0_10px_15px_-3px_rgba(0,0,0,0.2)]"
+                  >
+                    <div className="w-full h-full">
+                      {imgUrl ? (
+                        <img
+                          src={imgUrl}
+                          alt={evt.Title}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="bg-gray-700 w-full h-full flex items-center justify-center">
+                          <span>{t("noImage")}</span>
+                        </div>
+                      )}
+                      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent rounded-b-2xl">
+                        <h3
+                          className="text-2xl font-bold text-white text-center drop-shadow-lg"
+                        >
+                          {evt.Title}
+                        </h3>
+                        <p
+                          className="text-white text-sm mt-1 text-center drop-shadow-lg"
+                        >
+                          {new Date(evt.Date).toLocaleDateString(undefined, {
+                            month: "long",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                          {evt.Time ? ` | ${evt.Time.split(".")[0]}` : ""}
+                        </p>
+                        {evt.tickets && (
+                          <div className="mt-4 flex justify-center">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                window.open(evt.tickets, "_blank");
+                              }}
+                              className="py-3 px-6 bg-black border border-white rounded-2xl uppercase text-base font-semibold hover:bg-white hover:text-black transition"
+                            >
+                              {t("buyTickets")}
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </SwiperSlide>
+              );
+            })
+          )}
+        </Swiper>
+      </div>
 
-      {/* Event details modal */}
-      {modalEventId && <EventDetailsModal eventId={modalEventId} onClose={closeModal} />}  
-    </>
+      {selectedEventId && (
+        <EventDetailsModal eventId={selectedEventId} onClose={closeModal} />
+      )}
+    </div>
   );
 }
