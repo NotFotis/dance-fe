@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { FaFacebookF, FaInstagram } from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaDiscord } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXTwitter } from "@fortawesome/free-brands-svg-icons";
 import { useTranslations } from "next-intl";
@@ -12,6 +12,7 @@ export default function NewsDetailsModal({ documentId, onClose }) {
   const [loading, setLoading] = useState(true);
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const URL = process.env.NEXT_PUBLIC_URL;
+  const DISCORD_URL = process.env.NEXT_PUBLIC_DISCORD_URL;
   const t = useTranslations("newsDetails");
 
   useEffect(() => {
@@ -33,11 +34,12 @@ export default function NewsDetailsModal({ documentId, onClose }) {
 
   if (loading) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-95 z-50 p-4 text-white">
-        {t("loading")}
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-95 z-50 p-4">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white"></div>
       </div>
     );
   }
+
   if (!news) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-95 z-50 p-4 text-red-500">
@@ -109,13 +111,13 @@ export default function NewsDetailsModal({ documentId, onClose }) {
       >
         {/* Sticky Header with Round Close Button */}
         <div className="sticky top-0 z-50 flex justify-end bg-transparent">
-                    <button
+          <button
             onClick={onClose}
             className="m-4 flex items-center justify-center w-12 h-12 rounded-full bg-black bg-opacity-0 text-5xl text-white leading-none hover:bg-opacity-100"
             aria-label="Close"
-            >
+          >
             &times;
-            </button>
+          </button>
         </div>
 
         {/* News Image on Top */}
@@ -134,7 +136,7 @@ export default function NewsDetailsModal({ documentId, onClose }) {
           <h2 className="text-5xl font-bold mb-6">{Title}</h2>
           {publishedAt && (
             <p className="text-gray-400 text-sm mb-4">
-              {new Date(Date).toLocaleDateString()}
+              {new Date(publishedAt).toLocaleDateString()}
             </p>
           )}
           {author && author.name && (
@@ -155,6 +157,20 @@ export default function NewsDetailsModal({ documentId, onClose }) {
           <div className="text-gray-300 text-base sm:text-lg leading-relaxed">
             {renderDescription()}
           </div>
+
+          {/* Discord Discussion Prompt */}
+          <div className="mt-8 mb-4">
+            <p className="text-gray-200 mb-2">{t("joinDiscussion")}</p>
+            <a
+              href={DISCORD_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 bg-blue-600 rounded-full hover:bg-blue-700 inline-flex items-center justify-center"
+            >
+              <FaDiscord size={24} />
+            </a>
+          </div>
+
           <div className="mt-6 flex justify-center space-x-4">
             <button
               onClick={shareToFacebook}

@@ -122,7 +122,7 @@ const MusicPage = () => {
 
   return (
     <div className="min-h-screen bg-black text-white py-12 px-4 text-lg">
-      <Navbar />
+      <Navbar brandName="dancereleases" />
       <div className="max-w-7xl mx-auto mt-40">
         <h1 className="text-5xl font-extrabold mb-8 text-center uppercase tracking-widest">
           {t("title")}

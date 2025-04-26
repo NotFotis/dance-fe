@@ -5,15 +5,14 @@ import Navbar from "@/components/NavBar";
 import { useTranslations } from "next-intl";
 import NewsDetailsModal from "@/components/modals/NewsDetailsModal";
 import Footer from "@/components/Footer";
+import AudioForm from "@/components/AudioForm";
 
 export default function NewsListPage() {
   const [news, setNews] = useState([]);
   const [genres, setGenres] = useState([]);
   const [selectedGenre, setSelectedGenre] = useState("All");
   const [loading, setLoading] = useState(true);
-  // For opening the news modal.
   const [selectedNewsId, setSelectedNewsId] = useState(null);
-  // For pagination.
   const [currentPage, setCurrentPage] = useState(1);
   const articlesPerPage = 16;
 
@@ -25,7 +24,6 @@ export default function NewsListPage() {
     const fetchNews = async () => {
       try {
         const response = await axios.get(`${API_URL}/dance-new?populate=*`);
-        console.log("News List API response:", response.data);
         setNews(response.data.data);
       } catch (error) {
         console.error("Error fetching news:", error);
@@ -47,57 +45,33 @@ export default function NewsListPage() {
     fetchGenres();
   }, [API_URL]);
 
-  // Reset page when the selected genre changes.
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedGenre]);
 
-  if (loading) {
-    return (
-      <div className="bg-black min-h-screen flex items-center justify-center text-white py-12 text-2xl">
-        {t("loadingNews")}
-      </div>
-    );
-  }
+  const genreOptions = ["All", ...genres.map((g) => g.name)];
 
-  if (!news || news.length === 0) {
-    return (
-      <div className="bg-black min-h-screen flex items-center justify-center text-red-500 py-12 text-2xl">
-        {t("noNewsFound")}
-      </div>
-    );
-  }
-
-  // Build genre options with "All" as the default.
-  const genreOptions = ["All", ...genres.map((genre) => genre.name)];
-
-  // Filter news articles based on selected genre.
   const filteredNews = news.filter((article) => {
     if (selectedGenre === "All") return true;
     return (
       Array.isArray(article.music_genres) &&
-      article.music_genres.some((genre) => genre.name === selectedGenre)
+      article.music_genres.some((g) => g.name === selectedGenre)
     );
   });
 
-  // Sort filtered articles by date descending (latest first).
-  const sortedNews = filteredNews.slice().sort(
-    (a, b) => new Date(b.Date) - new Date(a.Date)
-  );
+  const sortedNews = filteredNews
+    .slice()
+    .sort((a, b) => new Date(b.Date) - new Date(a.Date));
 
   const totalPages = Math.ceil(sortedNews.length / articlesPerPage);
-  const indexOfFirst = (currentPage - 1) * articlesPerPage;
-  const indexOfLast = indexOfFirst + articlesPerPage;
-  const currentArticles = sortedNews.slice(indexOfFirst, indexOfLast);
+  const startIdx = (currentPage - 1) * articlesPerPage;
+  const currentArticles = sortedNews.slice(startIdx, startIdx + articlesPerPage);
 
-  // Helper function to extract an image URL from an article.
   const getImageUrl = (article) => {
     if (article.Image) {
-      // If the image is an object with a direct URL.
       if (article.Image.url) {
         return `${URL}${article.Image.url}`;
       }
-      // If it is an array, try to use the first one.
       if (Array.isArray(article.Image) && article.Image[0]) {
         return `${URL}${
           article.Image[0].formats?.medium?.url || article.Image[0].url
@@ -107,21 +81,17 @@ export default function NewsListPage() {
     return "";
   };
 
-  const openModal = (documentId) => {
-    setSelectedNewsId(documentId);
-  };
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
   return (
-    <div className="bg-black min-h-screen text-white flex flex-col items-center px-6">
+    <div className="bg-transparent min-h-screen text-white flex flex-col items-center px-6">
       <Navbar brandName="dancenews" />
-      <div className="max-w-6xl w-full px-6 mt-20">
-        <h1 className="text-6xl font-bold mb-8 text-center mt-20">{t("title")}</h1>
+      <AudioForm />
 
-        {/* Genre Filter Controls */}
+      <div className="max-w-6xl w-full px-6 mt-20">
+        <h1 className="text-6xl font-bold mb-8 text-center mt-20">
+          {t("title")}
+        </h1>
+
+        {/* Genre Filter */}
         <div className="flex flex-col md:flex-row md:justify-center items-center mb-8 space-y-4 md:space-y-0 md:space-x-8">
           <div className="flex flex-col">
             <label className="mb-2 uppercase tracking-wide text-sm">
@@ -132,96 +102,105 @@ export default function NewsListPage() {
               onChange={(e) => setSelectedGenre(e.target.value)}
               className="py-2 px-4 bg-black border border-white rounded text-white uppercase tracking-wider"
             >
-              {genreOptions.map((genre) => (
-                <option key={genre} value={genre}>
-                  {genre}
+              {genreOptions.map((g) => (
+                <option key={g} value={g}>
+                  {g}
                 </option>
               ))}
             </select>
           </div>
         </div>
 
-        {/* Grid of Articles (4 columns on large screens) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {currentArticles.map((article) => (
-            <div
-              key={article.id}
-              onClick={() => openModal(article.documentId)}
-              className="cursor-pointer bg-black rounded-lg overflow-hidden shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
-            >
-              {getImageUrl(article) && (
-                <div className="w-full h-96">
-                  <img
-                    src={getImageUrl(article)}
-                    alt={article.Title}
-                    className="w-full h-full object-cover hover:opacity-90 transition-opacity duration-300"
-                  />
+        {/* Main Content */}
+        {loading ? (
+          <div className="flex justify-center items-center py-32">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-white"></div>
+          </div>
+        ) : currentArticles.length === 0 ? (
+          <div className="flex justify-center items-center py-32 text-red-500 text-2xl">
+            {t("noNewsFound")}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            {currentArticles.map((article) => (
+              <div
+                key={article.id}
+                onClick={() => setSelectedNewsId(article.documentId)}
+                className="cursor-pointer transition-transform transform hover:scale-95 w-full h-[500px] rounded-xl relative z-0 shadow-[0_10px_15px_-3px_rgba(0,0,0,0.2)]"
+              >
+                <div className="rounded-xl overflow-hidden w-full h-full bg-black">
+                  {getImageUrl(article) ? (
+                    <img
+                      src={getImageUrl(article)}
+                      alt={article.Title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="bg-gray-700 w-full h-full flex items-center justify-center">
+                      <span>{t("noImage")}</span>
+                    </div>
+                  )}
+                  <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70">
+                    {article.music_genres?.length > 0 && (
+                      <p className="text-sm text-gray-300 uppercase tracking-wide text-center mb-2">
+                        {article.music_genres.map((g) => g.name).join(", ")}
+                      </p>
+                    )}
+                    <h2 className="text-2xl font-bold text-white text-center" style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}>
+                      {article.Title}
+                    </h2>
+                    <p className="text-white text-sm mt-1 text-center" style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}>
+                      {new Date(article.Date).toLocaleDateString()}
+                    </p>
+                  </div>
                 </div>
-              )}
-              {/* Genre information added between image and title */}
-              {article.music_genres && article.music_genres.length > 0 && (
-                <div className="px-6 pt-4">
-                  <p className="text-sm text-gray-300 uppercase tracking-wide">
-                    {article.music_genres.map((genre) => genre.name).join(", ")}
-                  </p>
-                </div>
-              )}
-              {/* Title and Date placed directly below the image */}
-              <div className="p-6">
-                <h2 className="text-2xl font-bold mb-2 text-white">
-                  {article.Title}
-                </h2>
-                <p className="text-gray-400">
-                  {new Date(article.Date).toLocaleDateString()}
-                </p>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
-        {/* Pagination Controls */}
-        <div className="flex justify-center items-center mt-10 space-x-4">
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="px-4 py-2 border border-white text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white hover:text-black transition"
-          >
-            {t("previous")}
-          </button>
-          {Array.from({ length: totalPages }).map((_, index) => {
-            const pageNumber = index + 1;
-            return (
+        {/* Pagination */}
+        {!loading && currentArticles.length > 0 && (
+          <div className="flex justify-center items-center mt-10 space-x-4 mb-10">
+            <button
+              onClick={() => setCurrentPage((p) => p - 1)}
+              disabled={currentPage === 1}
+              className="px-4 py-2 bg-black border border-white text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white hover:text-black transition"
+            >
+              {t("previous")}
+            </button>
+            {Array.from({ length: totalPages }).map((_, i) => (
               <button
-                key={pageNumber}
-                onClick={() => handlePageChange(pageNumber)}
-                className={`px-4 py-2 border border-white text-black rounded transition ${
-                  currentPage === pageNumber
+                key={i + 1}
+                onClick={() => setCurrentPage(i + 1)}
+                className={`px-4 py-2 border border-white rounded transition ${
+                  currentPage === i + 1
                     ? "bg-white text-black"
-                    : "hover:bg-white hover:text-black"
+                    : "bg-black text-white hover:bg-white hover:text-black"
                 }`}
               >
-                {pageNumber}
+                {i + 1}
               </button>
-            );
-          })}
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2 border border-white text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white hover:text-black transition"
-          >
-            {t("next")}
-          </button>
-        </div>
+            ))}
+            <button
+              onClick={() => setCurrentPage((p) => p + 1)}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 bg-black border border-white text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white hover:text-black transition"
+            >
+              {t("next")}
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* News Details Modal */}
       {selectedNewsId && (
         <NewsDetailsModal
           documentId={selectedNewsId}
           onClose={() => setSelectedNewsId(null)}
         />
       )}
-          <Footer/>
+
+      <Footer />
     </div>
   );
 }

@@ -121,7 +121,7 @@ export default function SwipeableStack({ apiUrl }) {
             key={idx}
             onClick={() => jumpTo(idx)}
             className={`h-2 w-2 rounded-full cursor-pointer transition-colors duration-200 ${
-              idx === currentIndex ? "bg-blue-500" : "bg-gray-300"
+              idx === currentIndex ? "bg-black" : "bg-gray-300"
             }`}
           ></span>
         ))}

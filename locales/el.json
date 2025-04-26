@@ -29,7 +29,7 @@
   "title": "Ημερολόγιο Εκδηλώσεων",
   "filterMonth": "Φίλτρο ανά Μήνα",
   "filterGenre": "Φίλτρο ανά Είδος",
-  "calendarView" : "Ημμερολόγιο",
+  "calendarView" : "Ημερολόγιο",
   "listView": "Λίστα",
   "noEvents": "Δεν βρέθηκαν εκδηλώσεις.",
   "time": "Ώρα",
@@ -95,7 +95,9 @@
     "notFound": "Το άρθρο ειδήσεων δεν βρέθηκε",
     "noDescription": "Δεν υπάρχει διαθέσιμη περιγραφή.",
     "backToNews": "← Επιστροφή στις Ειδήσεις",
-    "noGenre": "Χωρίς είδος"
+    "noGenre": "Χωρίς είδος",
+    "joinDiscussion": "Συζητήστε αυτό το άρθρο στο Discord μας!",
+    "discordButtonText": "Συζήτηση στο Discord"
   },
   "profile": {
     "savedEventsTitle": "Αποθηκευμένες Εκδηλώσεις",

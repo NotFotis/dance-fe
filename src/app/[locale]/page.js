@@ -24,7 +24,7 @@ export default function Home() {
 
       {/* Navbar */}
       <Navbar />
-      <AudioForm/>
+      <AudioForm />
       {/* Hero Section with background image */}
       <TypingText />
 

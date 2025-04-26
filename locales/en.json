@@ -95,7 +95,9 @@
       "notFound": "News article not found",
       "noDescription": "No description available.",
       "backToNews": "← Back to News",
-      "noGenre": "No Genre"
+      "noGenre": "No Genre",
+      "joinDiscussion": "Join the discussion about this article on our Discord!",
+      "discordButtonText": "Discuss on Discord"
     },
     "profile": {
       "savedEventsTitle": "Saved Events",
@@ -148,7 +150,8 @@
       "info": "Info",
       "buyTickets": "Buy Tickets",
       "saved": "Saved",
-      "save": "Save"
+      "save": "Save",
+      "noImage": "No Image"
     },
     "authForm": {
       "register": "Register",

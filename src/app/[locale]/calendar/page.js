@@ -5,7 +5,8 @@ import Navbar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import EventDetailsModal from "@/components/modals/EventDetailsModal"; // Ensure this exists
+import EventDetailsModal from "@/components/modals/EventDetailsModal"; 
+import AudioForm from "@/components/AudioForm";
 
 const CalendarPage = () => {
   const t = useTranslations();
@@ -210,8 +211,9 @@ const CalendarPage = () => {
   };
 
   return (
-    <div className="bg-black min-h-screen text-white items-center px-6">
+    <div className="bg-transparent min-h-screen text-white items-center px-6">
       <Navbar brandName="dancecalendar" />
+      <AudioForm/>
       <h1 className="text-6xl font-bold  text-center py-36">{t("title")}</h1>
       {/* On desktop, display toggle switch; on mobile, force list view */}
       {!isMobile && (

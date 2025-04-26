@@ -25,7 +25,6 @@ export default function EventDetailsModal({ eventId, onClose }) {
         const response = await axios.get(
           `${API_URL}/events/${eventId}?&populate=artists.Socials&populate=Image`
         );
-        // Assuming the response structure returns the event object in data.data
         setEvent(response.data.data);
       } catch (error) {
         console.error("Error fetching event details:", error);
@@ -36,11 +35,11 @@ export default function EventDetailsModal({ eventId, onClose }) {
 
     if (eventId) fetchEvent();
   }, [eventId, API_URL]);
-
+  
   if (loading) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-95 z-50 p-4 text-white">
-        {t("loading")}
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-95 z-50 p-4">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white"></div>
       </div>
     );
   }
@@ -53,16 +52,13 @@ export default function EventDetailsModal({ eventId, onClose }) {
     );
   }
 
-  // Get event image URL (if available)
   const eventImage = event.Image?.[0]?.formats?.large?.url || "";
-  // Build Google Maps URL using the event location (if available)
   const googleMapsUrl = event.Loaction
     ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
         event.Loaction
       )}`
     : "#";
 
-  // Helper function to render the event description safely using html-react-parser
   const renderDescription = () => {
     if (!event.description) return <p>{t("noDescription")}</p>;
     if (Array.isArray(event.description) && event.description.length > 0) {
@@ -85,17 +81,14 @@ export default function EventDetailsModal({ eventId, onClose }) {
   };
 
   return (
-    // Overlay that covers the entire viewport; clicking it calls onClose.
     <div
       className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4"
       onClick={onClose}
     >
-      {/* Modal Container */}
       <div
         className="relative bg-black text-white rounded-lg shadow-xl w-full max-w-6xl mx-auto max-h-[90vh] overflow-y-auto scrollbar-hide"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Sticky header with a round close button */}
         <div className="sticky top-0 z-50 flex justify-end bg-transparent">
           <button
             onClick={onClose}
@@ -106,18 +99,17 @@ export default function EventDetailsModal({ eventId, onClose }) {
           </button>
         </div>
 
-        {/* Event image (if available) */}
+        {/* Centered event image with larger max width */}
         {eventImage && (
-          <div className="w-full h-64 sm:h-full overflow-hidden">
+          <div className="max-w-3xl mx-auto overflow-hidden mb-8">
             <img
               src={`${URL}${eventImage}`}
               alt={event.Title}
-              className="w-full h-full object-cover"
+              className="w-full h-auto object-cover"
             />
           </div>
         )}
 
-        {/* Event details */}
         <div className="py-6 px-4 sm:px-6 md:px-8 pb-8 text-center">
           <h2 className="text-5xl font-bold mb-6">{event.Title}</h2>
           <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-8 text-lg">
@@ -147,16 +139,11 @@ export default function EventDetailsModal({ eventId, onClose }) {
             </div>
           )}
 
-          {/* Event description */}
-          <div className="prose prose-lg text-gray-300 leading-relaxed max-w-none text-xl mb-8">
-            {renderDescription()}
-          </div>
-
-          {/* Lineup Section */}
-          <div className="mt-12 text-left">
+          {/* Lineup Section (moved above description and centered) */}
+          <div className="mt-12 text-center">
             <h3 className="text-3xl font-bold mb-4">{t("lineup")}</h3>
             {event.artists && event.artists.length > 0 ? (
-              <ul className="text-xl text-gray-300">
+              <ul className="text-xl text-gray-300 flex flex-col items-center">
                 {event.artists.map((artist, index) => (
                   <li key={index} className="mb-2 flex items-center">
                     {artist.Name}
@@ -205,6 +192,11 @@ export default function EventDetailsModal({ eventId, onClose }) {
             ) : (
               <p className="text-gray-500 text-lg">{t("noLineup")}</p>
             )}
+          </div>
+
+          {/* Event description */}
+          <div className="prose prose-lg text-gray-300 leading-relaxed max-w-none text-xl mb-8 mt-12">
+            {renderDescription()}
           </div>
         </div>
       </div>

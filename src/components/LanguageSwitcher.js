@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 
 export default function LanguageSwitcher({ currentLocale }) {
   const supportedLocales = ['en', 'el'];
@@ -13,7 +12,7 @@ console.log(currentLocale);
   };
 
   return (
-    <div className="flex space-x-2">
+    <div className="flex space-x-2 mb-4 sm:mb-0">
       {supportedLocales.map((locale) => (
         <button
           key={locale}
