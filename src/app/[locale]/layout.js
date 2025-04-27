@@ -16,16 +16,35 @@ const geistMono = Geist_Mono({
  * Server‐side metadata generation from Strapi global collection
  */
 export async function generateMetadata({ params }) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/global?populate=*`,
-    { cache: "force-cache" }
-  );
-  const { data } = await res.json();
-  const { siteName, siteDescription, defaultSeo, favicon } = data;
+  let siteName         = "dancetoday";
+  let siteDescription  = "all about dance music";
+  let defaultSeo       = {};
+  let favicon          = null;
 
-  const title = defaultSeo?.metaTitle || siteName;
-  const description = defaultSeo?.metaDescription || siteDescription;
-  const iconUrl = favicon
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/global?populate=*`,
+      { cache: "force-cache" }
+    );
+    if (!res.ok) throw new Error(`Status ${res.status}`);
+    const json = await res.json();
+    const data = json.data ?? null;
+
+    if (data) {
+      siteName        = data.siteName        ?? siteName;
+      siteDescription = data.siteDescription ?? siteDescription;
+      defaultSeo      = data.defaultSeo      ?? defaultSeo;
+      favicon         = data.favicon         ?? favicon;
+    }
+  } catch (err) {
+    // optional: log so you can debug production issues
+    console.warn("Could not load global metadata, using defaults:", err);
+  }
+
+  // now safe to read defaults or fetched values
+  const title       = defaultSeo.metaTitle       ?? siteName;
+  const description = defaultSeo.metaDescription ?? siteDescription;
+  const iconUrl     = favicon?.url
     ? `${process.env.NEXT_PUBLIC_URL}${favicon.url}`
     : undefined;
 
@@ -33,24 +52,19 @@ export async function generateMetadata({ params }) {
     title,
     description,
     icons: iconUrl
-      ? {
-          icon: iconUrl,
-          shortcut: iconUrl,
-        }
+      ? { icon: iconUrl, shortcut: iconUrl }
       : undefined,
     openGraph: {
       title,
       description,
       type: "website",
       images: iconUrl
-        ? [
-            {
-              url: iconUrl,
-              width: favicon.width,
-              height: favicon.height,
-              alt: favicon.alternativeText,
-            },
-          ]
+        ? [{
+            url: iconUrl,
+            width:  favicon.width,
+            height: favicon.height,
+            alt:    favicon.alternativeText,
+          }]
         : [],
     },
   };
