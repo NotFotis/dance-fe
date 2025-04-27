@@ -23,7 +23,8 @@ async function fetchEvent(id) {
 }
 
 // Next.js will call this on the server to populate <head>
-export async function generateMetadata({ params }) {
+export async function generateMetadata(props) {
+  const params = await props.params;
   const { id, locale } = params;
   const event = await fetchEvent(id);
   if (!event) {
@@ -68,7 +69,8 @@ export async function generateMetadata({ params }) {
 }
 
 // The actual page render—server component
-export default async function EventPage({ params }) {
+export default async function EventPage(props) {
+  const params = await props.params;
   const { id } = params;
   const event = await fetchEvent(id);
   if (!event) notFound();

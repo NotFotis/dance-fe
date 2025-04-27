@@ -59,14 +59,12 @@ export default function JourneySection() {
             </ul>
           </div>
           {/* Right Column: Image */}
-          <div className="md:w-1/2 w-full h-96 relative">
+          <div className="md:w-1/2 w-full h-full relative">
             {imageUrl && (
-              <Image
+              <img
                 src={`${URL}${imageUrl}`}
                 alt={title}
-                fill
                 className="object-cover rounded-lg shadow-xl"
-                priority
               />
             )}
           </div>
