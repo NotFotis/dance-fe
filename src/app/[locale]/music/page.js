@@ -4,6 +4,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import Navbar from "../../../components/NavBar";
 import { useTranslations, useLocale } from "next-intl";
+import AudioForm from "@/components/AudioForm"
 
 const MusicPage = () => {
   const router = useRouter();
@@ -121,8 +122,9 @@ const MusicPage = () => {
   }, {});
 
   return (
-    <div className="min-h-screen bg-black text-white py-12 px-4 text-lg">
+    <div className="min-h-screen bg-transparent text-white py-12 px-4 text-lg">
       <Navbar brandName="dancereleases" />
+      <AudioForm/>
       <div className="max-w-7xl mx-auto mt-40">
         <h1 className="text-5xl font-extrabold mb-8 text-center uppercase tracking-widest">
           {t("title")}

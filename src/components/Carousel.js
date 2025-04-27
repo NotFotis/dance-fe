@@ -4,7 +4,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import "swiper/css";
 import { useEvents } from "@/hooks/useEvents";
-import EventDetailsModal from "./modals/EventDetailsModal";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
@@ -20,13 +19,10 @@ export default function EventsCarousel() {
     .sort((a, b) => new Date(b.Date) - new Date(a.Date))
     .slice(0, 6);
 
-  const [selectedEventId, setSelectedEventId] = useState(null);
   const sliderRef = useRef(null);
 
   const slidePrev = () => sliderRef.current?.swiper.slidePrev();
   const slideNext = () => sliderRef.current?.swiper.slideNext();
-  const openModal = (id) => setSelectedEventId(id);
-  const closeModal = () => setSelectedEventId(null);
 
   return (
     <div className="relative bg-transparent text-white py-16 mt-20">
@@ -77,71 +73,59 @@ export default function EventsCarousel() {
             </SwiperSlide>
           ) : (
             events.map((evt) => {
-              const imgUrl =
-                evt.Image?.[0]?.formats?.medium?.url ||
-                evt.Image?.[0]?.url
-                  ? `${URL}${evt.Image[0].formats?.medium?.url || evt.Image[0].url}`
-                  : "";
+              const imgPath = evt.Image?.[0]?.formats?.medium?.url || evt.Image?.[0]?.url;
+              const imgUrl = imgPath ? `${URL}${imgPath}` : "";
               return (
                 <SwiperSlide key={evt.id}>
-                  <div
-                    onClick={() => openModal(evt.documentId)}
-                    className="cursor-pointer transition-transform transform hover:scale-95 w-full h-[500px] relative z-0 rounded-2xl overflow-hidden shadow-[0_10px_15px_-3px_rgba(0,0,0,0.2)]"
+                  <Link
+                    href={`/events/${evt.documentId}`}
+                    className="block transition-transform transform hover:scale-95 w-full h-full relative z-0 rounded-2xl overflow-hidden shadow-[0_10px_15px_-3px_rgba(0,0,0,0.2)]"
+                    style={{ aspectRatio: '9 / 16' }}
                   >
-                    <div className="w-full h-full">
-                      {imgUrl ? (
-                        <img
-                          src={imgUrl}
-                          alt={evt.Title}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="bg-gray-700 w-full h-full flex items-center justify-center">
-                          <span>{t("noImage")}</span>
+                    {imgUrl ? (
+                      <img
+                        src={imgUrl}
+                        alt={evt.Title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="bg-gray-700 w-full h-full flex items-center justify-center">
+                        <span>{t("noImage")}</span>
+                      </div>
+                    )}
+                    <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent rounded-b-2xl">
+                      <h3 className="text-2xl font-bold text-white text-center drop-shadow-lg">
+                        {evt.Title}
+                      </h3>
+                      <p className="text-white text-sm mt-1 text-center drop-shadow-lg">
+                        {new Date(evt.Date).toLocaleDateString(undefined, {
+                          month: "long",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                        {evt.Time ? ` | ${evt.Time.split(".")[0]}` : ""}
+                      </p>
+                      {evt.tickets && (
+                        <div className="mt-4 flex justify-center">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              window.open(evt.tickets, "_blank");
+                            }}
+                            className="py-3 px-6 bg-black border border-white rounded-2xl uppercase text-base font-semibold hover:bg-white hover:text-black transition"
+                          >
+                            {t("buyTickets")}
+                          </button>
                         </div>
                       )}
-                      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent rounded-b-2xl">
-                        <h3
-                          className="text-2xl font-bold text-white text-center drop-shadow-lg"
-                        >
-                          {evt.Title}
-                        </h3>
-                        <p
-                          className="text-white text-sm mt-1 text-center drop-shadow-lg"
-                        >
-                          {new Date(evt.Date).toLocaleDateString(undefined, {
-                            month: "long",
-                            day: "numeric",
-                            year: "numeric",
-                          })}
-                          {evt.Time ? ` | ${evt.Time.split(".")[0]}` : ""}
-                        </p>
-                        {evt.tickets && (
-                          <div className="mt-4 flex justify-center">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                window.open(evt.tickets, "_blank");
-                              }}
-                              className="py-3 px-6 bg-black border border-white rounded-2xl uppercase text-base font-semibold hover:bg-white hover:text-black transition"
-                            >
-                              {t("buyTickets")}
-                            </button>
-                          </div>
-                        )}
-                      </div>
                     </div>
-                  </div>
+                  </Link>
                 </SwiperSlide>
               );
             })
           )}
         </Swiper>
       </div>
-
-      {selectedEventId && (
-        <EventDetailsModal eventId={selectedEventId} onClose={closeModal} />
-      )}
     </div>
   );
 }

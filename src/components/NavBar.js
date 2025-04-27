@@ -5,10 +5,13 @@ import { Menu, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Instagram } from "lucide-react";
 import { FaDiscord } from "react-icons/fa";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useTranslations, useLocale } from "next-intl";
 import { useEvents } from "@/hooks/useEvents";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";     // ← correct import :contentReference[oaicite:0]{index=0}
+import "swiper/css/autoplay";
 import "swiper/css";
 
 export default function Navbar({ brandName = "dancetoday", showCarousel = true }) {
@@ -26,7 +29,7 @@ export default function Navbar({ brandName = "dancetoday", showCarousel = true }
   // refs for the button and drawer
   const buttonRef = useRef(null);
   const drawerRef = useRef(null);
-
+  const router = useRouter();
   const toggleMenu = () => setIsOpen(open => !open);
 
   // close on outside click
@@ -122,41 +125,40 @@ export default function Navbar({ brandName = "dancetoday", showCarousel = true }
                     onSlideChange={swiper => setActiveIndex(swiper.activeIndex)}
                     spaceBetween={10}
                     slidesPerView={1}
+                    modules={[Autoplay]}                       // ← register the module
+                    autoplay={{                                // ← configure autoplay
+                      delay: 3000,                             // milliseconds between slides
+                      disableOnInteraction: false,             // keep autoplay after user swipes
+                    }}
                     className="overflow-visible"
                   >
-                    {specialEvents.map((evt, idx) => {
-                      const imgPath = evt.Image?.[0]?.formats?.small?.url || evt.Image?.[0]?.url;
-                      const src = imgPath ? `${URL}${imgPath}` : null;
-                      return (
-                        <SwiperSlide key={evt.id} className="px-2">
-                          <Link
-                            href={`/events/${evt.id}`}
-                            onClick={() => setIsOpen(false)}
-                            className="relative block h-32 rounded-lg overflow-hidden shadow-lg"
-                          >
-                            {src && (
-                              <img
-                                src={src}
-                                alt={evt.Title}
-                                className="w-full h-full object-cover"
-                              />
-                            )}
-                            <div className="absolute bottom-0 w-full bg-gradient-to-t from-black via-transparent to-transparent p-2 text-center">
-                              <h3 className="text-white text-lg sm:text-xl font-semibold drop-shadow-lg leading-tight">
-                                {evt.Title}
-                              </h3>
-                              <p className="text-gray-300 text-sm drop-shadow-lg">
-                                {new Date(evt.Date).toLocaleDateString(undefined, {
-                                  day: "2-digit",
-                                  month: "2-digit",
-                                  year: "numeric",
-                                })}
-                              </p>
-                            </div>
-                          </Link>
-                        </SwiperSlide>
-                      );
-                    })}
+                     {specialEvents.map((evt) => (
+                    <SwiperSlide key={evt.id} className="px-2">
+                      <div
+                        className="relative block h-32 rounded-lg overflow-hidden shadow-lg cursor-pointer"
+                        onClick={() => {
+                          setIsOpen(false);
+                          router.push(`/events/${evt.documentId}`);
+                        }}
+                      >
+                        {evt.Image?.[0] && (
+                          <img
+                            src={`${URL}${evt.Image[0].formats?.small?.url || evt.Image[0].url}`}
+                            alt={evt.Title}
+                            className="w-full h-full object-cover"
+                          />
+                        )}
+                        <div className="absolute bottom-0 w-full bg-gradient-to-t from-black via-transparent to-transparent p-2 text-center">
+                          <h3 className="text-white text-lg sm:text-xl font-semibold drop-shadow-lg leading-tight">
+                            {evt.Title}
+                          </h3>
+                          <p className="text-gray-300 text-sm drop-shadow-lg">
+                            {new Date(evt.Date).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                    </SwiperSlide>
+                  ))}
                   </Swiper>
 
                   <button

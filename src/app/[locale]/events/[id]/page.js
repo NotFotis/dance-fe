@@ -1,194 +1,84 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
-import axios from "axios";
-import Navbar from "../../../../components/NavBar";
-import parse from "html-react-parser";
-import { useTranslations } from "next-intl";
-// Import the icons you need from React Icons
-import { FaFacebook, FaInstagram, FaSpotify, FaSoundcloud, FaTwitter } from "react-icons/fa";
-import { SiBeatport } from "react-icons/si";
-import Footer from "@/components/Footer";
+// Ensure NEXT_PUBLIC_SITE_URL is defined in your .env (e.g. https://your-domain.com)
+import { notFound } from 'next/navigation';
+import Navbar from '@/components/NavBar';
+import Footer from '@/components/Footer';
+import EventDetailsClient from './EventDetailsClient';
+import AudioForm from "@/components/AudioForm";
 
-const EventDetails = () => {
-  const { id } = useParams();
-  const [event, setEvent] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
+// always fetch fresh data (no static caching)
+export const dynamic = 'force-dynamic';
+
+// set metadata base for OG images
+export const metadataBase = new URL(process.env.NEXT_PUBLIC_SITE_URL);
+
+async function fetchEvent(id) {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
-  const URL = process.env.NEXT_PUBLIC_URL;
-  
-  // Use translations from the "eventDetails" namespace.
-  const t = useTranslations();
+  const res = await fetch(
+    `${API_URL}/events/${id}?populate=seo.shareImage&populate=artists.Socials&populate=Image`,
+    { cache: 'no-store' }
+  );
+  if (!res.ok) return null;
+  const json = await res.json();
+  return json.data;
+}
 
-  useEffect(() => {
-    const fetchEvent = async () => {
-      try {
-        const response = await axios.get(
-          `${API_URL}/events/${id}?&populate=artists.Socials&populate=Image`
-        );
-        console.log(response);
-        // Extract the nested event data based on the provided response structure
-        const eventData = response.data.data;
-        setEvent(eventData);
-      } catch (error) {
-        console.error("Error fetching event details:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    if (id) fetchEvent();
-  }, [id, API_URL]);
-
-  if (loading) {
-    return (
-      <div className="text-center text-white py-12 text-2xl">
-        {t("loading")}
-      </div>
-    );
-  }
-
+// Next.js will call this on the server to populate <head>
+export async function generateMetadata({ params }) {
+  const { id, locale } = params;
+  const event = await fetchEvent(id);
   if (!event) {
-    return (
-      <div className="text-center text-red-500 py-12 text-2xl">
-        {t("notFound")}
-      </div>
-    );
+    return {
+      title: 'Event Not Found',
+      description: 'We couldn’t find an event for that ID.',
+    };
   }
 
-  const eventImage = event.Image?.[0]?.formats?.large?.url || "";
-  const googleMapsUrl = event.Loaction
-    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-        event.Loaction
-      )}`
-    : "#";
+  const seo = event.seo || {};
+  const title = seo.metaTitle || event.Title;
+  const description =
+    seo.metaDescription ||
+    event.description?.find(
+      (block) => block.type === 'paragraph' && block.children?.[0]?.text
+    )?.children[0].text ||
+    '';
+
+  // Fallback image: prefer shareImage, then event.Image[0]
+  let images;
+  if (seo.shareImage?.formats?.large?.url) {
+    images = [seo.shareImage.formats.large.url];
+  } else if (event.Image?.[0]?.formats?.large?.url) {
+    images = [event.Image[0].formats.large.url];
+  }
+
+  // Convert relative URLs to absolute via metadataBase
+  const absoluteImages = images?.map((src) =>
+    new URL(src, process.env.NEXT_PUBLIC_URL).toString()
+  );
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/events/${id}`,
+      images: absoluteImages,
+    },
+  };
+}
+
+// The actual page render—server component
+export default async function EventPage({ params }) {
+  const { id } = params;
+  const event = await fetchEvent(id);
+  if (!event) notFound();
 
   return (
-    <div className="bg-black min-h-screen flex flex-col items-center relative text-white mt-20">
+    <div className="bg-transparent min-h-screen text-white">
       <Navbar />
-      <div className="w-full max-w-6xl px-6 mt-20">
-        {eventImage && (
-          <div className="w-full h-full mb-12">
-            <img
-              src={`${URL}${eventImage}`}
-              alt={event.Title}
-              className="w-full h-full object-cover rounded-lg shadow-lg"
-            />
-          </div>
-        )}
-
-        <h1 className="text-5xl font-bold mb-6 text-center md:text-left">
-          {event.Title}
-        </h1>
-
-        <div className="flex flex-col md:flex-row justify-between items-center md:items-start mb-8 text-lg">
-          <p className="text-gray-400">
-            📅 {new Date(event.Date).toLocaleDateString()} | 🕒 {event.Time}
-          </p>
-          <a
-            href={googleMapsUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-white hover:underline mt-2 md:mt-0"
-          >
-            📍 {event.Loaction || t("noLocation")}
-          </a>
-        </div>
-
-        {event.tickets && (
-          <div className="my-6">
-            <a
-              href={event.tickets}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-3 bg-blue-500 text-white font-bold text-lg rounded-lg shadow-lg hover:bg-blue-700 transition"
-            >
-              🎟 {t("buyTickets")}
-            </a>
-          </div>
-        )}
-
-        {/* Render the description content from the API */}
-        <div className="prose prose-lg text-gray-300 leading-relaxed max-w-none text-xl">
-          {Array.isArray(event.description) && event.description.length > 0 ? (
-            event.description.map((block, index) => {
-              if (block.type === "paragraph" && Array.isArray(block.children)) {
-                const combinedContent = block.children
-                  .map((child) => child.text)
-                  .join("");
-                return (
-                  <p key={index} className="mb-6">
-                    {parse(combinedContent)}
-                  </p>
-                );
-              }
-              return null;
-            })
-          ) : (
-            <p>{t("noDescription")}</p>
-          )}
-        </div>
-
-        {/* Lineup Section */}
-        <div className="mt-12">
-          <h2 className="text-3xl font-bold mb-4">{t("lineup")}</h2>
-          {event.artists && event.artists.length > 0 ? (
-            <ul className="text-xl text-gray-300 ">
-              {event.artists.map((artist, index) => (
-                <li key={index} className="mb-2 flex items-center ">
-                  {artist.Name}
-                  {artist.Socials && artist.Socials.length > 0 && (
-                    <span className="ml-2 flex gap-2 ">
-                      {artist.Socials.map((social, idx) => {
-                        let icon;
-                        // Map the social platform to its corresponding icon
-                        switch (social.platform.toLowerCase()) {
-                          case "facebook":
-                            icon = <FaFacebook size={24} />;
-                            break;
-                          case "instagram":
-                            icon = <FaInstagram size={24} />;
-                            break;
-                          case "spotify":
-                            icon = <FaSpotify size={24} />;
-                            break;
-                          case "beatport":
-                            icon = <SiBeatport size={24} />;
-                            break;
-                          case "soundcloud":
-                            icon = <FaSoundcloud size={24} />;
-                            break;
-                          case "x":
-                            icon = <FaTwitter size={24} />;
-                            break;
-                          default:
-                            icon = social.platform;
-                        }
-                        return (
-                          <a
-                            key={idx}
-                            href={social.URL}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {icon}
-                          </a>
-                        );
-                      })}
-                    </span>
-                  )}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-gray-500 text-lg">{t("noLineup")}</p>
-          )}
-        </div>
-      </div>
-      <Footer/>
-
+      <AudioForm />
+      <EventDetailsClient event={event} />
+      <Footer />
     </div>
   );
-};
-
-export default EventDetails;
+}

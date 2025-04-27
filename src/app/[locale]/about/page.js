@@ -3,14 +3,16 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import Navbar from "@/components/NavBar";
+import AudioForm from "@/components/AudioForm"
 
 const AboutPage = () => {
   const router = useRouter();
   const t = useTranslations('about');
 
   return (
-    <div className="min-h-screen bg-black text-white py-12 px-4 text-lg">
+    <div className="min-h-screen bg-transparent text-white py-12 px-4 text-lg">
       <Navbar />
+      <AudioForm/>
       <div className="max-w-7xl mx-auto mt-40">
         <h1 className="text-5xl font-extrabold mb-8 text-center uppercase tracking-widest">
           {t("aboutUs")}

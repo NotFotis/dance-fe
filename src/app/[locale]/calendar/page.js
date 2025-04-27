@@ -291,9 +291,9 @@ const CalendarPage = () => {
                       "";
                     return (
                       <div
-                        key={event.id}
-                        className="relative rounded-xl overflow-hidden shadow-lg cursor-pointer transition-transform transform hover:scale-105"
-                        onClick={() => setSelectedEventId(event.documentId)}
+                      key={event.id}
+                      className="relative rounded-xl overflow-hidden shadow-lg cursor-pointer transition-transform transform hover:scale-105"
+                      onClick={() => router.push(`/events/${event.documentId}`)}
                       >
                         {eventImage && (
                           <img
@@ -308,7 +308,7 @@ const CalendarPage = () => {
                             {t("time")}: {event.Time.split(".")[0]}
                           </p>
                           <p className="text-xs mt-1">
-                            {t("location")}: {event.Loaction || t("noLocation")}
+                            {t("location")}: {event.Location || t("noLocation")}
                           </p>
                           <div className="mt-4 flex space-x-4">
                             {event.Desc && (
@@ -415,7 +415,7 @@ const CalendarPage = () => {
                             <div
                               key={event.id}
                               className="bg-gray-800 text-xs p-1 rounded cursor-pointer hover:bg-gray-700"
-                              onClick={() => setSelectedEventId(event.documentId)}
+                              onClick={() => router.push(`/events/${event.documentId}`)}
                             >
                               {event.Title}
                             </div>
