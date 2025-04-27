@@ -86,7 +86,7 @@ export default function NewsDetailsClient({ news }) {
       >
         <img
           src={
-            news.Image?.[0]?.formats?.large?.url
+            news.Image?.[1]?.formats?.large?.url
               ? `${URL}${news.Image[1].formats.large.url}`
               : `${URL}${news.Image[1]?.url || ''}`
           }
