@@ -1,6 +1,8 @@
 // hooks/useNews.js
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import useSWR from 'swr'
+import axios from 'axios'
+
+const fetcher = url => axios.get(url).then(res => res.data.data)
 
 export function useNews({
   limit,                    // if undefined, returns all; if a number, slices to that many
@@ -8,41 +10,28 @@ export function useNews({
   sortField = 'Date',
   sortOrder = 'desc',
 } = {}) {
-  const [news, setNews] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  const API_URL = process.env.NEXT_PUBLIC_API_URL
+  const url = `${API_URL}/dance-new?populate=${populate}`
 
-  useEffect(() => {
-    let isMounted = true;
-    setLoading(true);
+  const { data, error } = useSWR(url, fetcher, {
+    revalidateOnFocus: false,
+  })
 
-    (async () => {
-      try {
-        const res = await axios.get(
-          `${API_URL}/dance-new?populate=${populate}`
-        );
-        const items = res.data.data;
+  const isLoading = !error && !data
+  const raw = data || []
 
-        // sort
-        const sorted = items.sort((a, b) => {
-          const dir = sortOrder === 'asc' ? 1 : -1;
-          return dir * (new Date(a[sortField]) - new Date(b[sortField]));
-        });
+  // sort
+  const sorted = raw.slice().sort((a, b) => {
+    const dir = sortOrder === 'asc' ? 1 : -1
+    return dir * (new Date(a[sortField]) - new Date(b[sortField]))
+  })
 
-        // slice if limit is provided
-        const out = typeof limit === 'number' ? sorted.slice(0, limit) : sorted;
+  // slice if limit is provided
+  const news = typeof limit === 'number' ? sorted.slice(0, limit) : sorted
 
-        if (isMounted) setNews(out);
-      } catch (err) {
-        if (isMounted) setError(err);
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    })();
-
-    return () => { isMounted = false; };
-  }, [API_URL, limit, populate, sortField, sortOrder]);
-
-  return { news, loading, error };
+  return {
+    news,
+    isLoading,
+    isError: error,
+  }
 }
