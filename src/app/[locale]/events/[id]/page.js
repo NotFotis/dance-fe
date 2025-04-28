@@ -14,11 +14,11 @@ export const metadataBase = new URL(process.env.NEXT_PUBLIC_SITE_URL);
 async function fetchEvent(id) {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const res = await fetch(
-    `${API_URL}/events/${id}?populate=seo.shareImage&populate=artists.Socials&populate=Image`,
+    `${API_URL}/events/${id}?populate=seo.shareImage&populate=artists.Socials&populate=Image&populate=music_genres`,
     { cache: 'no-store' }
   );
   if (!res.ok) return null;
-  const json = await res.json();
+  const json = await res.json();  
   return json.data;
 }
 

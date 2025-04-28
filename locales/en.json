@@ -51,6 +51,8 @@
   "notFound": "Event not found",
   "noDescription": "No description available.",
   "lineup": "Lineup",
+  "description": "About the event",
+  "venue": "Venue",
   "noLineup": "No lineup available",
   "noLocation": "Location not specified",
   "calendarView" : "Calendar",
@@ -98,7 +100,8 @@
       "noGenres": "No Genre",
       "joinDiscussion": "Join the discussion about this article on our Discord!",
       "discordButtonText": "Discuss on Discord",
-      "genres": "Genres"
+      "genres": "Genres",
+      "description": "Description"
     },
     "profile": {
       "savedEventsTitle": "Saved Events",

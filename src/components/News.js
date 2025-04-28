@@ -1,33 +1,19 @@
+// components/NewsCarousel.jsx
 'use client';
-import { useEffect, useState, useRef } from "react";
-import axios from "axios";
-import Link from "next/link";
-import { useTranslations } from "next-intl";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import "swiper/css";
+
+import React, { useRef } from 'react';
+import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import 'swiper/css';
+import { useNews } from '@/hooks/useNews';
 
 export default function NewsCarousel() {
-  const [news, setNews] = useState([]);
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  const { news, loading, error } = useNews({ limit: 10 });
   const URL = process.env.NEXT_PUBLIC_URL;
-  const t = useTranslations("newsComponent");
+  const t = useTranslations('newsComponent');
   const sliderRef = useRef(null);
-
-  useEffect(() => {
-    const fetchNews = async () => {
-      try {
-        const response = await axios.get(`${API_URL}/dance-new?populate=*`);
-        const sorted = response.data.data.sort(
-          (a, b) => new Date(b.Date) - new Date(a.Date)
-        );
-        setNews(sorted.slice(0, 6));
-      } catch (err) {
-        console.error("Error fetching news:", err);
-      }
-    };
-    fetchNews();
-  }, [API_URL]);
 
   const slidePrev = () => sliderRef.current?.swiper.slidePrev();
   const slideNext = () => sliderRef.current?.swiper.slideNext();
@@ -38,7 +24,7 @@ export default function NewsCarousel() {
         {/* Header & Navigation */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
           <h2 className="text-4xl md:text-5xl font-extrabold tracking-wide mb-4 md:mb-0">
-            {t("title")}
+            {t('title')}
           </h2>
           <div className="flex items-center space-x-4">
             <button
@@ -57,7 +43,7 @@ export default function NewsCarousel() {
               href="/news"
               className="py-2 px-4 border border-white text-white uppercase tracking-wider font-medium hover:bg-white hover:text-black transition rounded"
             >
-              {t("allNews")}
+              {t('allNews')}
             </Link>
           </div>
         </div>
@@ -73,12 +59,25 @@ export default function NewsCarousel() {
           }}
           className="mySwiper"
         >
-          {news.length ? (
+          {loading ? (
+            <SwiperSlide>
+              <div className="w-full text-center text-white text-xl">
+                {t('loadingNews')}
+              </div>
+            </SwiperSlide>
+          ) : error ? (
+            <SwiperSlide>
+              <div className="w-full text-center text-red-400 text-xl">
+                {t('errorLoadingNews')}
+              </div>
+            </SwiperSlide>
+          ) : (
             news.map((item) => {
-              const imageUrl = item.Image[0]?.formats?.medium?.url ||
-                               item.Image[0]?.url
-                ? `${URL}${item.Image[0].formats?.medium?.url || item.Image.url}`
-                : "";
+              const imageUrl =
+                item.Image?.[0]?.formats?.medium?.url ||
+                item.Image?.[0]?.url
+                  ? `${URL}${item.Image[0].formats?.medium?.url || item.Image[0].url}`
+                  : '';
 
               return (
                 <SwiperSlide key={item.id}>
@@ -99,24 +98,20 @@ export default function NewsCarousel() {
                           />
                         ) : (
                           <div className="bg-gray-700 w-full h-full flex items-center justify-center">
-                            <span>{t("noImage")}</span>
+                            <span>{t('noImage')}</span>
                           </div>
                         )}
                         <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
-                          <h3
-                            className="text-2xl font-bold text-white text-center drop-shadow-lg"
-                          >
+                          <h3 className="text-2xl font-bold text-white text-center drop-shadow-lg">
                             {item.Title}
                           </h3>
-                          <p
-                            className="text-white text-sm mt-1 text-center drop-shadow-lg"
-                          >
+                          <p className="text-white text-sm mt-1 text-center drop-shadow-lg">
                             {new Date(item.Date).toLocaleDateString(undefined, {
-                              month: "long",
-                              day: "numeric",
-                              year: "numeric",
+                              month: 'long',
+                              day: 'numeric',
+                              year: 'numeric',
                             })}
-                            {item.Time ? ` | ${item.Time.split(".")[0]}` : ""}
+                            {item.Time ? ` | ${item.Time.split('.')[0]}` : ''}
                           </p>
                         </div>
                       </div>
@@ -125,12 +120,6 @@ export default function NewsCarousel() {
                 </SwiperSlide>
               );
             })
-          ) : (
-            <SwiperSlide>
-              <div className="w-full text-center text-white text-xl">
-                {t("loadingNews")}
-              </div>
-            </SwiperSlide>
           )}
         </Swiper>
       </div>

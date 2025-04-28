@@ -17,7 +17,7 @@ export default function EventsCarousel() {
   // Sort by descending date and take up to 6
   const events = rawEvents
     .sort((a, b) => new Date(b.Date) - new Date(a.Date))
-    .slice(0, 6);
+    .slice(0, 10);
 
   const sliderRef = useRef(null);
 
