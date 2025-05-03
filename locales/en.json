@@ -197,8 +197,20 @@
         "stat3Label": "Coaches",
         "stat3Description": "Expert coaches for your fitness success.",
         "imageSrc": "/images/dumbbells.jpg"
-      }    
-    
-    
-    
-}
+      },
+      "contact":
+        {
+          "pageTitle": "Contact Us | MySite",
+          "metaDescription": "Get in touch via our contact form.",
+          "heading": "Get in Touch",
+          "labelName": "Name",
+          "labelEmail": "Email",
+          "labelMessage": "Message",
+          "sendButton": "Send Message",
+          "successMessage": "Message Sent!",
+          "nameMin": "Name must be at least 2 characters",
+          "emailInvalid": "Invalid email address",
+          "messageMin": "Message must be at least 10 characters"
+        }
+
+}    

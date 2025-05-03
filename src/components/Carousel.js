@@ -68,7 +68,7 @@ export default function EventsCarousel() {
           {isLoading ? (
             <SwiperSlide>
               <div className="w-full text-center text-white text-xl">
-                {t("loadingEvents")}
+              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-white" />
               </div>
             </SwiperSlide>
           ) : (

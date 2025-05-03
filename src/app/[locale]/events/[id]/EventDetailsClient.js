@@ -238,7 +238,7 @@ export default function EventDetailsClient({ event }) {
 
         {/* Description */}
         <section className=" text-center bg-black bg-opacity-50 p-6 rounded-2xl shadow-xl">
-          <h2 className="text-2xl md:text-3xl font-bold mb-6 pt-5 text-center text-white">
+          <h2 className="text-2xl md:text-3xl font-bold mb-6  text-center text-white">
             {t('description')}
           </h2>
           {Array.isArray(event.description) && event.description.length > 0 ? (
@@ -250,7 +250,7 @@ export default function EventDetailsClient({ event }) {
 
         {/* Venue Map */}
         <section ref={venueRef} id="venue" className="text-center bg-black bg-opacity-50 p-6 rounded-2xl shadow-xl">
-          <h2 className="text-2xl md:text-3xl font-bold mb-6 pt-5 text-center">
+          <h2 className="text-2xl md:text-3xl font-bold mb-6  text-center">
             {t('venue')}
           </h2>
           <div className="w-full h-64 rounded-xl overflow-hidden mb-5">

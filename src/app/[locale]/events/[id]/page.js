@@ -1,4 +1,3 @@
-// Ensure NEXT_PUBLIC_SITE_URL is defined in your .env (e.g. https://your-domain.com)
 import { notFound } from 'next/navigation';
 import Navbar from '@/components/NavBar';
 import Footer from '@/components/Footer';

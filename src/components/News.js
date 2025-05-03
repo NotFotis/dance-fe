@@ -62,7 +62,7 @@ export default function NewsCarousel() {
           {loading ? (
             <SwiperSlide>
               <div className="w-full text-center text-white text-xl">
-                {t('loadingNews')}
+              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-white" />
               </div>
             </SwiperSlide>
           ) : error ? (

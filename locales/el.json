@@ -55,6 +55,8 @@
   "lineup": "Lineup",
   "noLineup": "Δεν υπάρχουν διαθέσιμες πληροφορίες για το lineup",
   "noLocation": "Η τοποθεσία δεν προσδιορίστηκε",
+  "description": "Σχετικά με την εκδήλωση",
+  "venue": "Χώρος διεξαγωγής",
   "login": {
     "noAccount": "Δεν έχετε λογαριασμό;",
     "register": "Εγγραφή"
@@ -97,7 +99,10 @@
     "backToNews": "← Επιστροφή στις Ειδήσεις",
     "noGenre": "Χωρίς είδος",
     "joinDiscussion": "Συζητήστε αυτό το άρθρο στο Discord μας!",
-    "discordButtonText": "Συζήτηση στο Discord"
+    "discordButtonText": "Συζήτηση στο Discord",
+    "noGenres": "Χωρίς είδος",
+    "genres": "Είδη",
+    "description": "Περιγραφή"
   },
   "profile": {
     "savedEventsTitle": "Αποθηκευμένες Εκδηλώσεις",
@@ -150,7 +155,8 @@
     "info": "Πληροφορίες",
     "buyTickets": "Αγορά Εισιτηρίων",
     "saved": "Αποθηκευμένο",
-    "save": "Αποθήκευση"
+    "save": "Αποθήκευση",
+    "noImage": "Χωρίς Εικόνα"
   },
   "authForm": {
     "register": "Εγγραφή",
@@ -192,5 +198,19 @@
     "stat3Label": "Προπονητές",
     "stat3Description": "Ειδικοί προπονητές για την επιτυχία σας στο fitness.",
     "imageSrc": "/images/dumbbells.jpg"
+  },
+  "contact":
+  {
+    "pageTitle": "Επικοινωνήστε μαζί μας | MySite",
+    "metaDescription": "Επικοινωνήστε μαζί μας μέσω της φόρμας επικοινωνίας.",
+    "heading": "Επικοινωνήστε μαζί μας",
+    "labelName": "Όνομα",
+    "labelEmail": "Email",
+    "labelMessage": "Μήνυμα",
+    "sendButton": "Αποστολή μηνύματος",
+    "successMessage": "Το μήνυμα στάλθηκε!",
+    "nameMin": "Το όνομα πρέπει να έχει τουλάχιστον 2 χαρακτήρες",
+    "emailInvalid": "Μη έγκυρη διεύθυνση email",
+    "messageMin": "Το μήνυμα πρέπει να έχει τουλάχιστον 10 χαρακτήρες"
   }
 }
