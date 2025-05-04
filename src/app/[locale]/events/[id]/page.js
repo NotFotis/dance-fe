@@ -8,7 +8,6 @@ import AudioForm from "@/components/AudioForm";
 export const dynamic = 'force-dynamic';
 
 // set metadata base for OG images
-export const metadataBase = new URL(process.env.NEXT_PUBLIC_SITE_URL);
 
 async function fetchEvent(id) {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
