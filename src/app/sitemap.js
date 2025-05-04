@@ -3,7 +3,7 @@ import { routing } from "../../i18n/routing";
 import { getAllEventIds } from "../lib/events";
 import { getAllNewsIds } from "../lib/news";
 
-const host = process.env.NEXT_PUBLIC_HOST || "http://localhost:3000";
+const host = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 export default async function sitemap() {
   // Collect all routes
