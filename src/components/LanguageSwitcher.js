@@ -19,8 +19,8 @@ console.log(currentLocale);
           onClick={() => handleLocaleChange(locale)}
           className={`px-2 py-1 border rounded ${
             locale === currentLocale
-            ? "bg-white text-black"
-            : "bg-black text-white"
+            ? "bg-black text-white"
+            : "bg-white text-black"
           }`}
         >
           {locale.toUpperCase()}

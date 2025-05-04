@@ -65,12 +65,6 @@ export default function NewsCarousel() {
               <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-white" />
               </div>
             </SwiperSlide>
-          ) : error ? (
-            <SwiperSlide>
-              <div className="w-full text-center text-red-400 text-xl">
-                {t('errorLoadingNews')}
-              </div>
-            </SwiperSlide>
           ) : (
             news.map((item) => {
               const imageUrl =
@@ -101,8 +95,8 @@ export default function NewsCarousel() {
                             <span>{t('noImage')}</span>
                           </div>
                         )}
-                        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
-                          <h3 className="text-2xl font-bold text-white text-center drop-shadow-lg">
+                    <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent rounded-b-2xl">
+                    <h3 className="text-2xl font-bold text-white text-center drop-shadow-lg">
                             {item.Title}
                           </h3>
                           <p className="text-white text-sm mt-1 text-center drop-shadow-lg">
