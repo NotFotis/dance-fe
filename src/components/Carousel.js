@@ -10,16 +10,14 @@ import Link from "next/link";
 export default function EventsCarousel() {
   const t = useTranslations("carousel");
   const URL = process.env.NEXT_PUBLIC_URL;
-
-  // Fetch all events via SWR hook
   const { events: rawEvents = [], isLoading } = useEvents();
 
-  // Sort by descending date and take up to 6
   const events = rawEvents
     .sort((a, b) => new Date(b.Date) - new Date(a.Date))
     .slice(0, 10);
 
   const sliderRef = useRef(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const slidePrev = () => sliderRef.current?.swiper.slidePrev();
   const slideNext = () => sliderRef.current?.swiper.slideNext();
@@ -63,12 +61,13 @@ export default function EventsCarousel() {
             1024: { slidesPerView: 3 },
             1280: { slidesPerView: 4 },
           }}
+          onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
           className="mySwiper"
         >
           {isLoading ? (
             <SwiperSlide>
               <div className="w-full text-center text-white text-xl">
-              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-white" />
+                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-white" />
               </div>
             </SwiperSlide>
           ) : (
@@ -80,7 +79,7 @@ export default function EventsCarousel() {
                   <Link
                     href={`/events/${evt.documentId}`}
                     className="block transition-transform transform hover:scale-95 w-full h-full relative z-0 rounded-2xl overflow-hidden shadow-[0_10px_15px_-3px_rgba(0,0,0,0.2)]"
-                    style={{ aspectRatio: '9 / 16' }}
+                    style={{ aspectRatio: "9 / 16" }}
                   >
                     {imgUrl ? (
                       <img
@@ -125,6 +124,21 @@ export default function EventsCarousel() {
             })
           )}
         </Swiper>
+
+        {/* Custom Pagination Dots */}
+        {!isLoading && (
+          <div className="flex justify-center mt-6 space-x-2">
+            {events.map((_, idx) => (
+              <span
+                key={idx}
+                onClick={() => sliderRef.current?.swiper.slideTo(idx)}
+                className={`h-2 w-2 rounded-full cursor-pointer transition-colors duration-200 ${
+                  idx === activeIndex ? "bg-black" : "bg-gray-300"
+                }`}
+              ></span>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

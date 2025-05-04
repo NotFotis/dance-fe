@@ -40,7 +40,7 @@ export default function Home() {
       </section>
 
       {/* Contact Form Section */}
-      <section id="about" className="my-20 w-full px-6 ">
+      <section id="about" className="mt-40 w-full px-6 py-12 mb-20">
       <SwipeableStack apiUrl={process.env.NEXT_PUBLIC_API_URL} />
       </section>
       

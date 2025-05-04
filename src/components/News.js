@@ -1,12 +1,12 @@
-// components/NewsCarousel.jsx
-'use client';
-
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+
+// Swiper styles
 import 'swiper/css';
+
 import { useNews } from '@/hooks/useNews';
 
 export default function NewsCarousel() {
@@ -14,9 +14,18 @@ export default function NewsCarousel() {
   const URL = process.env.NEXT_PUBLIC_URL;
   const t = useTranslations('newsComponent');
   const sliderRef = useRef(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const slidePrev = () => sliderRef.current?.swiper.slidePrev();
   const slideNext = () => sliderRef.current?.swiper.slideNext();
+
+  if (error) {
+    return (
+      <div className="text-center text-red-500 py-8">
+        {t('errorLoading')}
+      </div>
+    );
+  }
 
   return (
     <div className="relative bg-transparent text-white py-16 mt-20">
@@ -57,12 +66,13 @@ export default function NewsCarousel() {
             1024: { slidesPerView: 3 },
             1280: { slidesPerView: 4 },
           }}
+          onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
           className="mySwiper"
         >
           {loading ? (
             <SwiperSlide>
               <div className="w-full text-center text-white text-xl">
-              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-white" />
+                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-white" />
               </div>
             </SwiperSlide>
           ) : (
@@ -95,8 +105,8 @@ export default function NewsCarousel() {
                             <span>{t('noImage')}</span>
                           </div>
                         )}
-                    <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent rounded-b-2xl">
-                    <h3 className="text-2xl font-bold text-white text-center drop-shadow-lg">
+                        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent rounded-b-2xl">
+                          <h3 className="text-2xl font-bold text-white text-center drop-shadow-lg">
                             {item.Title}
                           </h3>
                           <p className="text-white text-sm mt-1 text-center drop-shadow-lg">
@@ -116,6 +126,21 @@ export default function NewsCarousel() {
             })
           )}
         </Swiper>
+
+        {/* Custom Pagination Dots */}
+        {!loading && (
+          <div className="flex justify-center mt-6 space-x-2">
+            {news.map((_, idx) => (
+              <span
+                key={idx}
+                onClick={() => sliderRef.current?.swiper.slideTo(idx)}
+                className={`h-2 w-2 rounded-full cursor-pointer transition-colors duration-200 ${
+                  idx === activeIndex ? 'bg-black' : 'bg-gray-300'
+                }`}
+              ></span>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
