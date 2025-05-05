@@ -112,9 +112,9 @@ export default function EventDetailsClient({ event }) {
       >
         <img
           src={
-            event.Image?.[0]?.formats?.large?.url
-              ? `${URL}${event.Image[0].formats.large.url}`
-              : `${URL}${event.Image[0]?.url || ''}`
+            event.Image?.[1]?.formats?.large?.url
+              ? `${URL}${event.Image[1].formats.large.url}`
+              : `${URL}${event.Image[1]?.url || ''}`
           }
           alt={event.Title}
           className="object-cover w-full h-full"
