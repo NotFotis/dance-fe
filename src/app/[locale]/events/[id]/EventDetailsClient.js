@@ -135,7 +135,7 @@ export default function EventDetailsClient({ event }) {
         {/* Title / Date / Location / Tickets */}
         <div className="p-6 text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold">{event.Title}</h1>
-          <p className="mt-2 text-lg text-gray-300 flex flex-wrap justify-center items-center space-x-4 space-y-2">
+          <p className="mt-4 text-lg text-gray-300 flex flex-wrap justify-center items-center space-x-4 ">
             <span className="flex items-center">
               <FaRegCalendarAlt className="mr-2" />
               {formattedDate}
