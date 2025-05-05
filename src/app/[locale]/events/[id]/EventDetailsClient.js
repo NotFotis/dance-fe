@@ -108,7 +108,7 @@ export default function EventDetailsClient({ event }) {
       {/* Hero Image */}
       <div
         className="w-full max-w-screen-xl overflow-hidden my-8 rounded-2xl shadow-xl"
-        style={{ aspectRatio: '16 / 9' }}
+        style={{ aspectRatio: '2 / 1' }}
       >
         <img
           src={
