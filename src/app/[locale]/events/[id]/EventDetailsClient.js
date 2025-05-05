@@ -174,14 +174,14 @@ export default function EventDetailsClient({ event }) {
           )}
         </div>
 
-        {/* Lineup as Grid */}
+        {/* Lineup */}
         <div className="p-6">
           <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">{t('lineup')}</h2>
           {event.artists?.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 text-center">
+            <ul className="space-y-4 text-center">
               {event.artists.map((artist, idx) => (
-                <div key={artist.id || `artist-${idx}`} className="flex flex-col items-center">
-                  <div className="flex space-x-4 mt-2 justify-center">
+                <li key={artist.id || `artist-${idx}`} className="flex flex-col items-center">
+                  <div className="flex justify-center space-x-4">
                   <span className="text-xl font-medium mb-1">{artist.Name}</span>
                     {artist.Socials?.map((social, i2) => {
                       let Icon;
@@ -201,9 +201,9 @@ export default function EventDetailsClient({ event }) {
                       ) : null;
                     })}
                   </div>
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           ) : (
             <p className="text-gray-400 text-center">{t('noLineup')}</p>
           )}
