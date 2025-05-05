@@ -11,7 +11,7 @@ import {
   FaRegClock,
   FaMapMarkerAlt,
 } from 'react-icons/fa';
-import { SiBeatport } from 'react-icons/si';
+import { SiBeatport, SiTidal, SiApplemusic } from 'react-icons/si';
 import { useTranslations } from 'next-intl';
 
 export default function EventDetailsClient({ event }) {
@@ -192,6 +192,8 @@ export default function EventDetailsClient({ event }) {
                         case 'beatport': Icon = SiBeatport; break;
                         case 'soundcloud': Icon = FaSoundcloud; break;
                         case 'x': Icon = FaTwitter; break;
+                        case 'tidal': Icon = SiTidal; break;
+                        case 'apple music': Icon = SiApplemusic; break;
                         default: Icon = null;
                       }
                       return Icon ? (
