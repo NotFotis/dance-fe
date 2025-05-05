@@ -90,17 +90,14 @@ export default function NewsListPage() {
             <div className="flex justify-center items-center py-32">
               <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-white" />
             </div>
-          ) : pageItems.length === 0 ? (
-            <div className="flex justify-center items-center py-32 text-red-500 text-2xl">
-              {t('noNewsFound')}
-            </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
               {pageItems.map(article => (
                 <Link
                   key={article.id}
                   href={`/news/${article.documentId}`}
-                  className="group relative block h-[500px] overflow-hidden rounded-xl shadow-lg transition-transform hover:scale-95"
+                  className="group relative block h-full overflow-hidden rounded-xl shadow-lg transition-transform hover:scale-95"
+                  style={{ aspectRatio: '9 / 16' }}
                 >
                   {getImageUrl(article) ? (
                     <img
