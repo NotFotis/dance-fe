@@ -23,9 +23,10 @@ export default function EventDetailsClient({ event }) {
     return (
       <div className="flex items-center justify-center h-64 mt-20">
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-white" />
-        </div>
+      </div>
     );
   }
+
   // Format date/day
   const formattedDate = new Date(event.Date).toLocaleDateString('en-GB', {
     day: 'numeric',
@@ -44,15 +45,12 @@ export default function EventDetailsClient({ event }) {
       locationName = decodeURIComponent(segments[placeIdx + 1].replace(/\+/g, ' '));
     }
   } catch (e) {
-    // fallback
     locationName = event.Location;
   }
 
   // Scroll to venue section
   const handleLocationClick = () => {
-    if (venueRef.current) {
-      venueRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
+    if (venueRef.current) venueRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
   // Render rich text from Strapi
@@ -63,7 +61,7 @@ export default function EventDetailsClient({ event }) {
       const allEmpty = children.every((c) => !(c.text || '').trim());
       if (allEmpty) return <br key={`br-${idx}`} />;
       return (
-        <p key={`paragraph-${idx}`}>
+        <p key={`paragraph-${idx}`} className="text-left">
           {children.map((c, j) => {
             const content = parse(c.text || '') || '';
             if (c.bold) return <strong key={`bold-${idx}-${j}`}>{content}</strong>;
@@ -75,32 +73,44 @@ export default function EventDetailsClient({ event }) {
       );
     }
 
-    const childrenSpans = children.map((c, j) => (
-      <span key={`${block.type}-${idx}-${j}`}>{parse(c.text || '')}</span>
-    ));
-
-    switch (block.type) {
-      case 'heading':
-        return (
-          <h2 key={`heading-${idx}`} className="text-2xl font-semibold mt-6">
-            {childrenSpans}
-          </h2>
-        );
-      case 'list-item':
-        return (
-          <li key={`li-${idx}`} className="list-disc ml-6">
-            {childrenSpans}
-          </li>
-        );
-      case 'o-list-item':
-        return (
-          <li key={`oli-${idx}`} className="list-decimal ml-6">
-            {childrenSpans}
-          </li>
-        );
-      default:
-        return <div key={`default-${idx}`}>{childrenSpans}</div>;
+    if (block.type === 'list') {
+      const ListTag = block.format === 'unordered' ? 'ul' : 'ol';
+      const listClass =
+        block.format === 'unordered'
+          ? 'list-disc ml-6 text-left'
+          : 'list-decimal ml-6 text-left';
+      return (
+        <ListTag key={`list-${idx}`} className={listClass}>
+          {block.children.map((child, j) => renderBlock(child, `${idx}-${j}`))}
+        </ListTag>
+      );
     }
+
+    if (block.type === 'list-item' || block.type === 'o-list-item') {
+      const className =
+        block.type === 'list-item'
+          ? 'list-disc ml-6 text-left'
+          : 'list-decimal ml-6 text-left';
+      return (
+        <li key={`${block.type}-${idx}`} className={className}>
+          {children.map((c, j) => parse(c.text || ''))}
+        </li>
+      );
+    }
+
+    if (block.type === 'heading') {
+      return (
+        <h2 key={`heading-${idx}`} className="text-2xl font-semibold mt-6 text-center">
+          {children.map((c, j) => parse(c.text || ''))}
+        </h2>
+      );
+    }
+
+    return (
+      <div key={`default-${idx}`} className="text-left">
+        {children.map((c, j) => parse(c.text || ''))}
+      </div>
+    );
   };
 
   return (
@@ -121,11 +131,11 @@ export default function EventDetailsClient({ event }) {
         />
       </div>
 
-      <div className="w-full max-w-screen-xl px-2 space-y-8 ">
+      <div className="w-full max-w-screen-xl px-2 bg-black bg-opacity-50 rounded-2xl shadow-xl divide-y divide-gray-700">
         {/* Title / Date / Location / Tickets */}
-        <div className="text-center bg-black bg-opacity-50 p-6 rounded-2xl shadow-xl">
+        <div className="p-6 text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold">{event.Title}</h1>
-          <p className="mt-2 text-lg text-gray-300 flex justify-center items-center space-x-4">
+          <p className="mt-2 text-lg text-gray-300 flex flex-wrap justify-center items-center space-x-4 space-y-2">
             <span className="flex items-center">
               <FaRegCalendarAlt className="mr-2" />
               {formattedDate}
@@ -137,24 +147,16 @@ export default function EventDetailsClient({ event }) {
               </span>
             )}
             {event.Location && (
-            <span
-              className="mt-1 text-lg text-gray-300 flex justify-center items-center cursor-pointer"
-              onClick={handleLocationClick}
-            >
-              <FaMapMarkerAlt className="mr-2" />
-              {locationName}
-            </span>
-          )}
+              <span className="flex items-center cursor-pointer" onClick={handleLocationClick}>
+                <FaMapMarkerAlt className="mr-2" />
+                {locationName}
+              </span>
+            )}
           </p>
-          
-                    {/* Genres as white bubbles */}
-            {event.music_genres?.length > 0 && (
-            <div className="flex justify-center flex-wrap gap-2 mb-3 mt-3">
+          {event.music_genres?.length > 0 && (
+            <div className="flex justify-center flex-wrap gap-2 mt-3">
               {event.music_genres.map((g) => (
-                <span
-                  key={g.id}
-                  className="bg-white text-black rounded-full px-3 py-1 text-sm font-medium"
-                >
+                <span key={g.id} className="bg-white text-black rounded-full px-3 py-1 text-sm font-medium">
                   {g.name}
                 </span>
               ))}
@@ -165,109 +167,74 @@ export default function EventDetailsClient({ event }) {
               href={event.tickets}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 inline-block bg-black hover:bg-white hover:text-black transition px-6 py-3 rounded-xl text-lg font-semibold"
+              className="mt-4 inline-block bg-black text-white hover:bg-white hover:text-black transition px-6 py-3 rounded-xl text-lg font-semibold"
             >
               {t('buyTickets')}
             </a>
           )}
         </div>
 
-        {/* Lineup + Genres */}
-        <section className=" text-center bg-black bg-opacity-50 p-6 rounded-2xl shadow-xl">
-          <h2 className="text-2xl md:text-3xl font-bold mb-6">{t('lineup')}</h2>
-
-          {/* Rounded container around artists */}
-          <div className="">
-            {event.artists?.length > 0 ? (
-              <ul className="space-y-4">
-                {event.artists.map((artist, idx) => (
-                  <li
-                    key={artist.id || `artist-${idx}`}
-                    className="flex flex-col items-center"
-                  >
-                    {artist.Socials?.length > 0 && (
-                      <div className="mt-2 flex space-x-4">
-                        <span className="text-xl font-medium">{artist.Name}</span>
-                        {artist.Socials.map((social, i2) => {
-                          let Icon;
-                          switch (social.platform.toLowerCase()) {
-                            case 'facebook':
-                              Icon = FaFacebook;
-                              break;
-                            case 'instagram':
-                              Icon = FaInstagram;
-                              break;
-                            case 'spotify':
-                              Icon = FaSpotify;
-                              break;
-                            case 'beatport':
-                              Icon = SiBeatport;
-                              break;
-                            case 'soundcloud':
-                              Icon = FaSoundcloud;
-                              break;
-                            case 'x':
-                              Icon = FaTwitter;
-                              break;
-                            default:
-                              Icon = null;
-                          }
-                          return (
-                            Icon && (
-                              <a
-                                key={social.URL || `social-${idx}-${i2}`}
-                                href={social.URL}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                <Icon size={24} />
-                              </a>
-                            )
-                          );
-                        })}
-                      </div>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-gray-400">{t('noLineup')}</p>
-            )}
-          </div>
-        </section>
+        {/* Lineup */}
+        <div className="p-6">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">{t('lineup')}</h2>
+          {event.artists?.length > 0 ? (
+            <ul className="space-y-4 text-center">
+              {event.artists.map((artist, idx) => (
+                <li key={artist.id || `artist-${idx}`} className="flex flex-col items-center">
+                  <div className="flex justify-center space-x-4">
+                  <span className="text-xl font-medium mb-1">{artist.Name}</span>
+                    {artist.Socials?.map((social, i2) => {
+                      let Icon;
+                      switch (social.platform.toLowerCase()) {
+                        case 'facebook': Icon = FaFacebook; break;
+                        case 'instagram': Icon = FaInstagram; break;
+                        case 'spotify': Icon = FaSpotify; break;
+                        case 'beatport': Icon = SiBeatport; break;
+                        case 'soundcloud': Icon = FaSoundcloud; break;
+                        case 'x': Icon = FaTwitter; break;
+                        default: Icon = null;
+                      }
+                      return Icon ? (
+                        <a key={i2} href={social.URL} target="_blank" rel="noopener noreferrer">
+                          <Icon size={24} />
+                        </a>
+                      ) : null;
+                    })}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-gray-400 text-center">{t('noLineup')}</p>
+          )}
+        </div>
 
         {/* Description */}
-        <section className=" text-center bg-black bg-opacity-50 p-6 rounded-2xl shadow-xl">
-          <h2 className="text-2xl md:text-3xl font-bold mb-6  text-center text-white">
-            {t('description')}
-          </h2>
+        <div className="p-6">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">{t('description')}</h2>
           {Array.isArray(event.description) && event.description.length > 0 ? (
             event.description.map((block, i) => renderBlock(block, i))
           ) : (
-            <p key="no-description">{t('noDescription')}</p>
+            <p key="no-description" className="text-center">{t('noDescription')}</p>
           )}
-        </section>
+        </div>
 
         {/* Venue Map */}
-        <section ref={venueRef} id="venue" className="text-center bg-black bg-opacity-50 p-6 rounded-2xl shadow-xl">
-          <h2 className="text-2xl md:text-3xl font-bold mb-6  text-center">
-            {t('venue')}
-          </h2>
-          <div className="w-full h-64 rounded-xl overflow-hidden mb-5">
+        <div ref={venueRef} id="venue" className="p-6">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">{t('venue')}</h2>
+          <div className="w-full h-64 rounded-xl overflow-hidden">
             <iframe
-              src={`https://www.google.com/maps?q=${encodeURIComponent(
-                event.Location
-              )}&output=embed`}
+              src={`https://www.google.com/maps?q=${encodeURIComponent(event.Location)}&output=embed`}
               width="100%"
               height="100%"
               style={{ border: 0 }}
-              allowFullScreen=""
+              allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               title="Venue Location"
             />
           </div>
-        </section>
+        </div>
       </div>
     </div>
   );
