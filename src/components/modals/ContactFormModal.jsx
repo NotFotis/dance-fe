@@ -7,6 +7,7 @@ import * as z from "zod";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
+import { FaDiscord, FaFacebook, FaInstagram } from "react-icons/fa";
 
 // Schema validation with Zod
 const contactSchema = z.object({
@@ -48,7 +49,7 @@ export default function ContactPage() {
       </Head>
       <section id="contact" className="py-16 px-8 mt-12 rounded-2xl shadow-xl">
         <motion.h2
-          className="text-center text-4xl sm:text-5xl font-extrabold mb-10"
+          className="text-center text-white text-4xl sm:text-5xl font-extrabold mb-10"
           initial={{ opacity: 0, y: -40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
@@ -167,6 +168,33 @@ export default function ContactPage() {
                   t("sendButton")
                 )}
               </motion.button>
+                            {/* Social Icons */}
+                            <div className="flex justify-center gap-6 mt-8">
+                  <a
+                    href={process.env.NEXT_PUBLIC_INSTAGRAM_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="transition-opacity duration-200 opacity-70 hover:opacity-100"
+                  >
+                    <FaInstagram size={34} />
+                  </a>
+                  <a
+                    href={process.env.NEXT_PUBLIC_DISCORD_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="transition-opacity duration-200 opacity-70 hover:opacity-100"
+                  >
+                    <FaDiscord size={34} />
+                  </a>
+                  <a
+                    href={process.env.NEXT_PUBLIC_FACEBOOK_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="transition-opacity duration-200 opacity-70 hover:opacity-100"
+                  >
+                    <FaFacebook size={34} />
+                  </a>
+              </div>
             </motion.form>
           )}
 
