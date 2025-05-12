@@ -1,11 +1,8 @@
 'use client';
+
 import React from 'react';
 import parse from 'html-react-parser';
-import {
-  FaRegCalendarAlt,
-  FaUser,
-  FaDiscord,
-} from 'react-icons/fa';
+import { FaRegCalendarAlt, FaUser, FaDiscord } from 'react-icons/fa';
 import { useTranslations } from 'next-intl';
 
 export default function NewsDetailsClient({ news }) {
@@ -91,10 +88,10 @@ export default function NewsDetailsClient({ news }) {
   };
 
   return (
-    <div className="bg-transparent text-white flex flex-col items-center mt-20 mb-20">
+    <div className="bg-transparent text-white flex flex-col mt-20 mb-20 px-6">
       {/* Hero Image */}
       <div
-        className="w-full max-w-screen-xl overflow-hidden my-8 rounded-2xl shadow-xl"
+        className="w-full max-w-screen-2xl mx-auto overflow-hidden my-8 rounded-2xl shadow-xl"
         style={{ aspectRatio: '2 / 1' }}
       >
         <img
@@ -108,7 +105,7 @@ export default function NewsDetailsClient({ news }) {
         />
       </div>
 
-      <div className="w-full max-w-screen-xl px-2 bg-black bg-opacity-50 rounded-2xl shadow-xl divide-y divide-gray-700">
+      <div className="w-full max-w-screen-2xl mx-auto bg-black bg-opacity-50 rounded-2xl shadow-xl divide-y divide-gray-700">
         {/* Title / Date / Author / Genres */}
         <div className="p-6 text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold">{news.Title}</h1>
@@ -142,7 +139,6 @@ export default function NewsDetailsClient({ news }) {
 
         {/* Description */}
         <div className="p-6">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">{t('description')}</h2>
           {Array.isArray(news.description) && news.description.length > 0 ? (
             news.description.map((block, i) => renderBlock(block, i))
           ) : (

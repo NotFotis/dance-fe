@@ -71,7 +71,7 @@ export default function OurServices() {
 
   return (
     <section className="relative bg-transparent">
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-6 relative z-10 py-16 mt-20">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
           <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-wide mb-4 md:mb-0">
             {t("title")}

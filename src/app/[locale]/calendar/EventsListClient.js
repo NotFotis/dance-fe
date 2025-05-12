@@ -153,7 +153,7 @@ export default function CalendarPage() {
       )}
 
       {view === 'list' ? (
-        <div className="max-w-7xl mx-auto py-12">
+        <div className="max-w-screen-2xl mx-auto px-6 py-12">
           {/* Filters */}
           <div className="flex flex-wrap justify-center gap-8 mb-12">
             <div>
@@ -188,15 +188,15 @@ export default function CalendarPage() {
             Object.entries(groupedEvents).map(([date, evts]) => (
               <div key={date} className="mb-12">
                 <h2 className="text-3xl mb-4 border-b border-gray-700 pb-2">{date}</h2>
-                <div className="grid md:grid-cols-3 gap-8">
-                  {evts.map(evt => {
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                {evts.map(evt => {
                     const imgPath = evt.Image?.[0]?.formats?.medium?.url || evt.Image?.[0]?.url || '';
                     const imgUrl = imgPath ? `${URL}${imgPath}` : '';
                     return (
                       <Link
                         key={evt.id}
                         href={`/events/${evt.documentId}`}
-                        className="block transition-transform transform hover:scale-95 relative z-0 rounded-2xl overflow-hidden shadow-lg"
+                        className="group relative block h-full overflow-hidden rounded-xl shadow-lg transition-transform hover:scale-95"
                         style={{ aspectRatio: '9 / 16' }}
                       >
                         {imgUrl ? (
@@ -226,7 +226,7 @@ export default function CalendarPage() {
           )}
         </div>
       ) : (
-        <div className="max-w-7xl mx-auto py-12">
+        <div className="max-w-screen-2xl mx-auto px-6 py-12 text-center">
           {/* Filters */}
           <div className="flex flex-wrap justify-center gap-8 mb-8">
             <div>

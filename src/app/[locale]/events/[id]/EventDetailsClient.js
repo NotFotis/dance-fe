@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useRef } from 'react';
 import parse from 'html-react-parser';
 import {
@@ -93,7 +94,7 @@ export default function EventDetailsClient({ event }) {
           : 'list-decimal ml-6 text-left';
       return (
         <li key={`${block.type}-${idx}`} className={className}>
-          {children.map((c, j) => parse(c.text || ''))}
+          {children.map((c) => parse(c.text || ''))}
         </li>
       );
     }
@@ -101,23 +102,23 @@ export default function EventDetailsClient({ event }) {
     if (block.type === 'heading') {
       return (
         <h2 key={`heading-${idx}`} className="text-2xl font-semibold mt-6 text-center">
-          {children.map((c, j) => parse(c.text || ''))}
+          {children.map((c) => parse(c.text || ''))}
         </h2>
       );
     }
 
     return (
       <div key={`default-${idx}`} className="text-left">
-        {children.map((c, j) => parse(c.text || ''))}
+        {children.map((c) => parse(c.text || ''))}
       </div>
     );
   };
 
   return (
-    <div className="bg-transparent text-white flex flex-col items-center mt-20 mb-20">
+    <div className="bg-transparent text-white flex flex-col items-center mt-20 mb-20 px-6">
       {/* Hero Image */}
       <div
-        className="w-full max-w-screen-xl overflow-hidden my-8 rounded-2xl shadow-xl"
+        className="w-full max-w-screen-2xl mx-auto overflow-hidden my-8 rounded-2xl shadow-xl"
         style={{ aspectRatio: '2 / 1' }}
       >
         <img
@@ -131,11 +132,11 @@ export default function EventDetailsClient({ event }) {
         />
       </div>
 
-      <div className="w-full max-w-screen-xl px-2 bg-black bg-opacity-50 rounded-2xl shadow-xl divide-y divide-gray-700">
+      <div className="w-full max-w-screen-2xl mx-auto bg-black bg-opacity-50 rounded-2xl shadow-xl divide-y divide-gray-700">
         {/* Title / Date / Location / Tickets */}
         <div className="p-6 text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold">{event.Title}</h1>
-          <p className="mt-4 text-lg text-gray-300 flex flex-wrap justify-center items-center space-x-4 ">
+          <p className="mt-4 text-lg text-gray-300 flex flex-wrap justify-center items-center space-x-4">
             <span className="flex items-center">
               <FaRegCalendarAlt className="mr-2" />
               {formattedDate}
@@ -182,7 +183,7 @@ export default function EventDetailsClient({ event }) {
               {event.artists.map((artist, idx) => (
                 <li key={artist.id || `artist-${idx}`} className="flex flex-col items-center">
                   <div className="flex justify-center space-x-4">
-                  <span className="text-xl font-medium mb-1">{artist.Name}</span>
+                    <span className="text-xl font-medium mb-1">{artist.Name}</span>
                     {artist.Socials?.map((social, i2) => {
                       let Icon;
                       switch (social.platform.toLowerCase()) {
@@ -211,6 +212,8 @@ export default function EventDetailsClient({ event }) {
           )}
         </div>
 
+
+
         {/* Description */}
         <div className="p-6">
           <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">{t('description')}</h2>
@@ -236,6 +239,32 @@ export default function EventDetailsClient({ event }) {
               title="Venue Location"
             />
           </div>
+        </div>
+                {/* Hosts with Images */}
+                <div className="p-6">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">{t('hosts')}</h2>
+          {event.hosts?.length > 0 ? (
+            <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-center">
+              {event.hosts.map((host) => (
+                <li key={host.id} className="flex flex-col items-center">
+                  {host.image && (
+                    <img
+                      src={
+                        host.image.formats?.medium?.url
+                          ? `${URL}${host.image.formats.medium.url}`
+                          : `${URL}${host.image.url}`
+                      }
+                      alt={host.name}
+                      className="w-[80%] h-32 object-cover rounded-2xl mb-4"
+                    />
+                  )}
+                  {/* <span className="text-lg font-medium text-white">{host.name}</span> */}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-gray-400 text-center">{t('noHosts')}</p>
+          )}
         </div>
       </div>
     </div>

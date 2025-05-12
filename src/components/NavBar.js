@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Instagram } from "lucide-react";
-import { FaDiscord } from "react-icons/fa";
+import { FaDiscord, FaInstagram } from "react-icons/fa";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -194,15 +194,15 @@ export default function Navbar({ brandName = "dancetoday", showCarousel = true }
                 <LanguageSwitcher currentLocale={locale} className="mb-4 sm:mb-0" />
                 <div className="flex space-x-4 mb-4 sm:mb-0">
                   <a
-                    href="https://www.instagram.com/dancetodaygr/"
+                    href={process.env.NEXT_PUBLIC_INSTAGRAM_URL}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="transition-opacity duration-200 opacity-70 hover:opacity-100"
                   >
-                    <Instagram size={24} />
+                    <FaInstagram size={24} />
                   </a>
                   <a
-                    href="https://discord.gg/6EG7SweXUV"
+                    href={process.env.NEXT_PUBLIC_DISCORD_URL}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="transition-opacity duration-200 opacity-70 hover:opacity-100"

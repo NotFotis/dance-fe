@@ -12,11 +12,13 @@ export const dynamic = 'force-dynamic';
 async function fetchEvent(id) {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const res = await fetch(
-    `${API_URL}/events/${id}?populate=seo.shareImage&populate=artists.Socials&populate=Image&populate=music_genres`,
+    `${API_URL}/events/${id}?populate=seo.shareImage&populate=artists.Socials&populate=Image&populate=music_genres&populate=hosts.image`,
     { cache: 'no-store' }
   );
   if (!res.ok) return null;
   const json = await res.json();  
+  console.log(json);
+  
   return json.data;
 }
 

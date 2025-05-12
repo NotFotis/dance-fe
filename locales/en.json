@@ -53,10 +53,17 @@
   "lineup": "Lineup",
   "description": "About the event",
   "venue": "Venue",
-  "noLineup": "No lineup available",
+  "hosts" :"Hosts",
+  "noHosts" : "No Hosts Available",
+  "noLineup": "TBA",
   "noLocation": "Location not specified",
   "calendarView" : "Calendar",
   "listView": "List",
+  "dancetoday Media Logo": "dancetoday Media Logo",
+  "Contact": "Contact",
+  "Privacy Policy": "Privacy Policy",
+  "Disclaimer": "Disclaimer",
+  "© {year} dancetoday": "© {year} dancetoday",
   "login" : {
     "noAccount": "Don't have an account?",
     "register": "Register"
@@ -171,7 +178,8 @@
       "aboutUs": "About Us",
       "ourStoryTitle": "Our Story",
       "ourStoryDescription": "We started with a passion for connecting communities through unforgettable experiences. Since day one, we've been driven by creativity and unity.",
-      "missionVisionTitle": "Our Mission & Vision",
+      "missionTitle": "Our Mission",
+      "visionTitle": "Our Vision",
       "missionDescription": "Our mission is to empower people to connect through dance, music, and shared experiences.",
       "visionDescription": "We envision a world where every step, beat, and moment brings us closer together.",
       "teamTitle": "Meet the Team",
@@ -211,6 +219,22 @@
           "nameMin": "Name must be at least 2 characters",
           "emailInvalid": "Invalid email address",
           "messageMin": "Message must be at least 10 characters"
-        }
+        },
+      "community":
+      {
+        "joinHeadline": "Join our dance music community!",
+        "joinDiscord": "Join Discord",
+        "communityStats": "Community Stats",
+        "latestMixes": "Latest Mixes & Tracks",
+        "discussionBoards": "Discussion Boards",
+        "newsletter": "Newsletter",
+        "yourEmail": "Your email address",
+        "subscribe": "Subscribe",
+        "socialFeed": "Social Feed",
+        "totalMembers": "Total Members",
+        "onlineNow": "Online Now",
+        "subscribeSuccess": "Thank you for subscribing to our newsletter!",
+        "subscribeError": "Oops! Something went wrong. Please try again."
+      }
 
 }    

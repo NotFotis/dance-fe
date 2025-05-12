@@ -61,8 +61,8 @@ export default function NewsListPage() {
         <Navbar brandName="dancenews" />
         <AudioForm />
 
-        <div className="max-w-6xl w-full px-6 mt-20">
-          <h1 className="text-6xl font-bold mb-8 text-center mt-20">
+        <div className="max-w-screen-2xl w-full mx-auto px-6 mt-20">
+        <h1 className="text-6xl font-bold mb-8 text-center mt-20">
             {t('title')}
           </h1>
 

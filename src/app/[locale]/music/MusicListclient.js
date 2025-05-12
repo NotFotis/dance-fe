@@ -1,21 +1,17 @@
 'use client';
+
 import React, { useState, useMemo } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import Navbar from '@/components/NavBar';
 import AudioForm from '@/components/AudioForm';
 import { useMusicApi } from '@/hooks/useMusic';
+import Footer from '@/components/Footer';
 
 // Helper to pick the first non-null description
 function getDescription(item) {
-  // Primary locale description
-  if (item.description) {
-    return item.description;
-  }
-  // Fallback to localized entries
+  if (item.description) return item.description;
   if (Array.isArray(item.localizations)) {
-    const loc = item.localizations.find(
-      l => Array.isArray(l.description)
-    );
+    const loc = item.localizations.find(l => Array.isArray(l.description));
     return loc?.description || null;
   }
   return null;
@@ -31,7 +27,6 @@ function RichText({ blocks }) {
           const text = block.children.map(c => c.text).join('');
           return <p key={i} className="text-gray-200 mb-4">{text}</p>;
         }
-        // Add other block types here if needed
         return null;
       })}
     </>
@@ -57,42 +52,35 @@ export default function MusicPage() {
   const [selectedGenre, setSelectedGenre] = useState(t('all'));
   const [modalTrack, setModalTrack] = useState(null);
 
-  const months = useMemo(
-    () => [
-      t('all'),
-      'January','February','March','April','May','June','July','August','September','October','November','December'
-    ],
-    [t]
-  );
+  const months = useMemo(() => [
+    t('all'),
+    'January','February','March','April','May','June','July','August','September','October','November','December'
+  ], [t]);
 
-  const genreOptions = useMemo(
-    () => [t('all'), ...(genres.map(g => g.name) || [])],
-    [genres, t]
-  );
+  const genreOptions = useMemo(() => [
+    t('all'),
+    ...(genres.map(g => g.name) || [])
+  ], [genres, t]);
 
-  const filteredMusic = useMemo(() => {
-    return (musicItems || []).filter(m => {
+  const filteredMusic = useMemo(() => (
+    (musicItems || []).filter(m => {
       const date = new Date(m.releaseDate);
       const monthName = date.toLocaleString(apiLocale, { month: 'long' });
-      const monthMatch =
-        selectedMonth === t('all') ||
-        monthName.toLowerCase() === selectedMonth.toLowerCase();
-      const genreMatch =
-        selectedGenre === t('all') ||
+      const monthMatch = selectedMonth === t('all') || monthName.toLowerCase() === selectedMonth.toLowerCase();
+      const genreMatch = selectedGenre === t('all') ||
         (Array.isArray(m.music_genres) && m.music_genres.some(g => g.name === selectedGenre));
       return monthMatch && genreMatch;
-    });
-  }, [musicItems, selectedMonth, selectedGenre, t, apiLocale]);
+    })
+  ), [musicItems, selectedMonth, selectedGenre, t, apiLocale]);
 
-  const grouped = useMemo(() => {
-    return (filteredMusic || []).reduce((acc, m) => {
-      const key = new Date(m.releaseDate)
-        .toLocaleDateString(apiLocale, { month: 'long', year: 'numeric' });
+  const grouped = useMemo(() => (
+    (filteredMusic || []).reduce((acc, m) => {
+      const key = new Date(m.releaseDate).toLocaleDateString(apiLocale, { month: 'long', year: 'numeric' });
       acc[key] = acc[key] || [];
       acc[key].push(m);
       return acc;
-    }, {});
-  }, [filteredMusic, apiLocale]);
+    }, {})
+  ), [filteredMusic, apiLocale]);
 
   if (isLoading) {
     return (
@@ -113,13 +101,13 @@ export default function MusicPage() {
   const playlists = Array.isArray(featuredPlaylists) ? featuredPlaylists : [];
 
   return (
-    <div className="bg-transparent min-h-screen text-white flex flex-col items-center px-6">
+    <div className="bg-transparent min-h-screen text-white flex flex-col px-6">
       <Navbar brandName="dancereleases" />
       <AudioForm />
-      <div className="max-w-6xl w-full px-6 mt-20">
-        <h1 className="text-6xl font-bold mb-8 text-center mt-20">
-          {t('title')}
-        </h1>
+
+      {/* Main content matches footer width */}
+      <div className="max-w-screen-2xl w-full mx-auto px-6 mt-20">
+        <h1 className="text-6xl font-bold mb-8 text-center mt-20">{t('title')}</h1>
 
         {/* Filters */}
         <div className="flex flex-col md:flex-row justify-center items-center mb-8 space-y-4 md:space-y-0 md:space-x-8">
@@ -186,8 +174,7 @@ export default function MusicPage() {
                       onClick={() => setModalTrack(m)}
                     >
                       {img ? (
-                        <img
-                          src={`${URL}${img}`} alt={m.Title} className="h-56 w-full object-cover" />
+                        <img src={`${URL}${img}`} alt={m.Title} className="h-56 w-full object-cover" />
                       ) : (
                         <div className="flex h-56 w-full items-center justify-center bg-gray-700">
                           <span>{t('noImage')}</span>
@@ -218,15 +205,11 @@ export default function MusicPage() {
                 {modalTrack.artists && (<p className="text-gray-400 mb-1">{t('artist')}: {modalTrack.artists.map(a => a.Name).join(', ')}</p>)}
                 {modalTrack.releaseDate && (<p className="text-gray-400 mb-1">{new Date(modalTrack.releaseDate).toLocaleDateString(apiLocale)}</p>)}
                 {modalTrack.music_genres && (<p className="text-gray-400 mb-4">{modalTrack.music_genres.map(g => g.name).join(', ')}</p>)}
-                {/* Render description blocks */}
                 {getDescription(modalTrack) && <RichText blocks={getDescription(modalTrack)} />}
               </div>
               {modalTrack.listenUrl && (
                 <iframe
-                  src={modalTrack.listenUrl.includes('/album/')
-                    ? modalTrack.listenUrl.replace('https://open.spotify.com/', 'https://open.spotify.com/embed/')
-                    : modalTrack.listenUrl.replace('https://open.spotify.com/', 'https://open.spotify.com/embed/')
-                  }
+                  src={modalTrack.listenUrl.replace('https://open.spotify.com/', 'https://open.spotify.com/embed/')}
                   width="100%"
                   height="380"
                   allow="encrypted-media"
@@ -239,6 +222,8 @@ export default function MusicPage() {
           </div>
         </div>
       )}
+
+      <Footer />
     </div>
   );
 }
