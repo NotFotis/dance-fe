@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Instagram } from "lucide-react";
-import { FaDiscord, FaInstagram } from "react-icons/fa";
+import { FaDiscord, FaFacebook, FaInstagram } from "react-icons/fa";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -208,6 +208,14 @@ export default function Navbar({ brandName = "dancetoday", showCarousel = true }
                     className="transition-opacity duration-200 opacity-70 hover:opacity-100"
                   >
                     <FaDiscord size={24} />
+                  </a>
+                  <a
+                    href={process.env.NEXT_PUBLIC_FACEBOOK_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="transition-opacity duration-200 opacity-70 hover:opacity-100"
+                  >
+                    <FaFacebook size={24} />
                   </a>
                 </div>
                 <button

@@ -71,22 +71,6 @@ export default function Footer() {
 
             {/* Social Media & Email */}
             <div className="flex space-x-4">
-                   <a
-                     href={process.env.NEXT_PUBLIC_FACEBOOK_URL}
-                     target="_blank"
-                     rel="noopener noreferrer"
-                     className="transition-opacity duration-200 opacity-70 hover:opacity-100"
-                   >
-                     <FaFacebook size={24} />
-                   </a>
-                  <a
-                    href={process.env.NEXT_PUBLIC_INSTAGRAM_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="transition-opacity duration-200 opacity-70 hover:opacity-100"
-                  >
-                    <FaInstagram size={24} />
-                  </a>
                   <a
                     href={process.env.NEXT_PUBLIC_DISCORD_URL}
                     target="_blank"
@@ -95,6 +79,24 @@ export default function Footer() {
                   >
                     <FaDiscord size={24} />
                   </a>
+
+                  <a
+                    href={process.env.NEXT_PUBLIC_INSTAGRAM_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="transition-opacity duration-200 opacity-70 hover:opacity-100"
+                  >
+                    <FaInstagram size={24} />
+                  </a>
+
+                   <a
+                     href={process.env.NEXT_PUBLIC_FACEBOOK_URL}
+                     target="_blank"
+                     rel="noopener noreferrer"
+                     className="transition-opacity duration-200 opacity-70 hover:opacity-100"
+                   >
+                     <FaFacebook size={24} />
+                   </a>
             </div>
           </div>
         </div>
