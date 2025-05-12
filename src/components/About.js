@@ -100,7 +100,7 @@ export default function SwipeableStack({ apiUrl }) {
   return (
     <section className="mb-12">
       <div className="container mx-auto px-6 mb-20">
-        <h2 className="text-4xl md:text-5xl font-extrabold mb-4">{t("aboutUs")}</h2>
+        <h2 className="text-4xl text-white md:text-5xl font-extrabold mb-4">{t("aboutUs")}</h2>
       </div>
       <div
         className="relative w-full max-w-screen-lg h-[500px] mx-auto flex items-center justify-center"
