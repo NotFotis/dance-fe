@@ -156,7 +156,7 @@ export default function AboutUsPage() {
               const photo = member.photo;
               const imgPath = photo?.formats?.small?.url ?? photo?.url;
               const imgUrl = imgPath
-                ? `${URL}${imgPath}`
+                ? `${imgPath}`
                 : '/default-avatar.png';
 
               return (

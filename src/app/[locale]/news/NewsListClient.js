@@ -47,10 +47,10 @@ export default function NewsListPage() {
       ? article.Image[0]
       : article.Image;
     if (img.formats?.medium?.url) {
-      return `${URL}${img.formats.medium.url}`;
+      return `${img.formats.medium.url}`;
     }
     if (img.url) {
-      return `${URL}${img.url}`;
+      return `${img.url}`;
     }
     return '';
   };

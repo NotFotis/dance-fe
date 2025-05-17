@@ -218,7 +218,7 @@ const ProfilePage = () => {
                     >
                       {eventImage && (
                         <img
-                          src={`${URL}${eventImage}`}
+                          src={`${eventImage}`}
                           alt={event.Title}
                           className="w-full h-40 object-cover"
                         />
@@ -281,7 +281,7 @@ const ProfilePage = () => {
                     <div className="w-32 h-32 rounded-full overflow-hidden bg-gray-800">
                       {artist.avatarUrl ? (
                         <img
-                          src={`${URL}${artist.avatarUrl}`}
+                          src={`${artist.avatarUrl}`}
                           alt={artist.name}
                           className="object-cover w-full h-full"
                         />

@@ -174,7 +174,7 @@ export default function MusicPage() {
                       onClick={() => setModalTrack(m)}
                     >
                       {img ? (
-                        <img src={`${URL}${img}`} alt={m.Title} className="h-56 w-full object-cover" />
+                        <img src={`${img}`} alt={m.Title} className="h-56 w-full object-cover" />
                       ) : (
                         <div className="flex h-56 w-full items-center justify-center bg-gray-700">
                           <span>{t('noImage')}</span>
@@ -197,7 +197,7 @@ export default function MusicPage() {
         <div className="fixed inset-0 bg-black bg-opacity-85 flex justify-center items-center z-50" onClick={() => setModalTrack(null)}>
           <div className="relative w-11/12 md:w-2/3 lg:w-1/2 bg-black rounded-xl overflow-hidden p-6 flex flex-col md:flex-row gap-6" onClick={e => e.stopPropagation()}>
             {modalTrack.coverArt && (
-              <img src={`${URL}${modalTrack.coverArt.formats?.medium?.url || modalTrack.coverArt.url}`} alt={modalTrack.Title} className="w-full md:w-1/3 h-auto object-cover rounded-lg" />
+              <img src={`${modalTrack.coverArt.formats?.medium?.url || modalTrack.coverArt.url}`} alt={modalTrack.Title} className="w-full md:w-1/3 h-auto object-cover rounded-lg" />
             )}
             <div className="flex-1 flex flex-col justify-between">
               <div>

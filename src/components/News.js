@@ -80,7 +80,7 @@ export default function NewsCarousel() {
               const imageUrl =
                 item.Image?.[0]?.formats?.medium?.url ||
                 item.Image?.[0]?.url
-                  ? `${URL}${item.Image[0].formats?.medium?.url || item.Image[0].url}`
+                  ? `${item.Image[0].formats?.medium?.url || item.Image[0].url}`
                   : '';
 
               return (

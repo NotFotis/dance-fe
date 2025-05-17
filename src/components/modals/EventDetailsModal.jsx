@@ -103,7 +103,7 @@ export default function EventDetailsModal({ eventId, onClose }) {
         {eventImage && (
           <div className="max-w-3xl mx-auto overflow-hidden mb-8">
             <img
-              src={`${URL}${eventImage}`}
+              src={`${eventImage}`}
               alt={event.Title}
               className="w-full h-auto object-cover"
             />

@@ -49,7 +49,7 @@ export default function NewsDetailsModal({ documentId, onClose }) {
   }
 
   const { Title, publishedAt, description, Image, author, music_genres } = news;
-  const shareUrl = `${URL}/news/${documentId}`;
+  const shareUrl = `/news/${documentId}`;
 
   const shareToFacebook = () => {
     window.open(
@@ -124,7 +124,7 @@ export default function NewsDetailsModal({ documentId, onClose }) {
         {Image && Image.url && (
           <div className="w-full h-64 sm:h-full overflow-hidden">
             <img
-              src={`${URL}${Image.url}`}
+              src={`${Image.url}`}
               alt={Title}
               className="w-full h-full object-cover"
             />

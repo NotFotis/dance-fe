@@ -124,8 +124,8 @@ export default function EventDetailsClient({ event }) {
         <img
           src={
             event.Image?.[1]?.formats?.large?.url
-              ? `${URL}${event.Image[1].formats.large.url}`
-              : `${URL}${event.Image[1]?.url || ''}`
+              ? `${event.Image[1].formats.large.url}`
+              : `${event.Image[1]?.url || ''}`
           }
           alt={event.Title}
           className="object-cover w-full h-full"
@@ -251,8 +251,8 @@ export default function EventDetailsClient({ event }) {
                     <img
                       src={
                         host.image.formats?.medium?.url
-                          ? `${URL}${host.image.formats.medium.url}`
-                          : `${URL}${host.image.url}`
+                          ? `${host.image.formats.medium.url}`
+                          : `${host.image.url}`
                       }
                       alt={host.name}
                       className="w-[80%] h-32 object-cover rounded-2xl mb-4"

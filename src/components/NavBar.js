@@ -147,7 +147,7 @@ export default function Navbar({ brandName = "dancetoday", showCarousel = true }
                         >
                           {evt.Image?.[0] && (
                             <img
-                              src={`${URL}${evt.Image[0].formats?.small?.url || evt.Image[0].url}`}
+                              src={`${evt.Image[0].formats?.small?.url || evt.Image[0].url}`}
                               alt={evt.Title}
                               className="w-full h-full object-cover"
                             />

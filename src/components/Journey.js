@@ -62,7 +62,7 @@ export default function JourneySection() {
           <div className="md:w-1/2 w-full h-full relative">
             {imageUrl && (
               <img
-                src={`${URL}${imageUrl}`}
+                src={`${imageUrl}`}
                 alt={title}
                 className="object-cover rounded-lg shadow-xl"
               />
