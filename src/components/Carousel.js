@@ -73,7 +73,7 @@ export default function EventsCarousel() {
           ) : (
             events.map((evt) => {
               const imgPath = evt.Image?.[0]?.formats?.medium?.url || evt.Image?.[0]?.url;
-              const imgUrl = imgPath ? `${URL}${imgPath}` : "";
+              const imgUrl = imgPath ? `${imgPath}` : "";
               return (
                 <SwiperSlide key={evt.id}>
                   <Link
