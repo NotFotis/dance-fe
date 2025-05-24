@@ -2,6 +2,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { NextIntlClientProvider } from "next-intl";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,7 +24,7 @@ export async function generateMetadata({ params }) {
 
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/global?populate=*`,
+      `${process.env.NEXT_PUBLIC_API_URL}/global`,
       { cache: "force-cache" }
     );
     if (!res.ok) throw new Error(`Status ${res.status}`);
@@ -45,7 +46,7 @@ export async function generateMetadata({ params }) {
   const title       = defaultSeo.metaTitle       ?? siteName;
   const description = defaultSeo.metaDescription ?? siteDescription;
   const iconUrl     = favicon?.url
-    ? `${process.env.NEXT_PUBLIC_URL}${favicon.url}`
+    ? `${favicon.url}`
     : undefined;
 
   return {
@@ -67,23 +68,36 @@ export async function generateMetadata({ params }) {
           }]
         : [],
     },
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
+    title,
+    description,
   };
 }
 
 // NOTE: accept a single props object and await it before using `params`
 export default async function RootLayout(props) {
   const params = await props.params;
-
-  const {
-    children
-  } = props;
-
-  // now safe to read params.locale immediately
+  const { children } = props;
   const locale = params.locale || "en";
   const messages = (await import(`../../../locales/${locale}.json`)).default;
 
   return (
     <html lang={locale} className={`${geistSans.variable} ${geistMono.variable}`}>
+      <head>
+        {/* Google Analytics */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XXXXXXXXXX',{ anonymize_ip: true });
+          `}
+        </Script>
+      </head>
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}

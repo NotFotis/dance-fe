@@ -6,7 +6,7 @@ import Seo from '@/components/seo';
 import Navbar from '@/components/NavBar';
 import Footer from '@/components/Footer';
 import AudioForm from '@/components/AudioForm';
-import { useTranslations } from 'next-intl';
+import { useTranslations,useLocale } from 'next-intl';
 import { useNews } from '@/hooks/useNews';
 import { useGenres } from '@/hooks/useGenres';
 
@@ -14,23 +14,26 @@ export default function NewsListPage() {
   const t = useTranslations('news');
   const URL = process.env.NEXT_PUBLIC_URL;
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  const locale = useLocale();
+  const apiLocale = locale === 'el' ? 'el-GR' : locale;
 
   // 3) News + genre + pagination
-  const { news = [], loading: newsLoading }     = useNews({ populate: '*' });
+  const { news = [], loading: newsLoading }     = useNews({ populate: 'Image&populate=music_genres', apiLocale });
   const { genres = [], loading: genresLoading } = useGenres();
 
-  const [selectedGenre, setSelectedGenre] = useState('All');
+    const ALL_GENRE = t('all'); // Make sure you have a key `all` in your translations!
+    const [selectedGenre, setSelectedGenre] = useState(ALL_GENRE);
   const [currentPage, setCurrentPage]     = useState(1);
   const perPage = 16;
 
   useEffect(() => setCurrentPage(1), [selectedGenre]);
 
-  const genreOptions = ['All', ...genres.map(g => g.name)];
-  const filtered = news.filter(article =>
-    selectedGenre === 'All'
-      ? true
-      : article.music_genres?.some(g => g.name === selectedGenre)
-  );
+  const genreOptions = [ALL_GENRE, ...genres.map(g => g.name)];
+const filtered = news.filter(article =>
+  selectedGenre === ALL_GENRE
+    ? true
+    : article.music_genres?.some(g => g.name === selectedGenre)
+);
   const sorted = filtered.slice().sort(
     (a, b) => new Date(b.Date) - new Date(a.Date)
   );
@@ -42,7 +45,7 @@ export default function NewsListPage() {
   );
 
   const getImageUrl = article => {
-    if (!article.Image) return '';
+    if (!article.Image) return null;
     const img = Array.isArray(article.Image)
       ? article.Image[0]
       : article.Image;
@@ -52,7 +55,7 @@ export default function NewsListPage() {
     if (img.url) {
       return `${img.url}`;
     }
-    return '';
+    return null;
   };
 
   return (
@@ -76,7 +79,7 @@ export default function NewsListPage() {
                 value={selectedGenre}
                 onChange={e => setSelectedGenre(e.target.value)}
                 disabled={genresLoading}
-                className="py-2 px-4 bg-black border border-white rounded text-white uppercase tracking-wider"
+                className="py-2 px-4 bg-black border border-white rounded text-white tracking-wider"
               >
                 {genreOptions.map(g => (
                   <option key={g} value={g}>{g}</option>
@@ -94,8 +97,8 @@ export default function NewsListPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
               {pageItems.map(article => (
                 <Link
-                  key={article.id}
-                  href={`/news/${article.documentId}`}
+                  key={article.slug ?? article.id ?? `news-${idx}`}
+                  href={`/news/${article.slug ?? article.id ?? idx}`}
                   className="group relative block h-full overflow-hidden rounded-xl shadow-lg transition-transform hover:scale-95"
                   style={{ aspectRatio: '9 / 16' }}
                 >

@@ -6,11 +6,11 @@ const fetcher = url => axios.get(url).then(res => res.data);
 
 export function useMusicApi(apiUrl, apiLocale) {
   const { data: musicResponse, error: musicError } = useSWR(
-    apiUrl ? `${apiUrl}/musics?populate=*&locale=${apiLocale}` : null,
+    apiUrl ? `${apiUrl}/musics?populate=artists.Socials&populate=music_genres&populate=coverArt&locale=${apiLocale}` : null,
     fetcher
   );
   const { data: genresResponse, error: genresError } = useSWR(
-    apiUrl ? `${apiUrl}/Music-Genres?locale=${apiLocale}` : null,
+    apiUrl ? `${apiUrl}/Music-Genres` : null,
     fetcher
   );
   const { data: spotifyResponse, error: spotifyError } = useSWR(

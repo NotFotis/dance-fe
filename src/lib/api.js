@@ -5,11 +5,11 @@ const api = axios.create({
 });
 
 export const fetchEvents = async () => {
-  const res = await api.get('/events?populate=*');
+  const res = await api.get('/events');
   return res.data.data;
 };
 
 export const fetchNews = async () => {
-  const res = await api.get('/dance-new?populate=*');
+  const res = await api.get('/dance-new');
   return res.data.data;
 };

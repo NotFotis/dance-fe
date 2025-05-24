@@ -193,35 +193,83 @@ export default function MusicPage() {
       </div>
 
       {/* Modal Overlay */}
-      {modalTrack && (
-        <div className="fixed inset-0 bg-black bg-opacity-85 flex justify-center items-center z-50" onClick={() => setModalTrack(null)}>
-          <div className="relative w-11/12 md:w-2/3 lg:w-1/2 bg-black rounded-xl overflow-hidden p-6 flex flex-col md:flex-row gap-6" onClick={e => e.stopPropagation()}>
-            {modalTrack.coverArt && (
-              <img src={`${modalTrack.coverArt.formats?.medium?.url || modalTrack.coverArt.url}`} alt={modalTrack.Title} className="w-full md:w-1/3 h-auto object-cover rounded-lg" />
-            )}
-            <div className="flex-1 flex flex-col justify-between">
-              <div>
-                <h3 className="text-4xl font-bold text-white mb-2">{modalTrack.Title}</h3>
-                {modalTrack.artists && (<p className="text-gray-400 mb-1">{t('artist')}: {modalTrack.artists.map(a => a.Name).join(', ')}</p>)}
-                {modalTrack.releaseDate && (<p className="text-gray-400 mb-1">{new Date(modalTrack.releaseDate).toLocaleDateString(apiLocale)}</p>)}
-                {modalTrack.music_genres && (<p className="text-gray-400 mb-4">{modalTrack.music_genres.map(g => g.name).join(', ')}</p>)}
-                {getDescription(modalTrack) && <RichText blocks={getDescription(modalTrack)} />}
-              </div>
-              {modalTrack.listenUrl && (
-                <iframe
-                  src={modalTrack.listenUrl.replace('https://open.spotify.com/', 'https://open.spotify.com/embed/')}
-                  width="100%"
-                  height="380"
-                  allow="encrypted-media"
-                  title="spotify-player"
-                  className="rounded-lg"
-                />
-              )}
-            </div>
-            <button className="absolute top-4 right-4 text-white text-2xl font-bold" onClick={() => setModalTrack(null)}>×</button>
-          </div>
-        </div>
+{modalTrack && (
+  <div
+    className="fixed inset-0 bg-black/85 flex justify-center items-center z-50 px-2"
+    onClick={() => setModalTrack(null)}
+    style={{ backdropFilter: 'blur(2px)' }}
+  >
+    <div
+      className={`
+        relative w-full max-w-lg md:max-w-2xl bg-black rounded-2xl 
+        overflow-y-auto p-4 sm:p-6 flex flex-col md:flex-row gap-4 md:gap-6 
+        max-h-[90vh] shadow-2xl
+      `}
+      onClick={e => e.stopPropagation()}
+      tabIndex={-1}
+    >
+      {/* Close button: always in top-right */}
+      <button
+        className="absolute top-3 right-3 text-white text-3xl font-bold focus:outline-none z-20"
+        onClick={() => setModalTrack(null)}
+        aria-label="Close"
+        type="button"
+      >
+        ×
+      </button>
+
+      {/* Cover image */}
+      {modalTrack.coverArt && (
+        <img
+          src={`${modalTrack.coverArt.formats?.medium?.url || modalTrack.coverArt.url}`}
+          alt={modalTrack.Title}
+          className="w-full md:w-1/3 h-48 md:h-auto object-cover rounded-lg mb-4 md:mb-0"
+          style={{
+            maxWidth: '320px',
+            minWidth: 0,
+            alignSelf: 'center',
+          }}
+        />
       )}
+
+      {/* Content & Player */}
+      <div className="flex-1 flex flex-col justify-between min-w-0">
+        <div className="mb-4">
+          <h3 className="text-3xl md:text-4xl font-bold text-white mb-2 break-words">{modalTrack.Title}</h3>
+          {modalTrack.artists && (
+            <p className="text-gray-400 mb-1">
+              {t('artist')}: {modalTrack.artists.map(a => a.Name).join(', ')}
+            </p>
+          )}
+          {modalTrack.releaseDate && (
+            <p className="text-gray-400 mb-1">
+              {new Date(modalTrack.releaseDate).toLocaleDateString(apiLocale)}
+            </p>
+          )}
+          {modalTrack.music_genres && (
+            <p className="text-gray-400 mb-2">
+              {modalTrack.music_genres.map(g => g.name).join(', ')}
+            </p>
+          )}
+          {getDescription(modalTrack) && <RichText blocks={getDescription(modalTrack)} />}
+        </div>
+        {modalTrack.listenUrl && (
+          <div className="w-full">
+            <iframe
+              src={modalTrack.listenUrl.replace('https://open.spotify.com/', 'https://open.spotify.com/embed/')}
+              width="100%"
+              height="160"
+              allow="encrypted-media"
+              title="spotify-player"
+              className="rounded-lg"
+              style={{ minHeight: 100, maxHeight: 200 }}
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+)}
 
       <Footer />
     </div>

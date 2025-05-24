@@ -7,7 +7,6 @@ import { useTranslations, useLocale } from 'next-intl';
 import Navbar from '@/components/NavBar';
 import Footer from '@/components/Footer';
 import AudioForm from '@/components/AudioForm';
-import EventDetailsModal from '@/components/modals/EventDetailsModal';
 import { useEvents } from '@/hooks/useEvents';
 import { useGenres } from '@/hooks/useGenres';
 
@@ -16,10 +15,12 @@ export default function CalendarPage() {
   const locale = useLocale();
   const router = useRouter();
   const URL = process.env.NEXT_PUBLIC_URL;
-
+  const apiLocale = locale === 'el' ? 'el-GR' : locale;
   // Data hooks
-  const { events, isLoading: eventsLoading, isError: eventsError } = useEvents();
-  const { genres, loading: genresLoading, error: genresError } = useGenres();
+  const { events, isLoading: eventsLoading, isError: eventsError } = useEvents(apiLocale);
+  console.log(events);
+  
+const { genres = [], loading: genresLoading, error: genresError } = useGenres();
 
   // Responsive breakpoint
   const [isMobile, setIsMobile] = useState(false);
@@ -132,13 +133,13 @@ export default function CalendarPage() {
   };
 
   return (
-    <div className="bg-transparent min-h-screen text-white px-6 mt-20 mb-20 text-center">
+    <div className="bg-transparent min-h-screen text-white px-6 mt-20 mb-10 text-center">
       <Navbar brandName="dancecalendar" />
       <AudioForm />
       <h1 className="text-6xl py-16 font-bold">{t('title')}</h1>
 
       {!isMobile && (
-        <div className="flex justify-center items-center mb-8 space-x-4">
+        <div className="flex justify-center items-center mb-6 space-x-4">
           <span className={view === 'list' ? 'font-bold' : 'opacity-70'}>{t('listView')}</span>
           <label className="switch">
             <input
@@ -195,7 +196,7 @@ export default function CalendarPage() {
                     return (
                       <Link
                         key={evt.id}
-                        href={`/events/${evt.documentId}`}
+                        href={`/events/${evt.slug}`}
                         className="group relative block h-full overflow-hidden rounded-xl shadow-lg transition-transform hover:scale-95"
                         style={{ aspectRatio: '9 / 16' }}
                       >
@@ -212,7 +213,7 @@ export default function CalendarPage() {
                           </p>
                           {evt.Desc && (
                             <button
-                              onClick={e => { e.preventDefault(); e.stopPropagation(); setSelectedEventId(evt.documentId); }}
+                              onClick={e => { e.preventDefault(); e.stopPropagation(); setSelectedEventId(evt.slug); }}
                               className="mt-4 py-2 px-4 bg-black bg-opacity-60 border border-white rounded-2xl uppercase text-xs mx-auto block"
                             >{t('info')}</button>
                           )}
@@ -273,7 +274,7 @@ export default function CalendarPage() {
                       <div className="absolute top-2 left-0 right-0 font-bold">{new Date(calendarYear,calendarMonth,day).toLocaleDateString(locale,{day:'numeric'})}</div>
                       <div className="mt-6 space-y-1">
                         {(eventsByDay[day]||[]).map(evt => (
-                          <div key={evt.id} className="text-xs p-1 rounded bg-gray-800 cursor-pointer" onClick={()=>router.push(`/events/${evt.documentId}`)}>{evt.Title}</div>
+                          <div key={evt.id} className="text-xs p-1 rounded bg-gray-800 cursor-pointer" onClick={()=>router.push(`/events/${evt.slug}`)}>{evt.Title}</div>
                         ))}
                       </div>
                     </>
@@ -295,7 +296,6 @@ export default function CalendarPage() {
         input:checked + .slider { background: #222; }
         input:checked + .slider:before { transform: translateX(30px); }
       `}</style>
-      {selectedEventId && <EventDetailsModal eventId={selectedEventId} onClose={() => setSelectedEventId(null)} />}
     </div>
   );
 }

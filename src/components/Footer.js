@@ -53,6 +53,7 @@ export default function Footer() {
                 width={150}
                 height={50}
                 className="w-full h-32 object-cover object-contain"
+                priority
               />
             </div>
 

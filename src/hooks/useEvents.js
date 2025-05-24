@@ -3,9 +3,9 @@ import axios from 'axios';
 
 const fetcher = (url) => axios.get(url).then(res => res.data.data);
 
-export function useEvents() {
+export function useEvents(apiLocale) {
   const { data, error } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}/events?populate=*`,
+    `${process.env.NEXT_PUBLIC_API_URL}/events?populate=Image&populate=artists.Socials&populate=hosts&populate=music_genres&populate=seo&locale=${apiLocale}`,
     fetcher,
     { revalidateOnFocus: false }
   );

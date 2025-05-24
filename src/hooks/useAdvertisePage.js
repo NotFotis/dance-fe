@@ -5,9 +5,9 @@ import axios from 'axios';
 const fetcher = (url) =>
   axios.get(url).then(res => res.data.data);
 
-export function useAdvertisePage() {
+export function useAdvertisePage(apiLocale) {
   const { data, error } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}/advertise?populate=services`,
+    `${process.env.NEXT_PUBLIC_API_URL}/advertise?populate=services&locale=${apiLocale}`,
     fetcher,
     { revalidateOnFocus: false }
   );

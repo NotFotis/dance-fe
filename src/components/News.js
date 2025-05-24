@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { useTranslations , useLocale} from 'next-intl';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -10,7 +10,9 @@ import 'swiper/css';
 import { useNews } from '@/hooks/useNews';
 
 export default function NewsCarousel() {
-  const { news, loading, error } = useNews({ limit: 10 });
+  const locale = useLocale();
+  const apiLocale = locale === 'el' ? 'el-GR' : locale;
+  const { news, loading, error } = useNews({ limit: 12 , apiLocale});
   const URL = process.env.NEXT_PUBLIC_URL;
   const t = useTranslations('newsComponent');
   const sliderRef = useRef(null);
@@ -81,12 +83,12 @@ export default function NewsCarousel() {
                 item.Image?.[0]?.formats?.medium?.url ||
                 item.Image?.[0]?.url
                   ? `${item.Image[0].formats?.medium?.url || item.Image[0].url}`
-                  : '';
+                  : null;
 
               return (
                 <SwiperSlide key={item.id}>
                   <Link
-                    href={`/news/${item.documentId}`}
+                    href={`/news/${item.slug}`}
                     className="block w-full h-full cursor-pointer"
                   >
                     <div className="transition-transform transform hover:scale-95 w-full h-full rounded-xl relative z-0 shadow-[0_10px_15px_-3px_rgba(0,0,0,0.2)]">

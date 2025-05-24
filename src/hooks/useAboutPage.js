@@ -5,9 +5,9 @@ import axios from 'axios';
 const fetcher = (url) =>
   axios.get(url).then(res => res.data.data);
 
-export function useAboutPage() {
+export function useAboutPage(apiLocale) {
   const { data, error } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}/about-us?populate[Members][populate]=photo&populate[Members][populate]=socials`,
+    `${process.env.NEXT_PUBLIC_API_URL}/about-us?populate[Members][populate]=photo&populate[Members][populate]=socials&locale=${apiLocale}`,
     fetcher,
     { revalidateOnFocus: false }
   );

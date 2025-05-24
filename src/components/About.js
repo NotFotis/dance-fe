@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, memo } from "react";
 import axios from "axios";
 import { motion, useAnimation, useMotionValue } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 const CARD_OFFSET = 20;
 const SCALE_FACTOR = 0.04;
@@ -64,10 +64,12 @@ export default function SwipeableStack({ apiUrl }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const locale = useLocale();
+  const apiLocale = locale === 'el' ? 'el-GR' : locale;
 
   useEffect(() => {
     axios
-      .get(`${apiUrl}/about?populate=*`)
+      .get(`${apiUrl}/about?locale=${apiLocale}&populate=blocks`)
       .then((res) => {
         const data = res.data.data;
         const blocks = Array.isArray(data.blocks) ? data.blocks : [];

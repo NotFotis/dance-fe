@@ -36,7 +36,7 @@ export async function generateMetadata() {
   const canonical   = seo.canonicalURL     || `${URL}/calendar`;
   let   image;
   if (seo.shareImage?.data?.attributes?.url) {
-    image = `${URL}${seo.shareImage.data.attributes.url}`;
+    image = `${seo.shareImage.data.attributes.url}`;
   }
 
   // 3) Return the Metadata object

@@ -7,7 +7,7 @@ const host = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 export default async function sitemap() {
   // Collect all routes
-  const staticPaths = ["", "about", "advertise", "calendar", "music", "news"];
+  const staticPaths = ["", "about", "advertise", "calendar", "music", "news","community"];
   const [eventIds, newsIds] = await Promise.all([
     getAllEventIds(),
     getAllNewsIds()

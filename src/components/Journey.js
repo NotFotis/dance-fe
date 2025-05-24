@@ -2,18 +2,19 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 export default function JourneySection() {
   const [journeyData, setJourneyData] = useState(null);
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const URL = process.env.NEXT_PUBLIC_URL;
   const t = useTranslations("journeySection");
-
+  const locale = useLocale();
+  const apiLocale = locale === 'el' ? 'el-GR' : locale;
   useEffect(() => {
     const fetchJourneyData = async () => {
       try {
-        const response = await axios.get(`${API_URL}/our-journey?populate=*`);
+        const response = await axios.get(`${API_URL}/our-journey?populate=image&populate=stats&locale=${apiLocale}`);
         // The journey data is in response.data.data
         setJourneyData(response.data.data);
       } catch (error) {

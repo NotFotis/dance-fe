@@ -4,13 +4,15 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import "swiper/css";
 import { useEvents } from "@/hooks/useEvents";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 
 export default function EventsCarousel() {
+    const locale = useLocale();
+    const apiLocale = locale === 'el' ? 'el-GR' : locale;
   const t = useTranslations("carousel");
   const URL = process.env.NEXT_PUBLIC_URL;
-  const { events: rawEvents = [], isLoading } = useEvents();
+  const { events: rawEvents = [], isLoading } = useEvents(apiLocale);
 
   const events = rawEvents
     .sort((a, b) => new Date(b.Date) - new Date(a.Date))
@@ -77,7 +79,7 @@ export default function EventsCarousel() {
               return (
                 <SwiperSlide key={evt.id}>
                   <Link
-                    href={`/events/${evt.documentId}`}
+                    href={`/events/${evt.slug}`}
                     className="block transition-transform transform hover:scale-95 w-full h-full relative z-0 rounded-2xl overflow-hidden shadow-[0_10px_15px_-3px_rgba(0,0,0,0.2)]"
                     style={{ aspectRatio: "9 / 16" }}
                   >

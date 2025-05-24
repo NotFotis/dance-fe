@@ -65,6 +65,8 @@
   "Privacy Policy": "Privacy Policy",
   "Disclaimer": "Disclaimer",
   "© {year} dancetoday": "© {year} dancetoday",
+    "showMore": "Show more",
+  "showLess": "Show less",
   "login" : {
     "noAccount": "Don't have an account?",
     "register": "Register"
@@ -98,7 +100,8 @@
       "title": "Dance News",
       "filterGenre": "Filter by Genre",
       "previous": "Previous",
-      "next" : "Next"
+      "next" : "Next",
+      "all": "All"
     },
     "newsDetails": {
       "loading": "Loading news details...",

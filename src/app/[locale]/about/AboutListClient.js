@@ -23,7 +23,9 @@ function RichText({ blocks }) {
 
 export default function AboutUsPage() {
   const t = useTranslations('about');
-  const { about, isLoading, isError } = useAboutPage();
+      const locale = useLocale();
+      const apiLocale = locale === 'el' ? 'el-GR' : locale;
+  const { about, isLoading, isError } = useAboutPage(apiLocale);
   const URL = process.env.NEXT_PUBLIC_URL;
 
 

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import parse from 'html-react-parser';
 import {
   FaFacebook,
@@ -19,6 +19,15 @@ export default function EventDetailsClient({ event }) {
   const t = useTranslations();
   const URL = process.env.NEXT_PUBLIC_URL;
   const venueRef = useRef(null);
+  const [showAllArtists, setShowAllArtists] = useState(false);
+
+  const mobileLimit = 10;
+  const totalArtists = event.artists?.length || 0;
+
+  // Show first 10 on mobile unless "Show more" is clicked, always show all on desktop
+  const displayedArtists = (!showAllArtists && totalArtists > mobileLimit)
+    ? event.artists.slice(0, mobileLimit)
+    : event.artists;
 
   if (!event) {
     return (
@@ -125,7 +134,7 @@ export default function EventDetailsClient({ event }) {
           src={
             event.Image?.[1]?.formats?.large?.url
               ? `${event.Image[1].formats.large.url}`
-              : `${event.Image[1]?.url || ''}`
+              : `${event.Image[1]?.url || null}`
           }
           alt={event.Title}
           className="object-cover w-full h-full"
@@ -168,7 +177,7 @@ export default function EventDetailsClient({ event }) {
               href={event.tickets}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 inline-block bg-black text-white hover:bg-white hover:text-black transition px-6 py-3 rounded-xl text-lg font-semibold"
+              className="mt-4 inline-block bg-white text-black hover:bg-gray-300  transition px-6 py-3 rounded-xl text-lg font-semibold"
             >
               {t('buyTickets')}
             </a>
@@ -178,41 +187,89 @@ export default function EventDetailsClient({ event }) {
         {/* Lineup */}
         <div className="p-6">
           <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">{t('lineup')}</h2>
-          {event.artists?.length > 0 ? (
-            <ul className="space-y-4 text-center">
-              {event.artists.map((artist, idx) => (
-                <li key={artist.id || `artist-${idx}`} className="flex flex-col items-center">
-                  <div className="flex justify-center space-x-4">
-                    <span className="text-xl font-medium mb-1">{artist.Name}</span>
-                    {artist.Socials?.map((social, i2) => {
-                      let Icon;
-                      switch (social.platform.toLowerCase()) {
-                        case 'facebook': Icon = FaFacebook; break;
-                        case 'instagram': Icon = FaInstagram; break;
-                        case 'spotify': Icon = FaSpotify; break;
-                        case 'beatport': Icon = SiBeatport; break;
-                        case 'soundcloud': Icon = FaSoundcloud; break;
-                        case 'x': Icon = FaTwitter; break;
-                        case 'tidal': Icon = SiTidal; break;
-                        case 'apple music': Icon = SiApplemusic; break;
-                        default: Icon = null;
-                      }
-                      return Icon ? (
-                        <a key={i2} href={social.URL} target="_blank" rel="noopener noreferrer">
-                          <Icon size={24} />
-                        </a>
-                      ) : null;
-                    })}
-                  </div>
-                </li>
-              ))}
-            </ul>
+          {totalArtists > 0 ? (
+            <>
+              {/* Mobile (show limited, with Show More button if needed) */}
+              <ul className="flex flex-wrap justify-center gap-6 max-w-3xl mx-auto sm:hidden">
+                {displayedArtists.map((artist, idx) => (
+                  <li
+                    key={artist.id || `artist-${idx}`}
+                    className="flex flex-col w-full items-start text-left bg-black/40 rounded-xl px-6 py-4"
+                  >
+                    <div className="flex items-center space-x-4">
+                      <span className="text-xl font-medium">{artist.Name}</span>
+                      {artist.Socials?.map((social, i2) => {
+                        let Icon;
+                        switch (social.platform.toLowerCase()) {
+                          case 'facebook': Icon = FaFacebook; break;
+                          case 'instagram': Icon = FaInstagram; break;
+                          case 'spotify': Icon = FaSpotify; break;
+                          case 'beatport': Icon = SiBeatport; break;
+                          case 'soundcloud': Icon = FaSoundcloud; break;
+                          case 'x': Icon = FaTwitter; break;
+                          case 'tidal': Icon = SiTidal; break;
+                          case 'apple music': Icon = SiApplemusic; break;
+                          default: Icon = null;
+                        }
+                        return Icon ? (
+                          <a key={i2} href={social.URL} target="_blank" rel="noopener noreferrer">
+                            <Icon size={24} />
+                          </a>
+                        ) : null;
+                      })}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              {/* Show More/Less Button on mobile */}
+              {totalArtists > mobileLimit && (
+                <div className="sm:hidden flex justify-center mt-6">
+                  <button
+                    className="bg-white hover:bg-white text-black rounded-lg px-4 py-2 text-sm font-semibold"
+                    onClick={() => setShowAllArtists((v) => !v)}
+                  >
+                    {showAllArtists ? t('showLess') : t('showMore')}
+                  </button>
+                </div>
+              )}
+
+              {/* Desktop (always show all) */}
+              <ul className="hidden sm:flex flex-wrap justify-center gap-6 max-w-3xl mx-auto">
+                {event.artists.map((artist, idx) => (
+                  <li
+                    key={artist.id || `artist-${idx}`}
+                    className="flex flex-col items-center bg-black/40 rounded-xl px-6 py-4"
+                  >
+                    <div className="flex items-center space-x-4">
+                      <span className="text-xl font-medium">{artist.Name}</span>
+                      {artist.Socials?.map((social, i2) => {
+                        let Icon;
+                        switch (social.platform.toLowerCase()) {
+                          case 'facebook': Icon = FaFacebook; break;
+                          case 'instagram': Icon = FaInstagram; break;
+                          case 'spotify': Icon = FaSpotify; break;
+                          case 'beatport': Icon = SiBeatport; break;
+                          case 'soundcloud': Icon = FaSoundcloud; break;
+                          case 'x': Icon = FaTwitter; break;
+                          case 'tidal': Icon = SiTidal; break;
+                          case 'apple music': Icon = SiApplemusic; break;
+                          default: Icon = null;
+                        }
+                        return Icon ? (
+                          <a key={i2} href={social.URL} target="_blank" rel="noopener noreferrer">
+                            <Icon size={24} />
+                          </a>
+                        ) : null;
+                      })}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </>
           ) : (
             <p className="text-gray-400 text-center">{t('noLineup')}</p>
           )}
         </div>
-
-
 
         {/* Description */}
         <div className="p-6">
@@ -240,8 +297,9 @@ export default function EventDetailsClient({ event }) {
             />
           </div>
         </div>
-                {/* Hosts with Images */}
-                <div className="p-6">
+
+        {/* Hosts with Images */}
+        <div className="p-6">
           <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">{t('hosts')}</h2>
           {event.hosts?.length > 0 ? (
             <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-center">

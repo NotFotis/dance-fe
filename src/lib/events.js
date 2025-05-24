@@ -15,7 +15,7 @@ export async function getAllEventIds() {
   // lib/events.js
 export async function fetchEvents() {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/events?populate=*`,
+    `${process.env.NEXT_PUBLIC_API_URL}/events`,
     {
       next: { revalidate: 60 } 
     }

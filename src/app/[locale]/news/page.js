@@ -10,7 +10,7 @@ export async function generateMetadata() {
 
   // 1) Fetch the singleton “News Page Settings”
   const res = await fetch(
-    `${API_URL}/news-page-setting?populate=*`,
+    `${API_URL}/news-page-setting?populate=seo`,
     { cache: 'no-store' }
   );
   console.log(res);

@@ -65,6 +65,8 @@
   "Privacy Policy": "Πολιτική Απορρήτου",
   "Disclaimer": "Αποποίηση Ευθυνών",
   "© {year} dancetoday": "© {year} dancetoday",
+    "showMore": "Εμφάνιση Περισσότερων",
+  "showLess": "Εμφάνιση Λιγότερων",
   "login": {
     "noAccount": "Δεν έχετε λογαριασμό;",
     "register": "Εγγραφή"
@@ -98,7 +100,8 @@
     "title": "Τελευταία Νέα",
     "filterGenre": "Φίλτρο ανά είδος",
     "previous": "Προηγούμενο",
-    "next" : "Επόμενο"
+    "next" : "Επόμενο",
+    "all":"Όλα"
   },
   "newsDetails": {
     "loading": "Φόρτωση λεπτομερειών ειδήσεων...",

@@ -15,7 +15,7 @@ import "swiper/css/autoplay";
 import "swiper/css";
 import ModernContactForm from "./modals/ContactFormModal";
 
-export default function Navbar({ brandName = "dancetoday", showCarousel = true }) {
+export default function Navbar({ brandName = "dancetoday", showCarousel = true ,localeToSlug ,routeSegment }) {
   const t = useTranslations();
   const locale = useLocale();
   const URL = process.env.NEXT_PUBLIC_URL;
@@ -191,7 +191,7 @@ export default function Navbar({ brandName = "dancetoday", showCarousel = true }
               )}
 
               <div className="mt-10 border-t border-gray-300 pt-5 px-5 flex flex-col sm:flex-row justify-between items-center mb-6">
-                <LanguageSwitcher currentLocale={locale} className="mb-4 sm:mb-0" />
+                <LanguageSwitcher currentLocale={locale} className="mb-4 sm:mb-0" localeToSlug={localeToSlug} routeSegment={routeSegment}/>
                 <div className="flex space-x-4 mb-4 sm:mb-0">
                   <a
                     href={process.env.NEXT_PUBLIC_INSTAGRAM_URL}

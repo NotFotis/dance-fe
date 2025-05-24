@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import Navbar from '@/components/NavBar';
 import AudioForm from '@/components/AudioForm';
 import Footer from '@/components/Footer';
@@ -74,7 +74,9 @@ function renderListItem(item, key) {
 
 export default function AdvertisePage() {
   const t = useTranslations('');
-  const { about, isLoading, isError } = useAdvertisePage();
+      const locale = useLocale();
+      const apiLocale = locale === 'el' ? 'el-GR' : locale;
+  const { about, isLoading, isError } = useAdvertisePage(apiLocale);
   const [showModal, setShowModal] = useState(false);
   const modalRef = useRef(null);
 

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import * as FaIcons from "react-icons/fa"; // Import all Font Awesome icons
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 // Fallback icon if none is found
 const FallbackIcon = FaIcons.FaCode;
@@ -54,11 +54,12 @@ export default function OurServices() {
   const [services, setServices] = useState([]);
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const t = useTranslations("ourServices");
-
+  const locale = useLocale();
+  const apiLocale = locale === 'el' ? 'el-GR' : locale;
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await axios.get(`${API_URL}/services?populate=*`);
+        const response = await axios.get(`${API_URL}/services?locale=${apiLocale}`);
         // The response structure: { data: { data: [ service, ... ] } }
         setServices(response.data.data);
       } catch (error) {

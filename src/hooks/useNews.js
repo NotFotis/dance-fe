@@ -6,12 +6,13 @@ const fetcher = url => axios.get(url).then(res => res.data.data)
 
 export function useNews({
   limit,                    // if undefined, returns all; if a number, slices to that many
-  populate = '*',
+  populate = 'Image',
   sortField = 'Date',
   sortOrder = 'desc',
+  apiLocale
 } = {}) {
   const API_URL = process.env.NEXT_PUBLIC_API_URL
-  const url = `${API_URL}/dance-new?populate=${populate}`
+  const url = `${API_URL}/dance-new?populate=${populate}&locale=${apiLocale}`
 
   const { data, error } = useSWR(url, fetcher, {
     revalidateOnFocus: false,

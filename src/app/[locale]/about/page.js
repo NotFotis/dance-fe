@@ -10,7 +10,7 @@ export async function generateMetadata() {
 
   // 1) Fetch the singleton “Events Page Settings”
   const res = await fetch(
-    `${API_URL}/about-page-setting?populate=*`,
+    `${API_URL}/about-page-setting?populate=seo`,
     { cache: 'no-store' }
   );
   console.log(res);
@@ -36,7 +36,7 @@ export async function generateMetadata() {
   const canonical   = seo.canonicalURL     || `${URL}/about`;
   let   image;
   if (seo.shareImage?.data?.attributes?.url) {
-    image = `${URL}${seo.shareImage.data.attributes.url}`;
+    image = `${seo.shareImage.data.attributes.url}`;
   }
 
   // 3) Return the Metadata object
