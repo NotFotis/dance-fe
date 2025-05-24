@@ -14,7 +14,7 @@ export default function RootLayout({ children }) {
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-XXXXXXXXXX',{ anonymize_ip: true });
+            gtag('config', 'G-QCMBG32WK0',{ anonymize_ip: true });
           `}
         </Script>
       </head>
