@@ -82,9 +82,9 @@ export default async function PrivacyPolicyPage(props) {
       <AudioForm />
       <div className="max-w-screen-2xl w-full mx-auto px-6 mt-20 flex flex-col items-center text-center">
         <h1 className="text-6xl py-16 font-bold text-center">
-          {policy.title || t('title')}
+          {t('title')}
         </h1>
-        <section className="max-w-3xl w-full mx-auto mb-12 bg-black bg-opacity-50 rounded-lg shadow-xl p-8 text-left">
+        <section className="max-w-screen-2xl w-full mx-auto mb-12 bg-black bg-opacity-50 rounded-lg shadow-xl p-8 text-left">
           {Array.isArray(policy.content)
             ? policy.content.map((block, i) => renderBlock(block, i))
             : <p>{t('noContent')}</p>
