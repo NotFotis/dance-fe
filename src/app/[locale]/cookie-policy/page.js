@@ -53,7 +53,7 @@ const renderBlock = (block, idx) => {
 
   if (block.type === 'heading') {
     return (
-      <h2 key={`heading-${idx}`} className="text-2xl font-semibold mt-6 text-center">
+      <h2 key={`heading-${idx}`} className="text-2xl font-semibold mt-6 text-left">
         {children.map((c, j) => parse(c.text || ''))}
       </h2>
     );
