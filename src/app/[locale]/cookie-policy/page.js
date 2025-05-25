@@ -68,8 +68,8 @@ const renderBlock = (block, idx) => {
 export default async function PrivacyPolicyPage(props) {
   const params = await props.params;  
   const t = await getTranslations({ locale: params.locale, namespace: 'cookie' });
-  
-  const policy = await fetchLegalPage('cookie-policy');
+  const apiLocale = params.locale === 'el' ? 'el-GR' : params.locale;
+  const policy = await fetchLegalPage('cookie-policy',apiLocale);
   if (!policy) return <div>{t('notFound')}</div>;
 
   return (
