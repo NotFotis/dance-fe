@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Script from "next/script";
 
-const GA_ID = process.env.GA_ID; // Replace with your real GA ID
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 export default function GoogleAnalyticsLoader() {
   const [enabled, setEnabled] = useState(false);
@@ -20,6 +20,7 @@ export default function GoogleAnalyticsLoader() {
     };
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
+    
   }, []);
 
   if (!enabled) return null;
