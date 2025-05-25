@@ -8,6 +8,7 @@ import Footer from '@/components/Footer';
 import { useCommunityPage } from '@/hooks/useCommunityPage';
 import parse from 'html-react-parser';
 import { FaUserFriends, FaCircle } from 'react-icons/fa';
+import CookieBanner from '@/components/CookieBanner';
 
 // Generic rich-text block renderer
 function renderBlock(block, idx) {
@@ -242,7 +243,7 @@ export default function CommunityPage() {
           {message && <p className="text-green-400 mt-4">{message}</p>}
         </section>
       </div>
-
+<CookieBanner />
       <Footer />
     </div>
   );

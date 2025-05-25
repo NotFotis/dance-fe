@@ -9,6 +9,7 @@ import Footer from '@/components/Footer';
 import AudioForm from '@/components/AudioForm';
 import { useEvents } from '@/hooks/useEvents';
 import { useGenres } from '@/hooks/useGenres';
+import CookieBanner from '@/components/CookieBanner';
 
 export default function CalendarPage() {
   const t = useTranslations();
@@ -285,6 +286,7 @@ const { genres = [], loading: genresLoading, error: genresError } = useGenres();
           ))}
         </div>
       )}
+      <CookieBanner />
       <Footer />
       <style jsx>{`
         .switch { position: relative; display: inline-block; width: 70px; height: 40px; }

@@ -13,7 +13,7 @@ export function useGenres() {
   })
 
   return {
-    genres: data || [],
+    genres: Array.isArray(data) ? data : [],
     isLoading: !error && !data,
     isError: error,
   }

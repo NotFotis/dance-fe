@@ -4,6 +4,7 @@ import Navbar from '@/components/NavBar';
 import AudioForm from '@/components/AudioForm';
 import parse from 'html-react-parser';
 import { getTranslations } from 'next-intl/server';
+import CookieBanner from '@/components/CookieBanner';
 
 // Render block as before
 const renderBlock = (block, idx) => {
@@ -90,6 +91,7 @@ export default async function PrivacyPolicyPage(props) {
           }
         </section>
       </div>
+      <CookieBanner />
       <Footer />
     </div>
   );

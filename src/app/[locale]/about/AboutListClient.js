@@ -9,6 +9,7 @@ import { useAboutPage } from '@/hooks/useAboutPage';
 import parse from 'html-react-parser';
 import { FaFacebook, FaInstagram, FaTwitter } from 'react-icons/fa';
 import { SiX } from 'react-icons/si';
+import CookieBanner from '@/components/CookieBanner';
 
 function RichText({ blocks }) {
   if (!Array.isArray(blocks)) return null;
@@ -212,7 +213,7 @@ export default function AboutUsPage() {
         </section>
 
       </div>
-
+<CookieBanner />
       <Footer />
     </div>
   );

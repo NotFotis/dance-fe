@@ -6,6 +6,7 @@ import Navbar from '@/components/NavBar';
 import AudioForm from '@/components/AudioForm';
 import { useMusicApi } from '@/hooks/useMusic';
 import Footer from '@/components/Footer';
+import CookieBanner from '@/components/CookieBanner';
 
 // Helper to pick the first non-null description
 function getDescription(item) {
@@ -270,7 +271,7 @@ export default function MusicPage() {
     </div>
   </div>
 )}
-
+<CookieBanner />
       <Footer />
     </div>
   );

@@ -10,6 +10,7 @@ import { useAdvertisePage } from '@/hooks/useAdvertisePage';
 import parse from 'html-react-parser';
 import * as Icons from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import CookieBanner from '@/components/CookieBanner';
 
 /** 
  * RichText renderer for portable text blocks 
@@ -196,7 +197,7 @@ export default function AdvertisePage() {
           </motion.div>
         )}
       </AnimatePresence>
-
+<CookieBanner />
       <Footer />
     </div>
   );

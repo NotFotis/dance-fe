@@ -3,6 +3,7 @@ import Navbar from '@/components/NavBar';
 import Footer from '@/components/Footer';
 import NewsDetailsClient from './NewsDetailsClient';
 import AudioForm from "@/components/AudioForm";
+import CookieBanner from '@/components/CookieBanner';
 
 export const dynamic = 'force-dynamic';
 const STRAPI_LOCALE_MAP = {
@@ -49,6 +50,7 @@ export default async function NewsPage({ params }) {
       <Navbar localeToSlug={localeToSlug} routeSegment='news'/>
       <AudioForm />
       <NewsDetailsClient news={news} />
+      <CookieBanner />
       <Footer />
     </div>
   );

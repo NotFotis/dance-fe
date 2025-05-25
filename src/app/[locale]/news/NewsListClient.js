@@ -9,6 +9,7 @@ import AudioForm from '@/components/AudioForm';
 import { useTranslations,useLocale } from 'next-intl';
 import { useNews } from '@/hooks/useNews';
 import { useGenres } from '@/hooks/useGenres';
+import CookieBanner from '@/components/CookieBanner';
 
 export default function NewsListPage() {
   const t = useTranslations('news');
@@ -166,7 +167,7 @@ const filtered = news.filter(article =>
             </div>
           )}
         </div>
-
+        <CookieBanner />
         <Footer />
       </div>
     </>

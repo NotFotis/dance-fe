@@ -3,6 +3,7 @@ import Navbar from '@/components/NavBar';
 import Footer from '@/components/Footer';
 import EventDetailsClient from './EventDetailsClient';
 import AudioForm from "@/components/AudioForm";
+import CookieBanner from '@/components/CookieBanner';
 
 export const dynamic = 'force-dynamic';
 const STRAPI_LOCALE_MAP = {
@@ -96,6 +97,7 @@ export default async function EventPage({ params }) {
       <Navbar localeToSlug={localeToSlug} routeSegment='events'/>
       <AudioForm />
       <EventDetailsClient event={event} />
+      <CookieBanner />
       <Footer />
     </div>
   );
