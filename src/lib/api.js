@@ -13,3 +13,12 @@ export const fetchNews = async () => {
   const res = await api.get('/dance-new');
   return res.data.data;
 };
+
+// lib/api.js
+export async function fetchLegalPage(slug) {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/legal-pages?filters[slug][$eq]=${slug}`);
+  const data = await res.json();
+  console.log(data.data[0]);
+  
+  return data.data[0] || null;
+}

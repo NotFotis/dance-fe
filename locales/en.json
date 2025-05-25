@@ -239,6 +239,19 @@
         "onlineNow": "Online Now",
         "subscribeSuccess": "Thank you for subscribing to our newsletter!",
         "subscribeError": "Oops! Something went wrong. Please try again."
-      }
+      },
+        "cookie": {
+    "message": "We use cookies to improve your experience on our site. By using our site you consent cookies.",
+    "learnMore": "Learn more",
+    "accept": "Got it",
+    "title": "Cookie Policy",
+    "notFound": "Policy not found.",
+    "noContent": "No policy content."
+  },
+    "privacy": {
+    "title": "Privacy Policy",
+    "notFound": "Policy not found.",
+    "noContent": "No policy content."
+  }
 
 }    

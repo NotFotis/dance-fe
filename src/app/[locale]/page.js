@@ -12,6 +12,7 @@ import OurServices from "@/components/Services";
 import { useTranslations } from "next-intl";
 import JourneySection from "@/components/Journey";
 import SwipeableStack from "@/components/About";
+import CookieBanner from "@/components/CookieBanner";
 
 export default function Home() {
   const t = useTranslations();
@@ -54,6 +55,7 @@ export default function Home() {
       {/* Footer Section */}
       <Footer />
 
+      <CookieBanner />
       {/* Inline CSS for the marquee animation */}
 
     </div>
