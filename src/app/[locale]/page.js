@@ -13,6 +13,7 @@ import { useTranslations } from "next-intl";
 import JourneySection from "@/components/Journey";
 import SwipeableStack from "@/components/About";
 import CookieBanner from "@/components/CookieBanner";
+import FeaturedCarousel from "@/components/FeaturedCarousel";
 
 export default function Home() {
   const t = useTranslations();
@@ -29,7 +30,9 @@ export default function Home() {
       {/* Hero Section with background image */}
       <TypingText />
 
-
+      <section id="featured" className="my-6 md:my-20 w-full px-3 md:px-6">
+        <FeaturedCarousel />
+      </section>
       {/* Dance News Section */}
       <section id="news" className="my-6 md:my-20 w-full px-3 md:px-6">
         <News />

@@ -166,7 +166,8 @@
       "buyTickets": "Buy Tickets",
       "saved": "Saved",
       "save": "Save",
-      "noImage": "No Image"
+      "noImage": "No Image",
+      "featuredEvents": "Featured Events"
     },
     "authForm": {
       "register": "Register",
