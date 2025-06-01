@@ -179,7 +179,7 @@ export default function CommunityPage() {
             href={discordInviteUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block mt-5 px-12 py-5 bg-gradient-to-r from-purple-600 to-pink-500 rounded-full text-2xl font-semibold transition-transform transform hover:scale-105"
+            className="inline-block mt-5 px-12 py-5 bg-white rounded-full text-2xl text-black shadow-2xl font-semibold transition-transform transform hover:scale-105"
           >
             {t('joinDiscord')}
           </a>
@@ -236,9 +236,9 @@ export default function CommunityPage() {
               onChange={e => setEmail(e.target.value)}
               placeholder={t('yourEmail')}
               required
-              className="w-full px-6 py-3 rounded-full bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
+              className="w-full px-6 py-3 rounded-full bg-white text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black transition"
             />
-            <button type="submit" className="px-8 py-4 bg-purple-600 hover:bg-pink-500 rounded-full text-xl font-semibold transition-shadow hover:shadow-xl">{t('subscribe')}</button>
+            <button type="submit" className="px-8 py-4 bg-white text-black hover:bg-black hover:text-white rounded-full text-xl font-semibold transition-shadow hover:shadow-xl">{t('subscribe')}</button>
           </form>
           {message && <p className="text-green-400 mt-4">{message}</p>}
         </section>
