@@ -31,25 +31,25 @@ export default function Home() {
 
 
       {/* Dance News Section */}
-      <section id="news" className="my-20 w-full px-6">
+      <section id="news" className="my-6 md:my-20 w-full px-3 md:px-6">
         <News />
       </section>
 
       {/* Upcoming Events Section */}
-      <section id="events" className="my-20 w-full px-6 ">
+      <section id="events" className="my-6 md:my-20 w-full px-3 md:px-6">
         <Carousel />
       </section>
 
       {/* Contact Form Section */}
-      <section id="about" className="mt-40 w-full px-6 py-12 mb-20">
-      <SwipeableStack apiUrl={process.env.NEXT_PUBLIC_API_URL} />
+      <section id="about" className="mt-8 md:mt-40 w-full px-3 md:px-6 py-8 md:py-12 mb-8 md:mb-20">
+        <SwipeableStack apiUrl={process.env.NEXT_PUBLIC_API_URL} />
       </section>
       
-      <section id="journey" className="my-20 w-full px-6 ">
+      <section id="journey" className="my-6 md:my-20 w-full px-3 md:px-6">
         <JourneySection />
       </section>
 
-      <section id="servies" className="my-20 w-full px-6 ">
+      <section id="services" className="my-6 md:my-20 w-full px-3 md:px-6">
         <OurServices />
       </section>
       {/* Footer Section */}

@@ -19,8 +19,8 @@ export default function Navbar({ brandName = "dancetoday", showCarousel = true ,
   const t = useTranslations();
   const locale = useLocale();
   const URL = process.env.NEXT_PUBLIC_URL;
-
-  const { events = [], isLoading } = useEvents();
+  const apiLocale = locale === 'el' ? 'el-GR' : locale;
+  const { events = [], isLoading } = useEvents(apiLocale);
   const specialEvents = events.filter(evt => evt.specialEvent);
 
   const [isOpen, setIsOpen] = useState(false);
