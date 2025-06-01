@@ -1,11 +1,25 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import "swiper/css";
 import { useEvents } from "@/hooks/useEvents";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
+
+function useIsMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== "undefined" ? window.innerWidth < breakpoint : false
+  );
+  useEffect(() => {
+    function handleResize() {
+      setIsMobile(window.innerWidth < breakpoint);
+    }
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [breakpoint]);
+  return isMobile;
+}
 
 export default function FeaturedEventsCarousel() {
   const locale = useLocale();
@@ -21,13 +35,15 @@ export default function FeaturedEventsCarousel() {
   const sliderRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
+  const isMobile = useIsMobile(); // < 768px
+
   const slidePrev = () => sliderRef.current?.swiper.slidePrev();
   const slideNext = () => sliderRef.current?.swiper.slideNext();
 
-  // Sizing
-  const cardHeight = "650px"; // you can make this responsive with Tailwind if you want
-  const inactiveWidth = 270;
-  const activeWidth = 600;
+  // Card sizes
+  const cardHeight = isMobile ? 400 : 650;
+  const cardWidth = isMobile ? 250 : 270;
+  const activeWidth = isMobile ? 250 : 600;
 
   return (
     <div className="relative bg-transparent text-white py-16 mt-20">
@@ -62,7 +78,7 @@ export default function FeaturedEventsCarousel() {
         <Swiper
           ref={sliderRef}
           slidesPerView="auto"
-          centeredSlides={true}
+          centeredSlides={!isMobile}
           spaceBetween={30}
           onSlideChange={swiper => setActiveIndex(swiper.realIndex)}
           className="mySwiper"
@@ -75,7 +91,7 @@ export default function FeaturedEventsCarousel() {
             </SwiperSlide>
           ) : (
             events.map((evt, idx) => {
-              const isActive = idx === activeIndex;
+              const isActive = idx === activeIndex && !isMobile;
               const imgUrl =
                 evt.Image?.[1]?.formats?.large?.url ||
                 evt.Image?.[1]?.url ||
@@ -85,54 +101,74 @@ export default function FeaturedEventsCarousel() {
                 <SwiperSlide
                   key={evt.id}
                   style={{
-                    width: isActive ? activeWidth : inactiveWidth,
+                    width: isActive ? activeWidth : cardWidth,
                     height: cardHeight,
                     transition:
                       "width 0.4s cubic-bezier(.4,2,.6,1), transform 0.3s, opacity 0.3s",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                   className={`relative z-0 transition-all duration-300
                     ${isActive
                       ? "scale-105 opacity-100 z-20 shadow-2xl"
                       : "scale-95 opacity-70 z-10 shadow-lg"
                     }
-                    rounded-2xl overflow-hidden
+                    rounded-2xl overflow-hidden bg-black
                   `}
                 >
                   <Link
                     href={`/events/${evt.slug}`}
-                    className="block w-full h-full relative rounded-2xl overflow-hidden shadow-[0_10px_15px_-3px_rgba(0,0,0,0.2)]"
-                    style={{ height: "100%" }}
+                    className={`block w-full h-full relative rounded-2xl overflow-hidden shadow-[0_10px_15px_-3px_rgba(0,0,0,0.2)]`}
                   >
                     {imgUrl ? (
                       isActive ? (
-                        // ACTIVE: Image fills the card (wide)
-                        <img
-                          src={imgUrl}
-                          alt={evt.Title}
-                          className="w-full h-full object-cover"
+                        // ACTIVE: fill card (2/1 aspect if possible)
+                        <div
+                          className="w-full h-full"
                           style={{
-                            aspectRatio: "2/1",
+                            aspectRatio: !isMobile ? "2/1" : "9/16",
+                            height: "100%",
+                            maxHeight: cardHeight,
                           }}
-                        />
+                        >
+                          <img
+                            src={imgUrl}
+                            alt={evt.Title}
+                            className="w-full h-full object-cover"
+                            style={{
+                              objectFit: "cover",
+                              borderRadius: "1rem",
+                              minHeight: 0,
+                              minWidth: 0,
+                            }}
+                          />
+                        </div>
                       ) : (
-                        // INACTIVE: Image is cropped to 9/16 in center
-                        <div className="w-full h-full flex items-center justify-center bg-black">
+                        // INACTIVE and all MOBILE: 9/16 crop
+                        <div
+                          className="w-full h-full flex items-center justify-center"
+                          style={{ height: "100%" }}
+                        >
                           <div
-                            className="w-full"
                             style={{
                               aspectRatio: "9/16",
+                              width: "100%",
+                              height: "100%",
                               maxHeight: "100%",
+                              margin: "0 auto",
                               overflow: "hidden",
                               borderRadius: "1rem",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
                             }}
                           >
                             <img
                               src={imgUrl}
                               alt={evt.Title}
-                              className="w-full h-full object-over"
+                              className="w-full h-full object-cover"
                               style={{
-                                height: "100%",
-                                width: "100%",
                                 objectFit: "cover",
                                 objectPosition: "center",
                                 borderRadius: "1rem",
@@ -142,7 +178,7 @@ export default function FeaturedEventsCarousel() {
                         </div>
                       )
                     ) : (
-                      <div className="bg-gray-700 w-full h-full flex items-center justify-center">
+                      <div className="bg-gray-700 w-full h-full flex items-center justify-center" style={isActive ? { aspectRatio: !isMobile ? "2/1" : "9/16", height: "100%", maxHeight: cardHeight } : { height: "100%" }}>
                         <span>{t("noImage")}</span>
                       </div>
                     )}
