@@ -1,6 +1,8 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 
+// Optional: Use Font Face Observer if you want to wait for the font before rendering anything
+
 export default function TypingText() {
   const phrases = [
     "all about dance music",
@@ -9,6 +11,8 @@ export default function TypingText() {
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
   const [displayText, setDisplayText] = useState("");
+
+  // Find longest phrase for reserving space
   const longestPhrase = useRef(phrases.reduce((a, b) => a.length > b.length ? a : b));
 
   useEffect(() => {
@@ -20,6 +24,7 @@ export default function TypingText() {
         setCharIndex(charIndex + 1);
       }, 150);
     } else {
+      // Pause before moving to next phrase
       timeout = setTimeout(() => {
         setPhraseIndex((phraseIndex + 1) % phrases.length);
         setCharIndex(0);
@@ -30,16 +35,14 @@ export default function TypingText() {
   }, [charIndex, phraseIndex]);
 
   return (
-    <div className="flex items-center justify-center bg-transparent py-20 sm:py-32 md:py-48 w-full">
+    <div className="flex h-screen items-center justify-center bg-transparent">
       <header
-        className="font-bold text-white text-center relative w-full typing-hero-header"
+        className="font-bold text-4xl text-white text-center sm:text-6xl md:text-8xl relative w-full"
         style={{
-          fontSize: "clamp(2rem, 8vw, 6rem)",
-          lineHeight: 1.1,
-          minHeight: "1em",
+          minHeight: "1em", // fallback if font fails
         }}
       >
-        {/* Reserve space */}
+        {/* This span reserves full space for the LARGEST PHRASE. Always rendered! */}
         <span
           aria-hidden="true"
           className="invisible select-none pointer-events-none block"
@@ -51,6 +54,7 @@ export default function TypingText() {
         >
           {longestPhrase.current}
         </span>
+        {/* Absolutely position the animated text, to not cause shift */}
         <span
           className="absolute inset-0 flex items-center justify-center w-full"
           style={{ left: 0, top: 0 }}
@@ -58,14 +62,6 @@ export default function TypingText() {
           {displayText}
         </span>
       </header>
-      <style jsx global>{`
-        @media (max-height: 400px) {
-          .typing-hero-header {
-            font-size: 1.5rem !important;
-            padding: 0 !important;
-          }
-        }
-      `}</style>
     </div>
   );
 }
