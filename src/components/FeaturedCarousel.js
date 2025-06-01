@@ -109,7 +109,7 @@ export default function FeaturedEventsCarousel() {
                         <img
                           src={imgUrl}
                           alt={evt.Title}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-contain"
                           style={{
                             transition: "all 0.4s cubic-bezier(.4,2,.6,1)"
                           }}
@@ -129,7 +129,7 @@ export default function FeaturedEventsCarousel() {
                             <img
                               src={imgUrl}
                               alt={evt.Title}
-                              className="w-full h-full object-cover"
+                              className="w-full h-full object-contain"
                               style={{
                                 height: "100%",
                                 width: "100%",
