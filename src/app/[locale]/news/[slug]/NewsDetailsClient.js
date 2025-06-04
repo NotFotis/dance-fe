@@ -96,12 +96,14 @@ export default function NewsDetailsClient({ news }) {
       >
         <img
           src={
-            news.Image?.[1]?.formats?.large?.url
-              ? `${news.Image[1].formats.large.url}`
-              : `${news.Image[1]?.url || null}`
+            news.Image?.[1]
+              ? (news.Image[1].formats?.large?.url || news.Image[1].url)
+              : news.Image?.[0]
+                ? (news.Image[0].formats?.large?.url || news.Image[0].url)
+                : null
           }
           alt={news.Title}
-          className="object-cover w-full h-full"
+          className="object-contain w-full h-full"
         />
       </div>
 
