@@ -132,11 +132,11 @@ export default function EventDetailsClient({ event }) {
       >
         <img
           src={
-            event.Image?.[1]
-              ? (event.Image[1].formats?.large?.url || event.Image[1].url)
-              : event.Image?.[0]
-                ? (event.Image[0].formats?.large?.url || event.Image[0].url)
-                : null
+            event.Image?.[1]?.formats?.large?.url ||
+            event.Image?.[1]?.url ||
+            event.Image?.[0]?.formats?.large?.url ||
+            event.Image?.[0]?.url ||
+            null
           }
           alt={event.Title}
           className="object-contain w-full h-full"
