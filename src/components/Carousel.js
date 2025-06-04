@@ -106,10 +106,17 @@ export default function EventsCarousel() {
                     )}
                     <div
                       className="absolute left-0 right-0 bottom-0 px-4 pb-8 pt-0 rounded-b-2xl flex flex-col justify-end"
-                      style={{
-                        height: "60%",
-                        background: "linear-gradient(to top, rgba(0,0,0,0.92) 85%, rgba(0,0,0,0.5) 95%, transparent 100%)",
-                      }}
+                        style={{
+                          height: "60%",
+                          background: `
+                            linear-gradient(
+                              to top,
+                              rgba(0,0,0,0.60) 65%,  /* Softer at the bottom */
+                              rgba(0,0,0,0.35) 85%,  /* Even softer as it rises */
+                              transparent 100%
+                            )
+                          `,
+                        }}
                     >
                       <h3 className="text-2xl font-bold text-white text-center drop-shadow-lg">
                         {evt.Title}
