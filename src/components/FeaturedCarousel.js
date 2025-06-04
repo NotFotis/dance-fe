@@ -125,7 +125,7 @@ export default function FeaturedEventsCarousel() {
                       isActive ? (
                         // ACTIVE: fill card (2/1 aspect if possible)
                         <div
-                          className="w-full h-full"
+                        className="w-full max-w-screen-2xl mx-auto overflow-hidden my-8 rounded-2xl shadow-xl"
                           style={{
                             aspectRatio: !isMobile ? "2/1" : "9/16",
                             height: "100%",
