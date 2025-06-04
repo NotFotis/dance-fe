@@ -304,15 +304,15 @@ export default function EventDetailsClient({ event }) {
         <div className="p-6">
           <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">{t('hosts')}</h2>
           {event.hosts?.length > 0 ? (
-            <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-center justify-center">
               {event.hosts.map((host) => (
-                <li key={host.id} className="flex flex-col items-center">
+                <li key={host.id} className="flex flex-col items-center justify-center">
                   {host.image && (
                     <img
                       src={
                         host.image.formats?.medium?.url
-                          ? `${host.image.formats.medium.url}`
-                          : `${host.image.url}`
+                          ? host.image.formats.medium.url
+                          : host.image.url
                       }
                       alt={host.name}
                       className="w-[80%] h-32 object-cover rounded-2xl mb-4"

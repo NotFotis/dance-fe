@@ -14,8 +14,18 @@ export default function EventsCarousel() {
   const URL = process.env.NEXT_PUBLIC_URL;
   const { events: rawEvents = [], isLoading } = useEvents(apiLocale);
 
+  const now = new Date();
   const events = rawEvents
-    .sort((a, b) => new Date(b.Date) - new Date(a.Date))
+    // Filter: only events with a future date (today included)
+    .filter(e => {
+      const eventDate = new Date(e.Date);
+      // Optionally include events that are today (ignoring time)
+      return (
+        eventDate.setHours(0,0,0,0) >= now.setHours(0,0,0,0)
+      );
+    })
+    // Sort: ascending (soonest first)
+    .sort((a, b) => new Date(a.Date) - new Date(b.Date))
     .slice(0, 10);
 
   const sliderRef = useRef(null);
@@ -94,7 +104,7 @@ export default function EventsCarousel() {
                         <span>{t("noImage")}</span>
                       </div>
                     )}
-                    <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent rounded-b-2xl">
+                    <div className="absolute bottom-0 left-0 right-0 pb-8 pt-8 px-4 bg-gradient-to-t from-black/90 via-black/60 to-transparent rounded-b-2xl" style={{ minHeight: "32%" }}>
                       <h3 className="text-2xl font-bold text-white text-center drop-shadow-lg">
                         {evt.Title}
                       </h3>
