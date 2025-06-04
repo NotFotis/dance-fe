@@ -104,7 +104,13 @@ export default function EventsCarousel() {
                         <span>{t("noImage")}</span>
                       </div>
                     )}
-                    <div className="absolute bottom-0 left-0 right-0 pb-8 pt-8 px-4 bg-gradient-to-t from-black/90 via-black/60 to-transparent rounded-b-2xl" style={{ minHeight: "32%" }}>
+                    <div
+                      className="absolute left-0 right-0 bottom-0 px-4 pb-8 pt-0 rounded-b-2xl flex flex-col justify-end"
+                      style={{
+                        height: "60%",
+                        background: "linear-gradient(to top, rgba(0,0,0,0.92) 85%, rgba(0,0,0,0.5) 95%, transparent 100%)",
+                      }}
+                    >
                       <h3 className="text-2xl font-bold text-white text-center drop-shadow-lg">
                         {evt.Title}
                       </h3>
