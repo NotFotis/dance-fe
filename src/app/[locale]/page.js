@@ -30,9 +30,6 @@ export default function Home() {
       {/* Hero Section with background image */}
       <TypingText />
 
-      <section id="featured" className="my-6 md:my-20 w-full px-3 md:px-6">
-        <FeaturedCarousel />
-      </section>
       {/* Dance News Section */}
       <section id="news" className="my-6 md:my-20 w-full px-3 md:px-6">
         <News />
