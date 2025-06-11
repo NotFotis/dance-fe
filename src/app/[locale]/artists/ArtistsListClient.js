@@ -9,6 +9,7 @@ import Footer from '@/components/Footer';
 import CookieBanner from '@/components/CookieBanner';
 import { useArtists } from '@/hooks/useArtists';
 import { useTranslations, useLocale } from 'next-intl';
+import AudioForm from '@/components/AudioForm'
 
 export default function ArtistsPage() {
   const t = useTranslations('artists');
@@ -18,7 +19,7 @@ export default function ArtistsPage() {
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const perPage = 16;
+  const perPage = 18;
 
   // Debounce search input to limit API calls
   const debouncedSetSearch = useMemo(
@@ -57,6 +58,7 @@ export default function ArtistsPage() {
       <Seo title={t('title')} />
       <div className="bg-transparent min-h-screen text-white flex flex-col items-center px-6">
         <Navbar brandName="danceartists" />
+        <AudioForm/>
         <div className="max-w-screen-2xl w-full mx-auto px-6 mt-20">
           <h1 className="text-6xl font-bold mb-8 text-center mt-20">
             {t('title')}

@@ -14,6 +14,7 @@ import {
 } from 'react-icons/fa';
 import { SiBeatport, SiTidal, SiApplemusic } from 'react-icons/si';
 import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 
 export default function EventDetailsClient({ event }) {
   const t = useTranslations();
@@ -223,50 +224,91 @@ export default function EventDetailsClient({ event }) {
                   </li>
                 ))}
               </ul>
-              {/* Show More/Less Button on mobile */}
-              {totalArtists > mobileLimit && (
-                <div className="sm:hidden flex justify-center mt-6">
-                  <button
-                    className="bg-white hover:bg-white text-black rounded-lg px-4 py-2 text-sm font-semibold"
-                    onClick={() => setShowAllArtists((v) => !v)}
+             {/* Mobile (show limited, with Show More button if needed) */}
+            <ul className="flex flex-wrap justify-center gap-6 max-w-3xl mx-auto sm:hidden">
+              {displayedArtists.map((artist, idx) => (
+                <li
+                  key={artist.id || `artist-${idx}`}
+                  className="flex flex-col w-full items-start text-left bg-black/40 rounded-xl px-6 py-4"
+                >
+                  <Link
+                    href={`/artists/${artist.slug}`}
+                    className="flex items-center space-x-4 w-full group"
                   >
-                    {showAllArtists ? t('showLess') : t('showMore')}
-                  </button>
-                </div>
-              )}
+                    <span className="text-xl font-medium group-hover:underline group-hover:text-blue-300 transition">{artist.Name}</span>
+                    {artist.Socials?.map((social, i2) => {
+                      let Icon;
+                      switch (social.platform.toLowerCase()) {
+                        case 'facebook': Icon = FaFacebook; break;
+                        case 'instagram': Icon = FaInstagram; break;
+                        case 'spotify': Icon = FaSpotify; break;
+                        case 'beatport': Icon = SiBeatport; break;
+                        case 'soundcloud': Icon = FaSoundcloud; break;
+                        case 'x': Icon = FaTwitter; break;
+                        case 'tidal': Icon = SiTidal; break;
+                        case 'apple music': Icon = SiApplemusic; break;
+                        default: Icon = null;
+                      }
+                      return Icon ? (
+                        <a
+                          key={i2}
+                          href={social.URL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="ml-2"
+                          onClick={e => e.stopPropagation()} // Prevents link bubbling to artist page
+                        >
+                          <Icon size={24} />
+                        </a>
+                      ) : null;
+                    })}
+                  </Link>
+                </li>
+              ))}
+            </ul>
 
-              {/* Desktop (always show all) */}
-              <ul className="hidden sm:flex flex-wrap justify-center gap-6 max-w-3xl mx-auto">
-                {event.artists.map((artist, idx) => (
-                  <li
-                    key={artist.id || `artist-${idx}`}
-                    className="flex flex-col items-center bg-black/40 rounded-xl px-6 py-4"
+            {/* Desktop (always show all) */}
+            <ul className="hidden sm:flex flex-wrap justify-center gap-6 max-w-3xl mx-auto">
+              {event.artists.map((artist, idx) => (
+                <li
+                  key={artist.id || `artist-${idx}`}
+                  className="flex flex-col items-center bg-black/40 rounded-xl px-6 py-4"
+                >
+                  <Link
+                    href={`/artists/${artist.slug}`}
+                    className="flex items-center space-x-4 w-full group"
                   >
-                    <div className="flex items-center space-x-4">
-                      <span className="text-xl font-medium">{artist.Name}</span>
-                      {artist.Socials?.map((social, i2) => {
-                        let Icon;
-                        switch (social.platform.toLowerCase()) {
-                          case 'facebook': Icon = FaFacebook; break;
-                          case 'instagram': Icon = FaInstagram; break;
-                          case 'spotify': Icon = FaSpotify; break;
-                          case 'beatport': Icon = SiBeatport; break;
-                          case 'soundcloud': Icon = FaSoundcloud; break;
-                          case 'x': Icon = FaTwitter; break;
-                          case 'tidal': Icon = SiTidal; break;
-                          case 'apple music': Icon = SiApplemusic; break;
-                          default: Icon = null;
-                        }
-                        return Icon ? (
-                          <a key={i2} href={social.URL} target="_blank" rel="noopener noreferrer">
-                            <Icon size={24} />
-                          </a>
-                        ) : null;
-                      })}
-                    </div>
-                  </li>
-                ))}
-              </ul>
+                    <span className="text-xl font-medium group-hover:underline group-hover:text-blue-300 transition">{artist.Name}</span>
+                    {artist.Socials?.map((social, i2) => {
+                      let Icon;
+                      switch (social.platform.toLowerCase()) {
+                        case 'facebook': Icon = FaFacebook; break;
+                        case 'instagram': Icon = FaInstagram; break;
+                        case 'spotify': Icon = FaSpotify; break;
+                        case 'beatport': Icon = SiBeatport; break;
+                        case 'soundcloud': Icon = FaSoundcloud; break;
+                        case 'x': Icon = FaTwitter; break;
+                        case 'tidal': Icon = SiTidal; break;
+                        case 'apple music': Icon = SiApplemusic; break;
+                        default: Icon = null;
+                      }
+                      return Icon ? (
+                        <a
+                          key={i2}
+                          href={social.URL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="ml-2"
+                          onClick={e => e.stopPropagation()}
+                        >
+                          <Icon size={24} />
+                        </a>
+                      ) : null;
+                    })}
+                  </Link>
+                </li>
+              ))}
+            </ul>
             </>
           ) : (
             <p className="text-gray-400 text-center">{t('noLineup')}</p>

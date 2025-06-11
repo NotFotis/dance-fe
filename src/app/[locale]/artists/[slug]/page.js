@@ -3,6 +3,7 @@ import Navbar from '@/components/NavBar';
 import Footer from '@/components/Footer';
 import ArtistDetailsClient from './ArtistDetailsClient';
 import CookieBanner from '@/components/CookieBanner';
+import AudioForm from '@/components/AudioForm';
 
 export const dynamic = 'force-dynamic';
 
@@ -71,6 +72,7 @@ export default async function ArtistPage({ params }) {
   return (
     <div className="bg-transparent min-h-screen text-white flex flex-col items-center">
       <Navbar localeToSlug={localeToSlug} routeSegment="artists" />
+      <AudioForm/>
       <ArtistDetailsClient artist={artist} events={events} />
       <CookieBanner />
       <Footer />
