@@ -254,5 +254,20 @@
         "title": "Πολιτική Απορρήτου",
         "notFound": "Η πολιτική δεν βρέθηκε.",
         "noContent": "Δεν υπάρχει περιεχόμενο πολιτικής."
-  }
+  },
+  "artists": {
+    "title": "Καλλιτέχνες",
+    "searchPlaceholder": "Αναζήτηση καλλιτεχνών...",
+    "noArtists": "Δεν βρέθηκαν καλλιτέχνες.",
+    "previous": "Προηγούμενο",
+    "next": "Επόμενο"
+  },
+  "artistDetails": {
+    "noGenres": "Χωρίς είδος",
+    "noDescription": "Χωρίς περιγραφή",
+    "upcomingEvents": "Επερχόμενα Events",
+    "noUpcomingEvents": "Δεν υπάρχουν επερχόμενα events.",
+    "joinDiscussion": "Συζήτησε μαζί μας στο Discord"
+}
+
 }

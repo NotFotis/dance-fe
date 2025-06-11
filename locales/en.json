@@ -265,10 +265,10 @@
       },
     "artistDetails":{
         "noGenres": "No genres",
-  "noDescription": "No description",
-  "upcomingEvents": "Upcoming Events",
-  "noUpcomingEvents": "No upcoming events.",
-  "joinDiscussion": "Join the discussion on Discord"
+        "noDescription": "No description",
+        "upcomingEvents": "Upcoming Events",
+        "noUpcomingEvents": "No upcoming events.",
+        "joinDiscussion": "Join the discussion on Discord"
     }
 
 }    

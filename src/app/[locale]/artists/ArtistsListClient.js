@@ -56,7 +56,7 @@ export default function ArtistsPage() {
     <>
       <Seo title={t('title')} />
       <div className="bg-transparent min-h-screen text-white flex flex-col items-center px-6">
-        <Navbar brandName="dancenews" />
+        <Navbar brandName="danceartists" />
         <div className="max-w-screen-2xl w-full mx-auto px-6 mt-20">
           <h1 className="text-6xl font-bold mb-8 text-center mt-20">
             {t('title')}
