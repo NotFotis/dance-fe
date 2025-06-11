@@ -17,7 +17,6 @@ async function fetchArtistBySlug(slug, locale, fallbackLocale = 'en') {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const strapiLocale = STRAPI_LOCALE_MAP[locale] || locale;
   let url = `${API_URL}/artists?filters[slug][$eq]=${slug}&locale=${strapiLocale}&populate=Image&populate=music_genres`;
-  console.log(url);
   
   let res = await fetch(url, { cache: 'no-store' });
 
@@ -47,14 +46,12 @@ async function fetchUpcomingEventsForArtist(artistId, locale) {
   const res = await fetch(url, { cache: 'no-store' });
   if (!res.ok) return [];
   const json = await res.json();
-  console.log(json);
   
   return Array.isArray(json.data) ? json.data : [];
 }
 export default async function ArtistPage({ params }) {
   const { slug, locale } = await params;
   const artist = await fetchArtistBySlug(slug, locale);
-  console.log(artist);
   
   if (!artist) notFound();
 

@@ -19,7 +19,6 @@ async function fetchNewsBySlug(slug, locale, fallbackLocale = 'en') {
   
   if (!res.ok) return null;
   const json = await res.json();
-    console.log(json);
 
   let data = json.data?.[0];
 

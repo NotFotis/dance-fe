@@ -12,7 +12,6 @@ export default async function sitemap() {
     getAllEventIds(),
     getAllNewsIds()
   ]);
-  console.log(eventIds);
   
   const dynamicPaths = [
     ...eventIds.map(id => `events/${id}`),

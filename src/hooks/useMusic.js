@@ -31,7 +31,6 @@ export function useMusicApi(apiUrl, apiLocale) {
     if (!Array.isArray(raw)) return [];
     return raw.map(item => item.URL);
   }, [spotifyResponse]);
-  console.log(featuredPlaylists);
   
 
   const isLoading = !musicResponse && !musicError;

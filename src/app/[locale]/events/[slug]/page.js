@@ -16,7 +16,6 @@ async function fetchEventBySlug(slug, locale, fallbackLocale = 'en') {
     const strapiLocale = STRAPI_LOCALE_MAP[locale] || locale;
   let url = `${API_URL}/events?filters[slug][$eq]=${slug}&locale=${strapiLocale}&populate=seo.shareImage&populate=artists.Socials&populate=Image&populate=music_genres&populate=hosts.image&populate=localizations`;
   let res = await fetch(url, { cache: 'no-store' });
-  console.log(res);
   
   if (!res.ok) return null;
   const json = await res.json();

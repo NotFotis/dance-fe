@@ -19,7 +19,6 @@ export default function CalendarPage() {
   const apiLocale = locale === 'el' ? 'el-GR' : locale;
   // Data hooks
   const { events, isLoading: eventsLoading, isError: eventsError } = useEvents(apiLocale);
-  console.log(events);
   
 const { genres = [], loading: genresLoading, error: genresError } = useGenres();
 

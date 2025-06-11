@@ -50,7 +50,6 @@ const AuthForm = ({ type, onSuccess }) => {
       }
 
       const { data } = await axios.post(endpoint, requestData);
-      console.log(data);
 
       if (data.jwt && data.user) {
         console.log("Auth successful, storing user data...");

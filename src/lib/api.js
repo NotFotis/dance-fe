@@ -18,7 +18,6 @@ export const fetchNews = async () => {
 export async function fetchLegalPage(slug,apiLocale) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/legal-pages?filters[slug][$eq]=${slug}&locale=${apiLocale}`);
   const data = await res.json();
-  console.log(data.data[0]);
   
   return data.data[0] || null;
 }

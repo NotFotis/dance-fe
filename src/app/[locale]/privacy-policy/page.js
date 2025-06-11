@@ -68,10 +68,8 @@ const renderBlock = (block, idx) => {
 
 export default async function PrivacyPolicyPage(props) {
   const params = await props.params;
-  console.log(params.locale);
   
   const t = await getTranslations({ locale: params.locale, namespace: 'privacy' });
-  console.log(t('title'));
     const apiLocale = params.locale === 'el' ? 'el-GR' : params.locale;
   const policy = await fetchLegalPage('privacy-policy',apiLocale);
   if (!policy) return <div>{t('notFound')}</div>;

@@ -13,7 +13,6 @@ export async function generateMetadata() {
     `${API_URL}/advertise-page-setting?populate=seo`,
     { cache: 'no-store' }
   );
-  console.log(res);
   
   if (!res.ok) {
     console.warn('SEO fetch failed');
@@ -25,7 +24,6 @@ export async function generateMetadata() {
     };
   }
   const json = await res.json();
-  console.log(json);
   
   const attrs = json.data || {};
   const seo   = attrs.seo || {};
