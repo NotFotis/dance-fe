@@ -5,6 +5,7 @@
   "Events": "EVENTS",
   "Community": "COMMUNITY",
   "Advertise": "ADVERTISE",
+  "Artists": "ARTISTS",
   "About": "ABOUT",
   "Profile": "Profile",
   "Login": "LOGIN",
@@ -253,6 +254,21 @@
     "title": "Privacy Policy",
     "notFound": "Policy not found.",
     "noContent": "No policy content."
-  }
+  },
+  "artists":
+      {
+        "title": "Artists",
+        "searchPlaceholder": "Search artists...",
+        "noArtists": "No artists found.",
+        "previous": "Previous",
+        "next": "Next"
+      },
+    "artistDetails":{
+        "noGenres": "No genres",
+  "noDescription": "No description",
+  "upcomingEvents": "Upcoming Events",
+  "noUpcomingEvents": "No upcoming events.",
+  "joinDiscussion": "Join the discussion on Discord"
+    }
 
 }    

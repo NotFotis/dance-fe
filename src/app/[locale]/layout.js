@@ -2,7 +2,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { NextIntlClientProvider } from "next-intl";
-import Script from "next/script";
 import GoogleAnalyticsLoader from "@/components/GoogleAnalyticsLoader";
 
 const geistSans = Geist({
@@ -76,20 +75,17 @@ export async function generateMetadata({ params }) {
 }
 
 // NOTE: accept a single props object and await it before using `params`
-export default async function RootLayout(props) {
+export default async function LocaleLayout(props) {
   const params = await props.params;
   const { children } = props;
   const locale = params.locale || "en";
   const messages = (await import(`../../../locales/${locale}.json`)).default;
 
   return (
-    <html lang={locale} className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          {children}
-        </NextIntlClientProvider>
-        <GoogleAnalyticsLoader />
-      </body>
-    </html>
+    <NextIntlClientProvider locale={locale} messages={messages}>
+      {children}
+      <GoogleAnalyticsLoader />
+      {/* You can add other providers/components here */}
+    </NextIntlClientProvider>
   );
 }
