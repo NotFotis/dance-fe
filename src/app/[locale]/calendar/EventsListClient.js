@@ -17,9 +17,14 @@ export default function CalendarPage() {
   const router = useRouter();
   const URL = process.env.NEXT_PUBLIC_URL;
   const apiLocale = locale === 'el' ? 'el-GR' : locale;
+
   // Data hooks
   const { events, isLoading: eventsLoading, isError: eventsError } = useEvents(apiLocale);
   const { genres = [], loading: genresLoading, error: genresError } = useGenres();
+
+  const IMAGE_WIDTH = 320;
+  const IMAGE_HEIGHT = 512;
+  const PADDING = 24;
 
   // Responsive breakpoint
   const [isMobile, setIsMobile] = useState(false);
@@ -64,7 +69,7 @@ export default function CalendarPage() {
 
   // HOVER PREVIEW STATE
   const [hoveredEvent, setHoveredEvent] = useState(null);
-  const [hoverPos, setHoverPos] = useState({ x: 0, y: 0 });
+  const [hoverPos, setHoverPos] = useState(null);
 
   // Loading & error
   if (eventsLoading || genresLoading) {
@@ -141,6 +146,24 @@ export default function CalendarPage() {
       setCalendarYear(y => y + 1);
     } else setCalendarMonth(m => m + 1);
   };
+
+  // Hover Preview Calculation (avoid SSR crash)
+  let adjustedX = 0, adjustedY = 0;
+  if (hoveredEvent && hoveredEvent.Image?.[0] && hoverPos) {
+    const winW = typeof window !== 'undefined' ? window.innerWidth : 1920;
+    const winH = typeof window !== 'undefined' ? window.innerHeight : 1080;
+    adjustedX = hoverPos.x + PADDING;
+    adjustedY = hoverPos.y - 10;
+
+    if (adjustedX + IMAGE_WIDTH > winW) {
+      adjustedX = winW - IMAGE_WIDTH - PADDING;
+      if (adjustedX < 0) adjustedX = 0;
+    }
+    if (adjustedY + IMAGE_HEIGHT > winH) {
+      adjustedY = winH - IMAGE_HEIGHT - PADDING;
+      if (adjustedY < 0) adjustedY = 0;
+    }
+  }
 
   return (
     <div className="bg-transparent min-h-screen text-white px-6 mt-20 mb-10 text-center">
@@ -311,12 +334,12 @@ export default function CalendarPage() {
             </div>
           ))}
           {/* Hover Preview */}
-          {hoveredEvent && hoveredEvent.Image?.[0] && (
+          {hoveredEvent && hoveredEvent.Image?.[0] && hoverPos && (
             <div
               style={{
                 position: 'fixed',
-                left: hoverPos.x + 24,
-                top: hoverPos.y - 10,
+                left: adjustedX,
+                top: adjustedY,
                 zIndex: 1000,
                 pointerEvents: 'none'
               }}
@@ -326,7 +349,7 @@ export default function CalendarPage() {
                 src={hoveredEvent.Image?.[0]?.formats?.medium?.url || hoveredEvent.Image?.[0]?.url}
                 alt={hoveredEvent.Title}
                 className="w-full h-full object-cover rounded-xl"
-                style={{ display: 'block', maxWidth: '320px', maxHeight: '512px' }}
+                style={{ display: 'block', maxWidth: IMAGE_WIDTH, maxHeight: IMAGE_HEIGHT }}
               />
             </div>
           )}

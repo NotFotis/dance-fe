@@ -13,6 +13,7 @@ const navItems = [
   { href: "/news", label: "News" },
   { href: "/music", label: "Music" },
   { href: "/calendar", label: "Events" },
+  { href: "/artists", label: "Artists" },
   { href: "/community", label: "Community" },
   { href: "/advertise", label: "Advertise" },
   { href: "/about", label: "About" },
