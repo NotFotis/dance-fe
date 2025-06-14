@@ -326,7 +326,7 @@ export default function CalendarPage() {
                 src={hoveredEvent.Image?.[0]?.formats?.medium?.url || hoveredEvent.Image?.[0]?.url}
                 alt={hoveredEvent.Title}
                 className="w-full h-full object-cover rounded-xl"
-                style={{ display: 'block', maxWidth: '160px', maxHeight: '256px' }}
+                style={{ display: 'block', maxWidth: '320px', maxHeight: '512px' }}
               />
             </div>
           )}
