@@ -112,7 +112,7 @@ export default function AnimatedBackground({ showOnHomeOnly = true }) {
     );
     filter: brightness(1.12) saturate(1.1);
           background-size: 200% 200%;
-          animation: animateBackground 20s ease-in-out infinite;
+          animation: animateBackground 60s ease-in-out infinite;
         }
 
         .lines-canvas {
