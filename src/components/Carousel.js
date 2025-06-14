@@ -127,7 +127,7 @@ export default function EventsCarousel() {
                           day: "numeric",
                           year: "numeric",
                         })}
-                        {evt.Time ? ` | ${evt.Time.split(".")[0]}` : ""}
+                        {evt.Time ? ` | ${evt.Time.split(".")[0].slice(0, 5)}` : ""}
                       </p>
                       {evt.tickets && (
                         <div className="mt-4 flex justify-center">

@@ -44,7 +44,7 @@ export default function EventDetailsClient({ event }) {
     month: 'long',
     year: 'numeric',
   });
-  const time = event.Time?.split('.')[0];
+  const time = event.Time?.split('.')[0].slice(0, 5);
 
   // Extract place name from Google Maps URL
   let locationName = event.Location;

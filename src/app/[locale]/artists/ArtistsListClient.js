@@ -47,6 +47,9 @@ export default function ArtistsPage() {
 
   const getImageUrl = (artist) => {
     if (!artist.Image) return null;
+    if (artist.spotifyImage) return artist.spotifyImage;
+    console.log(artist.spotifyImage);
+    
     const img = artist.Image;
     if (img.formats?.thumbnail?.url) return img.formats.thumbnail.url;
     if (img.url) return img.url;
