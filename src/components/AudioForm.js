@@ -7,8 +7,8 @@ export default function AnimatedBackground({ showOnHomeOnly = true }) {
   const canvasRef = useRef(null);
   const pathname = usePathname();
   const shouldShowLines = showOnHomeOnly
-  ? ["/en", "/el"].includes(pathname)
-  : true;
+    ? ["/en", "/el"].includes(pathname)
+    : true;
 
   useEffect(() => {
     if (!shouldShowLines) return;
@@ -87,10 +87,10 @@ export default function AnimatedBackground({ showOnHomeOnly = true }) {
 
   return (
     <>
-      {/* always-on radial gradient */}
+      {/* Animated abstract background */}
       <section className="radial-bg" />
-
-      {/* only mount the canvas when shouldShowLines is true */}
+      
+      {/* Animated canvas with lines */}
       {shouldShowLines && <canvas ref={canvasRef} className="lines-canvas" />}
 
       <style jsx>{`
@@ -102,8 +102,19 @@ export default function AnimatedBackground({ showOnHomeOnly = true }) {
           height: 100%;
           pointer-events: none;
           z-index: -2;
-          background: radial-gradient(circle at center, #333 0%, #000 100%);
+          background:    
+    linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.18) 0%,     /* subtle bright gray */
+      rgba(180, 180, 180, 0.15) 22%,    /* soft light gray */
+      rgba(90, 90, 90, 0.12) 45%,       /* mid gray */
+      rgba(40, 40, 40, 0.22) 80%,       /* dark gray */
+      rgba(0, 0, 0, 0.82) 100%          /* almost solid black */
+    );
+    filter: brightness(1.12) saturate(1.1);
+          background-size: 200% 200%;
+          animation: animateBackground 20s ease-in-out infinite;
         }
+
         .lines-canvas {
           position: fixed;
           top: 0;
@@ -112,6 +123,18 @@ export default function AnimatedBackground({ showOnHomeOnly = true }) {
           height: 100%;
           pointer-events: none;
           z-index: -1;
+        }
+
+        @keyframes animateBackground {
+          0% {
+            background-position: 100% 100%;
+          }
+          50% {
+            background-position: 0% 0%;
+          }
+          100% {
+            background-position: 100% 100%;
+          }
         }
       `}</style>
     </>
