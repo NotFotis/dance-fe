@@ -16,7 +16,7 @@ const STRAPI_LOCALE_MAP = {
 async function fetchArtistBySlug(slug, locale, fallbackLocale = 'en') {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const strapiLocale = STRAPI_LOCALE_MAP[locale] || locale;
-  let url = `${API_URL}/artists?filters[slug][$eq]=${slug}&locale=${strapiLocale}&populate=Image&populate=music_genres`;
+  let url = `${API_URL}/artists?filters[slug][$eq]=${slug}&locale=${strapiLocale}&populate=Image&populate=music_genres&populate=Socials`;
   
   let res = await fetch(url, { cache: 'no-store' });
 

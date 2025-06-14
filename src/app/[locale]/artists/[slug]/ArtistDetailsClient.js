@@ -1,14 +1,27 @@
 'use client';
 
 import React from 'react';
-import parse from 'html-react-parser';
-import { FaDiscord } from 'react-icons/fa';
+import { FaDiscord, FaFacebook, FaInstagram, FaSpotify, FaSoundcloud, FaTwitter, FaGlobe } from 'react-icons/fa';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
+import { SiBeatport, SiTidal, SiApplemusic } from 'react-icons/si';
+import { X } from 'lucide-react';
+
+const SOCIAL_ICONS = {
+  'discord': FaDiscord,
+  'facebook': FaFacebook,
+  'instagram': FaInstagram,
+  'spotify': FaSpotify,
+  'beatport': SiBeatport,
+  'soundcloud': FaSoundcloud,
+  'x': FaTwitter,
+  'tidal': SiTidal,
+  'apple music': SiApplemusic,
+  'website': FaGlobe,
+};
 
 export default function ArtistDetailsClient({ artist, events }) {
   const t = useTranslations('artistDetails');
-  const DISCORD_URL = process.env.NEXT_PUBLIC_DISCORD_URL;
 
   // Image logic
   const heroUrl =
@@ -39,7 +52,7 @@ export default function ArtistDetailsClient({ artist, events }) {
       </div>
 
       <div className="w-full max-w-screen-2xl mx-auto bg-black bg-opacity-50 rounded-2xl shadow-xl divide-y divide-gray-700">
-        {/* Name / Genres */}
+        {/* Name / Genres / Socials */}
         <div className="p-6 text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold">{artist.Name}</h1>
           {artist.music_genres?.length > 0 ? (
@@ -56,18 +69,31 @@ export default function ArtistDetailsClient({ artist, events }) {
           ) : (
             <p className="text-gray-400 mt-3">{t('noGenres')}</p>
           )}
-        </div>
 
-        {/* Short Description */}
-        <div className="p-6">
-          {artist.description ? (
-            <div className="prose prose-invert max-w-none text-left mx-auto text-lg">
-              {typeof artist.description === 'string'
-                ? parse(artist.description)
-                : null}
+          {/* Socials */}
+          {artist.Socials && artist.Socials.length > 0 && (
+            <div className="flex justify-center items-center gap-4 mt-6">
+              {artist.Socials.map((s) => {
+                const platform = (s.platform || '').toLowerCase();
+                const Icon = SOCIAL_ICONS[platform] || null;
+                return (
+                  <a
+                    key={s.id}
+                    href={s.URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:scale-110 transition-transform"
+                    title={s.platform}
+                  >
+                    {Icon ? (
+                      <Icon size={30} />
+                    ) : (
+                      <span className="px-2 py-1 bg-gray-800 rounded text-sm">{s.platform}</span>
+                    )}
+                  </a>
+                );
+              })}
             </div>
-          ) : (
-            <p className="text-center text-gray-400">{t('noDescription')}</p>
           )}
         </div>
 
@@ -89,14 +115,12 @@ export default function ArtistDetailsClient({ artist, events }) {
                   null;
 
                 return (
-                    <Link
+                  <Link
                     href={`/events/${event.slug}`}
                     key={event.id}
                     className="group rounded-2xl overflow-hidden shadow bg-gray-900 hover:scale-105 transition block max-w-sm mx-auto"
-                    >
-                    <div
-                        className="w-full aspect-[9/16] bg-gray-800 relative"
-                    >
+                  >
+                    <div className="w-full aspect-[9/16] bg-gray-800 relative">
                       {eventImgUrl ? (
                         <img
                           src={eventImgUrl}
@@ -108,7 +132,6 @@ export default function ArtistDetailsClient({ artist, events }) {
                           {event.Title?.[0] ?? "?"}
                         </div>
                       )}
-
                       {/* Gradient Overlay & Content */}
                       <div
                         className="absolute left-0 right-0 bottom-0 px-4 pb-6 pt-12 rounded-b-2xl flex flex-col justify-end"

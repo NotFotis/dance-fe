@@ -18,7 +18,8 @@ export function useArtists({
     `pagination[pageSize]=${pageSize}`,
     'sort=Name:asc',
     'populate=Image',
-    'populate=music_genres'
+    'populate=music_genres',
+    'populate=Socials'
   ];
 
   if (search) {
