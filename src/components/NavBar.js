@@ -149,7 +149,7 @@ export default function Navbar({ brandName = "dancetoday", showCarousel = true ,
                           className="relative block h-32 rounded-lg overflow-hidden shadow-lg cursor-pointer"
                           onClick={() => {
                             setIsOpen(false);
-                            router.push(`/events/${evt.documentId}`);
+                            router.push(`/events/${evt.slug}`);
                           }}
                         >
                           {
@@ -169,7 +169,6 @@ export default function Navbar({ brandName = "dancetoday", showCarousel = true ,
                                   }
                                   alt={evt.Title}
                                   className="w-full h-full object-cover"
-                                  draggable={false}
                                 />
                               )
                               : null
