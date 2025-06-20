@@ -180,7 +180,7 @@ export default function Navbar({ brandName = "dancetoday", showCarousel = true ,
                             linear-gradient(
                               to top,
                               rgba(0,0,0,0.60) 65%,  /* Softer at the bottom */
-                              rgba(0,0,0,0.35) 95%,  /* Even softer as it rises */
+                              rgba(0,0,0,0.35) 85%,  /* Even softer as it rises */
                               transparent 100%
                             )
                           `,
