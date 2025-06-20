@@ -2,12 +2,12 @@
 import React, { useState, useEffect, useRef } from "react";
 
 // Optional: Use Font Face Observer if you want to wait for the font before rendering anything
-
-export default function TypingText() {
   const phrases = [
     "all about dance music",
     "dance with us"
   ];
+export default function TypingText() {
+
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
   const [displayText, setDisplayText] = useState("");
@@ -35,9 +35,9 @@ export default function TypingText() {
   }, [charIndex, phraseIndex]);
 
   return (
-    <div className="flex h-screen items-center justify-center bg-transparent">
+    <div className="max-w-screen-2xl flex h-screen items-center justify-center bg-transparent">
       <header
-        className="font-bold text-4xl text-white text-center sm:text-6xl md:text-8xl relative w-full"
+        className="font-bold text-3xl text-white text-center sm:text-6xl md:text-8xl relative w-full"
         style={{
           minHeight: "1em", // fallback if font fails
         }}
@@ -56,7 +56,7 @@ export default function TypingText() {
         </span>
         {/* Absolutely position the animated text, to not cause shift */}
         <span
-          className="absolute inset-0 flex items-center justify-center w-full"
+          className=" absolute inset-0 flex items-center justify-center w-full"
           style={{ left: 0, top: 0 }}
         >
           {displayText}
