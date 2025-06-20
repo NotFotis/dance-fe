@@ -30,47 +30,52 @@ export default function SpecialEventsBanner() {
   const evt = specialEvents[index];
 
   return (
-    <div className="w-full mx-auto my-6 px-2">
-      <div className="relative rounded-2xl overflow-hidden shadow-lg group bg-black/80">
-        {/* Controls */}
+    <div className="w-full mx-auto my-6 max-w-screen-2xl">
+      <div
+        className="relative rounded-2xl overflow-hidden shadow-lg group cursor-pointer bg-black/80 aspect-[16/6] sm:aspect-[16/4]"
+        onClick={() => router.push(`/events/${evt.slug}`)}
+      >
         <AnimatePresence mode="wait">
           <motion.div
             key={evt.id}
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -40 }}
-            transition={{ duration: 0.60, ease: "easeInOut" }}
-            className="flex flex-col sm:flex-row items-center cursor-pointer"
-            onClick={() => router.push(`/events/${evt.slug}`)}
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+            className="w-full h-full"
           >
-            {/* Event Image */}
+            {/* Full-width Image */}
             {evt.Image?.[0] && (
               <img
-                src={evt.Image[0].formats?.medium?.url || evt.Image[0].url}
+                src={evt.Image[0].formats?.large?.url || evt.Image[0].formats?.medium?.url || evt.Image[0].url}
                 alt={evt.Title}
-                className="w-full sm:w-56 h-36 sm:h-32 object-cover flex-shrink-0"
+                className="w-full h-full object-cover absolute inset-0"
                 draggable={false}
               />
             )}
 
-            {/* Event Details */}
-            <div className="flex-1 text-left px-4 py-3">
-              <h3 className="text-white text-xl font-semibold mb-1 drop-shadow">
+            {/* Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+
+            {/* Details over image */}
+            <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
+              <h3 className="text-white text-2xl sm:text-3xl font-bold mb-1 drop-shadow-lg">
                 {evt.Title}
               </h3>
-              <p className="text-gray-300 text-sm mb-1">
+              <p className="text-gray-100 text-base mb-2 font-medium drop-shadow">
                 {new Date(evt.Date).toLocaleDateString(undefined, {
                   month: "long",
                   day: "numeric",
                   year: "numeric",
                 })}
               </p>
-              <span className="inline-block mt-1 px-3 py-1 bg-white/10 text-white text-xs rounded-full border border-white/20">
+              <span className="inline-block mt-1 px-4 py-2 bg-white/10 text-white text-sm rounded-full border border-white/20 backdrop-blur">
                 {evt.Location || "Special Event"}
               </span>
             </div>
           </motion.div>
         </AnimatePresence>
+        {/* Optional: Add controls or dots if you want */}
       </div>
     </div>
   );
