@@ -173,8 +173,21 @@ export default function Navbar({ brandName = "dancetoday", showCarousel = true ,
                               )
                               : null
                           }
-                          <div className="absolute bottom-0 w-full bg-gradient-to-t from-black via-transparent to-transparent p-2 text-center">
-                            <h3 className="text-white text-lg sm:text-xl font-semibold drop-shadow-lg leading-tight">
+                    <div
+                      className="absolute left-0 right-0 bottom-0 px-4 pb-8 pt-0 rounded-b-2xl flex flex-col justify-end"
+                        style={{
+                          height: "60%",
+                          background: `
+                            linear-gradient(
+                              to top,
+                              rgba(0,0,0,0.60) 65%,  /* Softer at the bottom */
+                              rgba(0,0,0,0.35) 85%,  /* Even softer as it rises */
+                              transparent 100%
+                            )
+                          `,
+                        }}
+                    >
+                          <h3 className="text-white text-lg sm:text-xl font-semibold drop-shadow-lg leading-tight">
                               {evt.Title}
                             </h3>
                             <p className="text-gray-300 text-sm drop-shadow-lg">
