@@ -88,7 +88,7 @@ export default function NewsDetailsClient({ news }) {
   };
 
   return (
-    <div className="bg-transparent text-white flex flex-col mt-20 mb-20 px-6">
+    <div className="w-full max-w-screen-2xl bg-transparent text-white flex flex-col mt-20 mb-20 px-6">
       {/* Hero Image */}
       <div
         className="w-full max-w-screen-2xl mx-auto overflow-hidden my-8 rounded-2xl shadow-xl"
