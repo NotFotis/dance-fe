@@ -76,8 +76,20 @@ export default function SpecialEventsBanner() {
 
 
             {/* Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-
+                    <div
+                      className="absolute left-0 right-0 bottom-0 px-4 pb-8 pt-0 rounded-b-2xl flex flex-col justify-end"
+                        style={{
+                          height: "60%",
+                          background: `
+                            linear-gradient(
+                              to top,
+                              rgba(0,0,0,0.60) 65%,  /* Softer at the bottom */
+                              rgba(0,0,0,0.35) 85%,  /* Even softer as it rises */
+                              transparent 100%
+                            )
+                          `,
+                        }}
+                    >
             {/* Details over image */}
             <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
               <h3 className="text-white text-2xl sm:text-3xl font-bold mb-1 drop-shadow-lg">
@@ -93,6 +105,7 @@ export default function SpecialEventsBanner() {
               <span className="inline-block mt-1 px-4 py-2 bg-white/10 text-white text-sm rounded-full border border-white/20 backdrop-blur">
                 {evt.Location || "Special Event"}
               </span>
+            </div>
             </div>
           </motion.div>
         </AnimatePresence>
