@@ -152,13 +152,28 @@ export default function Navbar({ brandName = "dancetoday", showCarousel = true ,
                             router.push(`/events/${evt.documentId}`);
                           }}
                         >
-                          {evt.Image?.[0] && (
-                            <img
-                              src={`${evt.Image[0].formats?.small?.url || evt.Image[0].url}`}
-                              alt={evt.Title}
-                              className="w-full h-full object-cover"
-                            />
-                          )}
+                          {
+                            (evt.Image?.[2] || evt.Image?.[1] || evt.Image?.[0])
+                              ? (
+                                <img
+                                  src={
+                                    evt.Image?.[2]?.formats?.large?.url ||
+                                    evt.Image?.[2]?.formats?.medium?.url ||
+                                    evt.Image?.[2]?.url ||
+                                    evt.Image?.[1]?.formats?.large?.url ||
+                                    evt.Image?.[1]?.formats?.medium?.url ||
+                                    evt.Image?.[1]?.url ||
+                                    evt.Image?.[0]?.formats?.large?.url ||
+                                    evt.Image?.[0]?.formats?.medium?.url ||
+                                    evt.Image?.[0]?.url
+                                  }
+                                  alt={evt.Title}
+                                  className="w-full h-full object-cover"
+                                  draggable={false}
+                                />
+                              )
+                              : null
+                          }
                           <div className="absolute bottom-0 w-full bg-gradient-to-t from-black via-transparent to-transparent p-2 text-center">
                             <h3 className="text-white text-lg sm:text-xl font-semibold drop-shadow-lg leading-tight">
                               {evt.Title}

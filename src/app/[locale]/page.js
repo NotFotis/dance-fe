@@ -15,10 +15,11 @@ import SwipeableStack from "@/components/About";
 import CookieBanner from "@/components/CookieBanner";
 import FeaturedCarousel from "@/components/FeaturedCarousel";
 import SpecialEventsBanner from "@/components/SpecialEventsBanner";
+import NewsletterSection from "@/components/Newsletter";
 
 export default function Home() {
   const t = useTranslations();
-
+  let newsletterText = [];
   return (
     
     <div className="bg-transparent min-h-screen flex flex-col items-center justify-center relative">
@@ -54,6 +55,10 @@ export default function Home() {
 
       <section id="services" className="my-6 md:my-20 w-full px-3 md:px-6">
         <OurServices />
+      </section>
+
+      <section id="newsletter" className="my-6 md:my-20 w-full px-3 md:px-6">
+      <NewsletterSection t={t} newsletterText={newsletterText} />
       </section>
       {/* Footer Section */}
       <Footer />

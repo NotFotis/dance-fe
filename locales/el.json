@@ -65,7 +65,13 @@
   "Contact": "Επικοινωνία",
   "Privacy Policy": "Πολιτική Απορρήτου",
   "Disclaimer": "Αποποίηση Ευθυνών",
+      "newsletter": "Ενημερωτικό Δελτίο",
+    "yourEmail": "Το email σας",
+    "subscribe": "Εγγραφή",
+    "subscribeSuccess": "Ευχαριστούμε που εγγραφήκατε στο ενημερωτικό μας δελτίο!",
+    "subscribeError": "Ωχ! Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.",
   "© {year} dancetoday": "© {year} dancetoday",
+          "communityTitle": "Κοινότητα",
     "showMore": "Εμφάνιση Περισσότερων",
   "showLess": "Εμφάνιση Λιγότερων",
   "login": {

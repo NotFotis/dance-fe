@@ -51,14 +51,29 @@ export default function SpecialEventsBanner() {
             className="w-full h-full"
           >
             {/* Full-width Image */}
-            {evt.Image?.[0] && (
-              <img
-                src={evt.Image[0].formats?.large?.url || evt.Image[0].formats?.medium?.url || evt.Image[0].url}
-                alt={evt.Title}
-                className="w-full h-full object-cover absolute inset-0"
-                draggable={false}
-              />
-            )}
+                {
+                (evt.Image?.[2] || evt.Image?.[1] || evt.Image?.[0])
+                    ? (
+                    <img
+                        src={
+                        evt.Image?.[2]?.formats?.large?.url ||
+                        evt.Image?.[2]?.formats?.medium?.url ||
+                        evt.Image?.[2]?.url ||
+                        evt.Image?.[1]?.formats?.large?.url ||
+                        evt.Image?.[1]?.formats?.medium?.url ||
+                        evt.Image?.[1]?.url ||
+                        evt.Image?.[0]?.formats?.large?.url ||
+                        evt.Image?.[0]?.formats?.medium?.url ||
+                        evt.Image?.[0]?.url
+                        }
+                        alt={evt.Title}
+                        className="w-full h-full object-cover absolute inset-0"
+                        draggable={false}
+                    />
+                    )
+                    : null
+                }
+
 
             {/* Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
