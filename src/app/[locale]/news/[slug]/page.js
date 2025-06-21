@@ -14,17 +14,18 @@ const STRAPI_LOCALE_MAP = {
 async function fetchNewsBySlug(slug, locale, fallbackLocale = 'en') {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const strapiLocale = STRAPI_LOCALE_MAP[locale] || locale;
-  let url = `${API_URL}/dance-new?filters[slug][$eq]=${slug}&locale=${strapiLocale}&populate=Image&populate=author&populate=music_genres&populate=localizations`;
+  let url = `${API_URL}/dance-new?filters[slug][$eq]=${slug}&locale=${strapiLocale}&populate=Image&populate=author&populate=music_genres&populate=localizations&populate=artists`;
   let res = await fetch(url, { cache: 'no-store' });
   
   if (!res.ok) return null;
   const json = await res.json();
-
+  console.log(json);
+  
   let data = json.data?.[0];
 
   // Fallback to English if not found and fallback allowed
   if (!data && locale !== fallbackLocale) {
-    url = `${API_URL}/dance-new?filters[slug][$eq]=${slug}&locale=${fallbackLocale}&populate=Image&populate=author&populate=music_genres`;
+    url = `${API_URL}/dance-new?filters[slug][$eq]=${slug}&locale=${fallbackLocale}&populate=Image&populate=author&populate=music_genres&populate=artists`;
     res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) return null;
     const fallbackJson = await res.json();

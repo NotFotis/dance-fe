@@ -4,6 +4,7 @@ import React from 'react';
 import parse from 'html-react-parser';
 import { FaRegCalendarAlt, FaUser, FaDiscord } from 'react-icons/fa';
 import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 
 export default function NewsDetailsClient({ news }) {
   const t = useTranslations('newsDetails');
@@ -25,6 +26,7 @@ export default function NewsDetailsClient({ news }) {
   });
 
   const renderBlock = (block, idx) => {
+    // ...keep your existing renderBlock logic unchanged...
     const children = Array.isArray(block.children) ? block.children : [];
 
     if (block.type === 'paragraph') {
@@ -42,7 +44,6 @@ export default function NewsDetailsClient({ news }) {
         </p>
       );
     }
-
     if (block.type === 'list') {
       const ListTag = block.format === 'unordered' ? 'ul' : 'ol';
       const listClass =
@@ -55,7 +56,6 @@ export default function NewsDetailsClient({ news }) {
         </ListTag>
       );
     }
-
     if (block.type === 'list-item') {
       return (
         <li key={`li-${idx}`} className="list-disc ml-6 text-left">
@@ -63,7 +63,6 @@ export default function NewsDetailsClient({ news }) {
         </li>
       );
     }
-
     if (block.type === 'o-list-item') {
       return (
         <li key={`oli-${idx}`} className="list-decimal ml-6 text-left">
@@ -71,7 +70,6 @@ export default function NewsDetailsClient({ news }) {
         </li>
       );
     }
-
     if (block.type === 'heading') {
       return (
         <h2 key={`heading-${idx}`} className="text-2xl font-semibold mt-6 text-center">
@@ -79,7 +77,6 @@ export default function NewsDetailsClient({ news }) {
         </h2>
       );
     }
-
     return (
       <div key={`default-${idx}`} className="text-left">
         {children.map((c, j) => parse(c.text || ''))}
@@ -108,7 +105,7 @@ export default function NewsDetailsClient({ news }) {
       </div>
 
       <div className="w-full max-w-screen-2xl mx-auto bg-black bg-opacity-50 rounded-2xl shadow-xl divide-y divide-gray-700">
-        {/* Title / Date / Author / Genres */}
+        {/* Title / Date / Author */}
         <div className="p-6 text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold">{news.Title}</h1>
           <p className="mt-4 text-lg text-gray-300 flex flex-wrap justify-center items-center space-x-4">
@@ -123,6 +120,7 @@ export default function NewsDetailsClient({ news }) {
               </span>
             )}
           </p>
+          {/* Genres */}
           {news.music_genres?.length > 0 ? (
             <div className="flex justify-center flex-wrap gap-2 mt-3">
               {news.music_genres.map(g => (
@@ -138,6 +136,24 @@ export default function NewsDetailsClient({ news }) {
             <p className="text-gray-400 mt-3">{t('noGenres')}</p>
           )}
         </div>
+
+        {/* Artists Section */}
+        {Array.isArray(news.artists) && news.artists.length > 0 && (
+          <div className="p-6 text-center">
+            <div className="flex flex-wrap justify-center gap-3">
+              {news.artists.map((artist, i) => (
+                <Link
+                  key={artist.slug || artist.id || i}
+                  href={`/artists/${artist.slug}`}
+                  className="flex items-center px-4 py-2 bg-white bg-opacity-90 text-black rounded-full font-medium hover:bg-opacity-100 transition"
+                >
+                  <FaUser className="mr-2" />
+                  {artist.Name || artist.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Description */}
         <div className="p-6">
