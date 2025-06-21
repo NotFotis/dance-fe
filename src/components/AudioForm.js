@@ -110,7 +110,7 @@ export default function AnimatedBackground({ showOnHomeOnly = true }) {
               rgba(40, 40, 40, 0.22) 80%,       /* dark gray */
               rgba(0, 0, 0, 0.82) 100%          /* almost solid black */
             );
-            filter: saturate(1.1);
+            
               background-size: 200% 200%;
               animation: animateBackground 60s ease-in-out infinite;
         }
