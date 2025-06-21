@@ -94,26 +94,27 @@ export default function AnimatedBackground({ showOnHomeOnly = true }) {
       {shouldShowLines && <canvas ref={canvasRef} className="lines-canvas" />}
 
       <style jsx>{`
-        .radial-bg {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          pointer-events: none;
-          z-index: -2;
-          background:    
-            linear-gradient(135deg, 
-              rgba(255, 255, 255, 0.18) 0%,     /* subtle bright gray */
-              rgba(180, 180, 180, 0.15) 22%,    /* soft light gray */
-              rgba(90, 90, 90, 0.12) 45%,       /* mid gray */
-              rgba(40, 40, 40, 0.22) 80%,       /* dark gray */
-              rgba(0, 0, 0, 0.82) 100%          /* almost solid black */
+          .radial-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -2;
+            background: linear-gradient(
+              135deg,
+              rgba(10, 10, 10, 1) 0%,
+              rgba(30, 30, 30, 0.98) 35%,
+              rgba(20, 20, 20, 0.98) 60%,
+              rgba(10, 10, 10, 0.98) 85%,
+              rgba(0, 0, 0, 1) 100%
             );
-            
-              background-size: 200% 200%;
-              animation: animateBackground 60s ease-in-out infinite;
-        }
+            filter: blur(18px) brightness(0.94) saturation(1.1);
+            background-size: 200% 200%;
+            animation: animateBackground 60s ease-in-out infinite;
+          }
+
 
         .lines-canvas {
           position: fixed;
