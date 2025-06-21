@@ -267,18 +267,6 @@ export default function CalendarPage() {
           {/* Filters */}
           <div className="flex flex-wrap justify-center gap-8 mb-8">
             <div>
-              <label className="block mb-2 uppercase text-sm">{t('filterMonth')}</label>
-              <select
-                value={selectedMonthIdx}
-                onChange={e => setSelectedMonthIdx(Number(e.target.value))}
-                className="bg-black border border-gray-700 rounded p-2"
-              >
-                {monthOptions.map(opt => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
-            </div>
-            <div>
               <label className="block mb-2 uppercase text-sm">{t('filterGenre')}</label>
               <select
                 value={selectedGenre}
