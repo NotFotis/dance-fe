@@ -3,7 +3,8 @@ import Link from 'next/link';
 import { useTranslations , useLocale} from 'next-intl';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-
+import { Mousewheel } from 'swiper/modules';
+import 'swiper/css/mousewheel';
 // Swiper styles
 import 'swiper/css';
 
@@ -59,18 +60,24 @@ export default function NewsCarousel() {
           </div>
         </div>
 
-        <Swiper
-          ref={sliderRef}
-          spaceBetween={30}
-          slidesPerView={1}
-          breakpoints={{
-            768: { slidesPerView: 2 },
-            1024: { slidesPerView: 3 },
-            1280: { slidesPerView: 4 },
-          }}
-          onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
-          className="mySwiper"
-        >
+          <Swiper
+            ref={sliderRef}
+            spaceBetween={30}
+            slidesPerView={1}
+            grabCursor={true}
+            modules={[Mousewheel]}
+            mousewheel={{
+              forceToAxis: true, // only horizontal (not vertical) scroll navigates
+              releaseOnEdges: true, // native scroll after first/last slide
+            }}
+            breakpoints={{
+              768: { slidesPerView: 2 },
+              1024: { slidesPerView: 3 },
+              1280: { slidesPerView: 4 },
+            }}
+            onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
+            className="mySwiper"
+          >
           {loading ? (
             <SwiperSlide>
               <div className="w-full text-center text-white text-xl">
