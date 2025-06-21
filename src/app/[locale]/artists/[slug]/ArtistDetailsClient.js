@@ -20,7 +20,7 @@ const SOCIAL_ICONS = {
   'website': FaGlobe,
 };
 
-export default function ArtistDetailsClient({ artist, events }) {
+export default function ArtistDetailsClient({ artist, events ,news}) {
   const t = useTranslations('artistDetails');
 
   // Image logic
@@ -173,6 +173,76 @@ export default function ArtistDetailsClient({ artist, events }) {
             <p className="text-center text-gray-400">{t('noUpcomingEvents')}</p>
           )}
         </div>
+        {/* News Section */}
+<div className="p-6">
+  <h2 className="text-2xl font-bold mb-6 text-center">{t('news')}</h2>
+  {news?.length > 0 ? (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {news.map(item => {
+        const img =
+          Array.isArray(item.Image) && item.Image[0]
+            ? item.Image[0]
+            : item.Image;
+        const newsImgUrl =
+          img?.formats?.medium?.url ||
+          img?.formats?.large?.url ||
+          img?.formats?.thumbnail?.url ||
+          img?.url ||
+          null;
+
+        return (
+          <Link
+            href={`/news/${item.slug}`}
+            key={item.id}
+            className="group rounded-2xl overflow-hidden shadow bg-gray-900 hover:scale-105 transition block max-w-sm mx-auto"
+          >
+            <div className="w-full aspect-[16/9] bg-gray-800 relative">
+              {newsImgUrl ? (
+                <img
+                  src={newsImgUrl}
+                  alt={item.Title}
+                  className="object-cover w-full h-full"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-3xl bg-gray-800">
+                  {item.Title?.[0] ?? "?"}
+                </div>
+              )}
+              {/* Gradient Overlay & Content */}
+              <div
+                className="absolute left-0 right-0 bottom-0 px-4 pb-6 pt-12 rounded-b-2xl flex flex-col justify-end"
+                style={{
+                  background: `
+                    linear-gradient(
+                      to top,
+                      rgba(0,0,0,0.70) 70%,
+                      rgba(0,0,0,0.25) 100%,
+                      transparent 100%
+                    )
+                  `,
+                }}
+              >
+                <h3 className="font-bold text-lg mb-1 text-white text-center drop-shadow-lg">
+                  {item.Title}
+                </h3>
+                <p className="text-white text-sm mb-2 text-center drop-shadow-lg">
+                  {new Date(item.publishedAt).toLocaleDateString('en-GB', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                  })}
+                </p>
+              </div>
+            </div>
+          </Link>
+        );
+      })}
+    </div>
+  ) : (
+    <p className="text-center text-gray-400">{t('noNews') || "No news yet."}</p>
+  )}
+</div>
+
       </div>
     </div>
   );

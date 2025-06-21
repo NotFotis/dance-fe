@@ -42,6 +42,21 @@ async function fetchUpcomingEventsForArtist(artistId, locale) {
   // Assuming your event has an "artists" many-to-many field
   const today = new Date().toISOString().split('T')[0]; // "YYYY-MM-DD"
   const url = `${API_URL}/events?populate=Image&populate=music_genres&locale=${strapiLocale}&filters[artists][id][$eq]=${artistId}&filters[Date][$gte]=${today}&sort=Date:asc`;
+  console.log(url);
+  
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) return [];
+  const json = await res.json();
+  
+  return Array.isArray(json.data) ? json.data : [];
+}
+
+async function fetchNewsForArtist(artistId, locale) {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  const strapiLocale = STRAPI_LOCALE_MAP[locale] || locale;
+
+  // Adjust the populate as needed to include images or other fields
+  const url = `${API_URL}/dance-new?populate=Image&locale=${strapiLocale}&filters[artists][id][$eq]=${artistId}&sort=publishedAt:desc`;
 
   const res = await fetch(url, { cache: 'no-store' });
   if (!res.ok) return [];
@@ -49,6 +64,7 @@ async function fetchUpcomingEventsForArtist(artistId, locale) {
   
   return Array.isArray(json.data) ? json.data : [];
 }
+
 export default async function ArtistPage({ params }) {
   const { slug, locale } = await params;
   const artist = await fetchArtistBySlug(slug, locale);
@@ -65,12 +81,13 @@ export default async function ArtistPage({ params }) {
 
   // Get upcoming events for this artist (filter out past events)
   const events = await fetchUpcomingEventsForArtist(artist.id, locale);
+  const news = await fetchNewsForArtist(artist.id, locale);
 
   return (
     <div className="bg-transparent min-h-screen text-white flex flex-col items-center">
       <Navbar localeToSlug={localeToSlug} routeSegment="artists" />
       <AudioForm/>
-      <ArtistDetailsClient artist={artist} events={events} />
+      <ArtistDetailsClient artist={artist} events={events} news={news}/>
       <CookieBanner />
       <Footer />
     </div>

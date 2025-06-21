@@ -274,7 +274,9 @@
     "noDescription": "Χωρίς περιγραφή",
     "upcomingEvents": "Επερχόμενα Events",
     "noUpcomingEvents": "Δεν υπάρχουν επερχόμενα events.",
-    "joinDiscussion": "Συζήτησε μαζί μας στο Discord"
+    "joinDiscussion": "Συζήτησε μαζί μας στο Discord",
+    "news": "Σχετικά Άρθρα",
+    "noNews": "Δεν υπάρχουν άρθρα ακόμα."
 }
 
 }
