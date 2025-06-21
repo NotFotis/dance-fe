@@ -6,6 +6,9 @@ import "swiper/css";
 import { useEvents } from "@/hooks/useEvents";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
+import { Mousewheel, Pagination } from "swiper/modules";
+import "swiper/css/pagination";
+import 'swiper/css/mousewheel';
 
 export default function EventsCarousel() {
     const locale = useLocale();
@@ -63,19 +66,25 @@ export default function EventsCarousel() {
             </Link>
           </div>
         </div>
-
-        <Swiper
-          ref={sliderRef}
-          spaceBetween={30}
-          slidesPerView={1}
-          breakpoints={{
-            768: { slidesPerView: 2 },
-            1024: { slidesPerView: 3 },
-            1280: { slidesPerView: 4 },
-          }}
-          onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
-          className="mySwiper"
-        >
+          <Swiper
+            ref={sliderRef}
+            spaceBetween={30}
+            slidesPerView={1}
+            grabCursor={true}
+            modules={[Mousewheel, Pagination]}
+            mousewheel={{
+              forceToAxis: true,
+              releaseOnEdges: true,
+            }}
+            pagination={{ clickable: true }}
+            breakpoints={{
+              768: { slidesPerView: 2 },
+              1024: { slidesPerView: 3 },
+              1280: { slidesPerView: 4 },
+            }}
+            onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
+            className="mySwiper"
+          >
           {isLoading ? (
             <SwiperSlide>
               <div className="w-full text-center text-white text-xl">
@@ -149,21 +158,6 @@ export default function EventsCarousel() {
             })
           )}
         </Swiper>
-
-        {/* Custom Pagination Dots */}
-        {!isLoading && (
-          <div className="flex justify-center mt-6 space-x-2">
-            {events.map((_, idx) => (
-              <span
-                key={idx}
-                onClick={() => sliderRef.current?.swiper.slideTo(idx)}
-                className={`h-2 w-2 rounded-full cursor-pointer transition-colors duration-200 ${
-                  idx === activeIndex ? "bg-black" : "bg-gray-300"
-                }`}
-              ></span>
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );

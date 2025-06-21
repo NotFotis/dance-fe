@@ -1,23 +1,21 @@
 import React, { useRef, useState } from 'react';
 import Link from 'next/link';
-import { useTranslations , useLocale} from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Mousewheel } from 'swiper/modules';
-import 'swiper/css/mousewheel';
-// Swiper styles
+import { Mousewheel, Pagination } from 'swiper/modules';
 import 'swiper/css';
+import 'swiper/css/mousewheel';
+import 'swiper/css/pagination';
 
 import { useNews } from '@/hooks/useNews';
 
 export default function NewsCarousel() {
   const locale = useLocale();
   const apiLocale = locale === 'el' ? 'el-GR' : locale;
-  const { news, loading, error } = useNews({ limit: 12 , apiLocale});
-  const URL = process.env.NEXT_PUBLIC_URL;
+  const { news, loading, error } = useNews({ limit: 12, apiLocale });
   const t = useTranslations('newsComponent');
   const sliderRef = useRef(null);
-  const [activeIndex, setActiveIndex] = useState(0);
 
   const slidePrev = () => sliderRef.current?.swiper.slidePrev();
   const slideNext = () => sliderRef.current?.swiper.slideNext();
@@ -60,24 +58,24 @@ export default function NewsCarousel() {
           </div>
         </div>
 
-          <Swiper
-            ref={sliderRef}
-            spaceBetween={30}
-            slidesPerView={1}
-            grabCursor={true}
-            modules={[Mousewheel]}
-            mousewheel={{
-              forceToAxis: true, // only horizontal (not vertical) scroll navigates
-              releaseOnEdges: true, // native scroll after first/last slide
-            }}
-            breakpoints={{
-              768: { slidesPerView: 2 },
-              1024: { slidesPerView: 3 },
-              1280: { slidesPerView: 4 },
-            }}
-            onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
-            className="mySwiper"
-          >
+        <Swiper
+          ref={sliderRef}
+          spaceBetween={30}
+          slidesPerView={1}
+          grabCursor={true}
+          modules={[Mousewheel, Pagination]}
+          mousewheel={{
+            forceToAxis: true,
+            releaseOnEdges: true,
+          }}
+          pagination={{ clickable: true }}
+          breakpoints={{
+            768: { slidesPerView: 2 },
+            1024: { slidesPerView: 3 },
+            1280: { slidesPerView: 4 },
+          }}
+          className="mySwiper"
+        >
           {loading ? (
             <SwiperSlide>
               <div className="w-full text-center text-white text-xl">
@@ -135,21 +133,6 @@ export default function NewsCarousel() {
             })
           )}
         </Swiper>
-
-        {/* Custom Pagination Dots */}
-        {!loading && (
-          <div className="flex justify-center mt-6 space-x-2">
-            {news.map((_, idx) => (
-              <span
-                key={idx}
-                onClick={() => sliderRef.current?.swiper.slideTo(idx)}
-                className={`h-2 w-2 rounded-full cursor-pointer transition-colors duration-200 ${
-                  idx === activeIndex ? 'bg-black' : 'bg-gray-300'
-                }`}
-              ></span>
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );

@@ -155,3 +155,26 @@ header {
 .active {
   cursor: grabbing !important;
 }
+
+/* In your global CSS or inside a <style jsx global> block: */
+
+.mySwiper .swiper-pagination {
+  margin-top: 3rem;        /* Move the dots further down (mt-12) */
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;             /* Matches space-x-2 */
+  position: static !important; /* Keeps dots at bottom, not absolute */
+}
+
+.mySwiper .swiper-pagination-bullet {
+  width: 0.5rem;           /* w-2 */
+  height: 0.5rem;          /* h-2 */
+  border-radius: 9999px;   /* rounded-full */
+  background: #d1d5db;     /* bg-gray-300 */
+  opacity: 1;              /* prevent default Swiper opacity fade */
+  transition: background 0.2s;
+}
+
+.mySwiper .swiper-pagination-bullet-active {
+  background: #000;        /* bg-black for active */
+}
