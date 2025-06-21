@@ -105,7 +105,7 @@ export default function AnimatedBackground({ showOnHomeOnly = true }) {
             background: linear-gradient(
               135deg,
               rgba(10, 10, 10, 1) 0%,
-              rgba(30, 30, 30, 0.98) 35%,
+              rgba(10, 10, 10, 0.98) 35%,
               rgba(20, 20, 20, 0.98) 60%,
               rgba(10, 10, 10, 0.98) 85%,
               rgba(0, 0, 0, 1) 100%
