@@ -35,9 +35,6 @@ export default function Home() {
 
       <SpecialEventsBanner />
 
-      
-      <SpecialEventsBanner2 />
-
       {/* Dance News Section */}
       <section id="news" className="my-6 md:my-20 w-full px-3 md:px-6">
         <News />
@@ -47,6 +44,7 @@ export default function Home() {
       <section id="events" className="my-6 md:my-20 w-full px-3 md:px-6">
         <Carousel />
       </section>
+      <SpecialEventsBanner2 />
 
       {/* Contact Form Section */}
       <section id="about" className="mt-8 md:mt-40 w-full px-3 md:px-6 py-8 md:py-12 mb-8 md:mb-20">
