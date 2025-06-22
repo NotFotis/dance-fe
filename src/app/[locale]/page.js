@@ -15,6 +15,7 @@ import SwipeableStack from "@/components/About";
 import CookieBanner from "@/components/CookieBanner";
 import FeaturedCarousel from "@/components/FeaturedCarousel";
 import SpecialEventsBanner from "@/components/SpecialEventsBanner";
+import SpecialEventsBanner2 from "@/components/SpecialEventsBanner2";
 import NewsletterSection from "@/components/Newsletter";
 
 export default function Home() {
@@ -33,6 +34,9 @@ export default function Home() {
       <TypingText />
 
       <SpecialEventsBanner />
+
+      
+      <SpecialEventsBanner2 />
 
       {/* Dance News Section */}
       <section id="news" className="my-6 md:my-20 w-full px-3 md:px-6">
