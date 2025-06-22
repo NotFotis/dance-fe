@@ -28,7 +28,7 @@ export default function ArtistDetailsClient({ artist, events ,news}) {
     artist.Image?.formats?.large?.url ||
     artist.Image?.formats?.medium?.url ||
     artist.Image?.formats?.thumbnail?.url ||
-    artist.Image?.url ||
+    artist.Image?.url || artist.spotifyImageUrl
     null;
 
   return (

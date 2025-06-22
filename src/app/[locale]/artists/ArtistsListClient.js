@@ -46,9 +46,8 @@ export default function ArtistsPage() {
   const totalPages = Math.ceil((total || 0) / perPage);
 
   const getImageUrl = (artist) => {
+    if (artist.spotifyImageUrl) return artist.spotifyImageUrl;
     if (!artist.Image) return null;
-    if (artist.spotifyImage) return artist.spotifyImage;
-    console.log(artist.spotifyImage);
     
     const img = artist.Image;
     if (img.formats?.thumbnail?.url) return img.formats.thumbnail.url;
