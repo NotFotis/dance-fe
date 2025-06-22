@@ -20,15 +20,15 @@ export default function SpecialEventsBanner() {
   const router = useRouter();
 
   // Animation duration constants
-  const IMAGE_ANIMATION_DURATION = 0.55;
-  const STAGGER_CHILDREN = 0.14;
+  const IMAGE_ANIMATION_DURATION = 0.45;
+  const STAGGER_CHILDREN = 0.08;
 
   useEffect(() => {
     setShowText(false); // reset text reveal on each event
     if (specialEvents.length <= 1) return;
     timeoutRef.current = setTimeout(() => {
       setIndex((i) => (i + 1) % specialEvents.length);
-    }, 4000);
+    }, 3000);
     return () => clearTimeout(timeoutRef.current);
   }, [index, specialEvents.length]);
 
@@ -36,11 +36,11 @@ export default function SpecialEventsBanner() {
 
   const evt = specialEvents[index];
 
-  // Animation variants for image
+  // IMAGE: slide in from right, out to right
   const imageVariants = {
-    initial: { y: "-100%", opacity: 0 },
-    animate: { y: 0, opacity: 1, transition: { duration: IMAGE_ANIMATION_DURATION, ease: "easeInOut" } },
-    exit: { y: "-100%", opacity: 0, transition: { duration: IMAGE_ANIMATION_DURATION, delay: STAGGER_CHILDREN * 3, ease: "easeInOut" } }, // leaves after all text is gone
+    initial: { x: "100%", opacity: 0 },
+    animate: { x: 0, opacity: 1, transition: { duration: IMAGE_ANIMATION_DURATION, ease: "easeInOut" } },
+    exit: { x: "100%", opacity: 0, transition: { duration: IMAGE_ANIMATION_DURATION, delay: STAGGER_CHILDREN * 3, ease: "easeInOut" } }, // leaves after all text is gone
   };
 
   // Text stagger animation configs
