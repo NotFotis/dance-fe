@@ -14,6 +14,7 @@
     "@hookform/resolvers": "^5.0.1",
     "axios": "^1.7.9",
     "date-fns": "^4.1.0",
+    "fast-average-color": "^9.5.0",
     "fortawesome": "^0.0.1-security",
     "framer-motion": "^12.4.7",
     "html-react-parser": "^5.2.2",

@@ -4,9 +4,24 @@ import { useEvents } from "@/hooks/useEvents";
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { FastAverageColor } from "fast-average-color";
 
-// Carousel duration (ms)
 const DURATION = 2000;
+
+function getImageUrl(evt) {
+  return (
+    evt.Image?.[2]?.formats?.large?.url ||
+    evt.Image?.[2]?.formats?.medium?.url ||
+    evt.Image?.[2]?.url ||
+    evt.Image?.[1]?.formats?.large?.url ||
+    evt.Image?.[1]?.formats?.medium?.url ||
+    evt.Image?.[1]?.url ||
+    evt.Image?.[0]?.formats?.large?.url ||
+    evt.Image?.[0]?.formats?.medium?.url ||
+    evt.Image?.[0]?.url ||
+    ""
+  );
+}
 
 export default function SpecialEventsBanner() {
   const locale = useLocale();
@@ -18,14 +33,46 @@ export default function SpecialEventsBanner() {
   );
 
   const [index, setIndex] = useState(0);
-  const [direction, setDirection] = useState(1); // For swipe direction (future manual controls)
+  const [direction, setDirection] = useState(1);
+  const [colors, setColors] = useState([]);
   const timeoutRef = useRef(null);
   const router = useRouter();
 
+  // --- Extract main colors for all events ---
+  useEffect(() => {
+    if (!specialEvents.length) return;
+    let isMounted = true;
+    const fac = new FastAverageColor();
+    Promise.all(
+      specialEvents.map(evt => {
+        const src = getImageUrl(evt);
+        return new Promise((resolve) => {
+          if (!src) return resolve("#18181b"); // fallback
+          const img = new window.Image();
+          img.crossOrigin = "Anonymous";
+          img.src = src;
+          img.onload = () => {
+            try {
+              const color = fac.getColor(img).hex;
+              resolve(color);
+            } catch {
+              resolve("#18181b");
+            }
+          };
+          img.onerror = () => resolve("#18181b");
+        });
+      })
+    ).then((result) => {
+      if (isMounted) setColors(result);
+    });
+    return () => { isMounted = false; };
+  }, [specialEvents]);
+
+  // --- Carousel logic ---
   useEffect(() => {
     if (specialEvents.length <= 1) return;
     timeoutRef.current = setTimeout(() => {
-      setDirection(1); // Always slide left, you can randomize or use user gesture for direction
+      setDirection(1);
       setIndex(i => (i + 1) % specialEvents.length);
     }, DURATION);
     return () => clearTimeout(timeoutRef.current);
@@ -33,15 +80,21 @@ export default function SpecialEventsBanner() {
 
   if (isLoading || !specialEvents.length) return null;
 
+  // Determine the two main colors for the gradient
+  const prevIdx = (index - 1 + specialEvents.length) % specialEvents.length;
+  const prevColor = colors[prevIdx] || "#18181b";
+  const nextColor = colors[index] || "#18181b";
+
   const evt = specialEvents[index];
 
-  // Card slide variants: direction-aware for "push" effect
+  // Card slide variants
   const cardVariants = {
     initial: (dir) => ({ x: dir > 0 ? "100%" : "-100%", opacity: 1, zIndex: 2 }),
     animate: { x: 0, opacity: 1, zIndex: 3, transition: { duration: 0.6, ease: [0.55, 0, 0.1, 1] } },
     exit: (dir) => ({ x: dir > 0 ? "-100%" : "100%", opacity: 1, zIndex: 2, transition: { duration: 0.6, ease: [0.55, 0, 0.1, 1] } }),
   };
 
+  // Animate background gradient with motion.div
   return (
     <div
       className="
@@ -52,8 +105,20 @@ export default function SpecialEventsBanner() {
         relative overflow-hidden rounded-xl sm:rounded-2xl shadow-lg
         flex items-stretch justify-center
       "
-      style={{ background: "#18181b" }}
     >
+      {/* Animated gradient bg */}
+      <motion.div
+        key={prevColor + "-" + nextColor}
+        initial={{ opacity: 1 }}
+        animate={{
+          opacity: 1,
+          background: `linear-gradient(120deg, ${prevColor}, ${nextColor})`
+        }}
+        transition={{ duration: 0.7 }}
+        className="absolute inset-0 w-full h-full"
+        style={{ zIndex: 1, borderRadius: "inherit" }}
+      />
+      {/* Card transitions */}
       <AnimatePresence custom={direction} mode="wait">
         <motion.div
           key={evt.id}
@@ -66,23 +131,14 @@ export default function SpecialEventsBanner() {
           style={{
             borderRadius: "inherit",
             overflow: "hidden",
-            background: "#18181b"
+            background: "transparent",
+            zIndex: 2
           }}
         >
-          {/* IMAGE - always fills */}
+          {/* IMAGE */}
           {(evt.Image?.[2] || evt.Image?.[1] || evt.Image?.[0]) && (
             <img
-              src={
-                evt.Image?.[2]?.formats?.large?.url ||
-                evt.Image?.[2]?.formats?.medium?.url ||
-                evt.Image?.[2]?.url ||
-                evt.Image?.[1]?.formats?.large?.url ||
-                evt.Image?.[1]?.formats?.medium?.url ||
-                evt.Image?.[1]?.url ||
-                evt.Image?.[0]?.formats?.large?.url ||
-                evt.Image?.[0]?.formats?.medium?.url ||
-                evt.Image?.[0]?.url
-              }
+              src={getImageUrl(evt)}
               alt={evt.Title}
               className="w-full h-full object-cover absolute inset-0"
               style={{ borderRadius: "inherit" }}
