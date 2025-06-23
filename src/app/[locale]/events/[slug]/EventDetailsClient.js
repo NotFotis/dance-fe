@@ -175,16 +175,6 @@ export default function EventDetailsClient({ event }) {
               ))}
             </div>
           )}
-          {event.tickets && (
-            <a
-              href={event.tickets}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 inline-block bg-white text-black hover:bg-gray-300  transition px-6 py-3 rounded-xl text-lg font-semibold"
-            >
-              {t('buyTickets')}
-            </a>
-          )}
         </div>
 
         {/* Lineup */}
@@ -199,8 +189,11 @@ export default function EventDetailsClient({ event }) {
                     key={artist.id || `artist-${idx}`}
                     className="flex flex-col w-full items-start text-left bg-black/40 rounded-xl px-6 py-4"
                   >
-                    <div className="flex items-center space-x-4">
-                      <span className="text-xl font-medium">{artist.Name}</span>
+                    <Link
+                      href={`/artists/${artist.slug}`}
+                      className="flex items-center space-x-4 w-full group"
+                    >
+                      <span className="text-xl font-medium group-hover:text-blue-300 transition">{artist.Name}</span>
                       {artist.Socials?.map((social, i2) => {
                         let Icon;
                         switch (social.platform.toLowerCase()) {
@@ -215,100 +208,74 @@ export default function EventDetailsClient({ event }) {
                           default: Icon = null;
                         }
                         return Icon ? (
-                          <a key={i2} href={social.URL} target="_blank" rel="noopener noreferrer">
+                          <a
+                            key={i2}
+                            href={social.URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="ml-2"
+                            onClick={e => e.stopPropagation()} // Prevents link bubbling to artist page
+                          >
                             <Icon size={24} />
                           </a>
                         ) : null;
                       })}
-                    </div>
+                    </Link>
                   </li>
                 ))}
               </ul>
-             {/* Mobile (show limited, with Show More button if needed) */}
-            <ul className="flex flex-wrap justify-center gap-6 max-w-3xl mx-auto sm:hidden">
-              {displayedArtists.map((artist, idx) => (
-                <li
-                  key={artist.id || `artist-${idx}`}
-                  className="flex flex-col w-full items-start text-left bg-black/40 rounded-xl px-6 py-4"
+              {/* Show More Button (Mobile Only) */}
+              {!showAllArtists && totalArtists > mobileLimit && (
+                <button
+                  onClick={() => setShowAllArtists(true)}
+                  className="block mx-auto mt-4 bg-gray-700 text-white rounded-full px-4 py-2 sm:hidden"
                 >
-                  <Link
-                    href={`/artists/${artist.slug}`}
-                    className="flex items-center space-x-4 w-full group"
-                  >
-                    <span className="text-xl font-medium group-hover:underline group-hover:text-blue-300 transition">{artist.Name}</span>
-                    {artist.Socials?.map((social, i2) => {
-                      let Icon;
-                      switch (social.platform.toLowerCase()) {
-                        case 'facebook': Icon = FaFacebook; break;
-                        case 'instagram': Icon = FaInstagram; break;
-                        case 'spotify': Icon = FaSpotify; break;
-                        case 'beatport': Icon = SiBeatport; break;
-                        case 'soundcloud': Icon = FaSoundcloud; break;
-                        case 'x': Icon = FaTwitter; break;
-                        case 'tidal': Icon = SiTidal; break;
-                        case 'apple music': Icon = SiApplemusic; break;
-                        default: Icon = null;
-                      }
-                      return Icon ? (
-                        <a
-                          key={i2}
-                          href={social.URL}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="ml-2"
-                          onClick={e => e.stopPropagation()} // Prevents link bubbling to artist page
-                        >
-                          <Icon size={24} />
-                        </a>
-                      ) : null;
-                    })}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+                  {t('showMore')}
+                </button>
+              )}
 
-            {/* Desktop (always show all) */}
-            <ul className="hidden sm:flex flex-wrap justify-center gap-6 max-w-3xl mx-auto">
-              {event.artists.map((artist, idx) => (
-                <li
-                  key={artist.id || `artist-${idx}`}
-                  className="flex flex-col items-center bg-black/40 rounded-xl px-6 py-4"
-                >
-                  <Link
-                    href={`/artists/${artist.slug}`}
-                    className="flex items-center space-x-4 w-full group"
+              {/* Desktop (always show all) */}
+              <ul className="hidden sm:flex flex-wrap justify-center gap-6 max-w-3xl mx-auto">
+                {event.artists.map((artist, idx) => (
+                  <li
+                    key={artist.id || `artist-${idx}`}
+                    className="flex flex-col items-center bg-black/40 rounded-xl px-6 py-4"
                   >
-                    <span className="text-xl font-medium group-hover:underline group-hover:text-blue-300 transition">{artist.Name}</span>
-                    {artist.Socials?.map((social, i2) => {
-                      let Icon;
-                      switch (social.platform.toLowerCase()) {
-                        case 'facebook': Icon = FaFacebook; break;
-                        case 'instagram': Icon = FaInstagram; break;
-                        case 'spotify': Icon = FaSpotify; break;
-                        case 'beatport': Icon = SiBeatport; break;
-                        case 'soundcloud': Icon = FaSoundcloud; break;
-                        case 'x': Icon = FaTwitter; break;
-                        case 'tidal': Icon = SiTidal; break;
-                        case 'apple music': Icon = SiApplemusic; break;
-                        default: Icon = null;
-                      }
-                      return Icon ? (
-                        <a
-                          key={i2}
-                          href={social.URL}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="ml-2"
-                          onClick={e => e.stopPropagation()}
-                        >
-                          <Icon size={24} />
-                        </a>
-                      ) : null;
-                    })}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+                    <Link
+                      href={`/artists/${artist.slug}`}
+                      className="flex items-center space-x-4 w-full group"
+                    >
+                      <span className="text-xl font-medium transition">{artist.Name}</span>
+                      {artist.Socials?.map((social, i2) => {
+                        let Icon;
+                        switch (social.platform.toLowerCase()) {
+                          case 'facebook': Icon = FaFacebook; break;
+                          case 'instagram': Icon = FaInstagram; break;
+                          case 'spotify': Icon = FaSpotify; break;
+                          case 'beatport': Icon = SiBeatport; break;
+                          case 'soundcloud': Icon = FaSoundcloud; break;
+                          case 'x': Icon = FaTwitter; break;
+                          case 'tidal': Icon = SiTidal; break;
+                          case 'apple music': Icon = SiApplemusic; break;
+                          default: Icon = null;
+                        }
+                        return Icon ? (
+                          <a
+                            key={i2}
+                            href={social.URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="ml-2"
+                            onClick={e => e.stopPropagation()}
+                          >
+                            <Icon size={24} />
+                          </a>
+                        ) : null;
+                      })}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </>
           ) : (
             <p className="text-gray-400 text-center">{t('noLineup')}</p>
@@ -324,7 +291,18 @@ export default function EventDetailsClient({ event }) {
             <p key="no-description" className="text-center">{t('noDescription')}</p>
           )}
         </div>
-
+      <div className="w-full max-w-screen-2xl mx-auto bg-black bg-opacity-50 rounded-2xl shadow-xl divide-y divide-gray-700 text-center">
+                          {event.tickets && (
+            <a
+              href={event.tickets}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 mb-4 items-center inline-block bg-white text-black hover:bg-gray-300  transition px-6 py-3 rounded-xl text-lg font-semibold"
+            >
+              {t('buyTickets')}
+            </a>
+          )}
+      </div>
         {/* Venue Map */}
         <div ref={venueRef} id="venue" className="p-6">
           <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">{t('venue')}</h2>

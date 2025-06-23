@@ -168,7 +168,7 @@ export default function CommunityPage() {
 
   return (
     <div className="bg-transparent min-h-screen text-white px-6 pt-24 pb-20 text-center">
-      <Navbar />
+      <Navbar brandName='dancefriends'/>
       <AudioForm />
 
       <div className="max-w-screen-2xl mx-auto px-6 flex flex-col items-center space-y-16 mt-20">
