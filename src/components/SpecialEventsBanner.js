@@ -40,7 +40,7 @@ export default function SpecialEventsBanner() {
   const imageVariants = {
     initial: { x: "100%", opacity: 0 },
     animate: { x: 0, opacity: 1, transition: { duration: IMAGE_ANIMATION_DURATION, ease: "easeInOut" } },
-    exit: { x: "100%", opacity: 0, transition: { duration: IMAGE_ANIMATION_DURATION, delay: STAGGER_CHILDREN * 3, ease: "easeInOut" } }, // leaves after all text is gone
+    exit: { x: "-100%", opacity: 0, transition: { duration: IMAGE_ANIMATION_DURATION, delay: STAGGER_CHILDREN * 3, ease: "easeInOut" } }, // leaves after all text is gone
   };
 
   // Text stagger animation configs
