@@ -267,7 +267,10 @@
         "searchPlaceholder": "Search artists...",
         "noArtists": "No artists found.",
         "previous": "Previous",
-        "next": "Next"
+        "next": "Next",
+        "search": "Search",
+        "filterGenre": "Filter by Genre",
+        "all": "All"
       },
     "artistDetails":{
         "noGenres": "No genres",

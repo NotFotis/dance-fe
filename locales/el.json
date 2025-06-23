@@ -267,7 +267,10 @@
     "searchPlaceholder": "Αναζήτηση καλλιτεχνών...",
     "noArtists": "Δεν βρέθηκαν καλλιτέχνες.",
     "previous": "Προηγούμενο",
-    "next": "Επόμενο"
+    "next": "Επόμενο",
+    "search": "Αναζήτηση",
+    "filterGenre": "Φίλτρο ανά Είδος",
+    "all": "Όλα"
   },
   "artistDetails": {
     "noGenres": "Χωρίς είδος",
