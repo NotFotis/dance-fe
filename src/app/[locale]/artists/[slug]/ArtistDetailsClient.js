@@ -42,10 +42,10 @@ export default function ArtistDetailsClient({ artist, events, news }) {
             <img
               src={heroUrl}
               alt={artist.Name}
-              className="w-64 h-64 md:w-80 md:h-80 rounded-full object-cover border-4 border-white shadow-lg"
+              className="max-w-[210px] sm:max-w-[330px] rounded-full object-cover border-4 border-white shadow-lg"
             />
           ) : (
-            <div className="w-64 h-64 md:w-80 md:h-80 rounded-full flex items-center justify-center text-7xl font-bold bg-gray-900">
+            <div className="max-w-[210px] sm:max-w-[330px] rounded-full flex items-center justify-center text-7xl font-bold bg-gray-900">
               {artist.Name?.[0] || '?'}
             </div>
           )}

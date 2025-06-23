@@ -96,15 +96,15 @@ export default function ArtistsPage() {
                       <img
                         src={getImageUrl(artist)}
                         alt={artist.Name}
-                        className="rounded-full w-36 h-36 object-cover border-2 border-white group-hover:scale-105 transition"
+                        className="rounded-full max-w-[110px] sm:max-w-[130px] object-cover border-2 border-white group-hover:scale-105 transition"
                         style={{ background: '#222' }}
                       />
                     ) : (
-                      <div className="rounded-full w-36 h-36 flex items-center justify-center bg-gray-700 text-3xl font-bold">
+                      <div className="rounded-full max-w-[110px] sm:max-w-[130px] flex items-center justify-center bg-gray-700 text-3xl font-bold">
                         {artist.Name?.[0] ?? '?'}
                       </div>
                     )}
-                    <span className="mt-4 text-lg font-semibold text-center group-hover:underline">{artist.Name}</span>
+                    <span className="mt-4 text-lg font-semibold text-center">{artist.Name}</span>
                   </Link>
                 ))
               )}
