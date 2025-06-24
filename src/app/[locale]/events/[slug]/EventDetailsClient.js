@@ -239,13 +239,13 @@ export default function EventDetailsClient({ event }) {
                 {event.artists.map((artist, idx) => (
                   <li
                     key={artist.id || `artist-${idx}`}
-                    className="flex flex-col items-center bg-black/40 rounded-xl px-6 py-4"
+                    className="flex flex-col items-center bg-black/40 rounded-xl px-6 py-4 "
                   >
                     <Link
                       href={`/artists/${artist.slug}`}
                       className="flex items-center space-x-4 w-full group"
                     >
-                      <span className="text-xl font-medium transition">{artist.Name}</span>
+                      <span className="text-xl font-medium transition hover:text-gray-300">{artist.Name}</span>
                       {artist.Socials?.map((social, i2) => {
                         let Icon;
                         switch (social.platform.toLowerCase()) {
@@ -265,7 +265,7 @@ export default function EventDetailsClient({ event }) {
                             href={social.URL}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="ml-2"
+                            className="ml-2 hover:text-gray-300"
                             onClick={e => e.stopPropagation()}
                           >
                             <Icon size={24} />
