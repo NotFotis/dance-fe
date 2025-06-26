@@ -50,7 +50,8 @@ export async function generateMetadata() {
   // Title & description
   const title       = defaultSeo.metaTitle       ?? siteName;
   const description = defaultSeo.metaDescription ?? siteDescription;
-
+  const keywords = defaultSeo.keywords || '';
+  const metaRobots = defaultSeo.metaRobots || '';
   // Favicon: Strapi v4 media object or direct string
   let iconUrl, iconWidth, iconHeight, iconAlt;
   if (favicon?.url) {
@@ -74,6 +75,8 @@ export async function generateMetadata() {
   return {
     title,
     description,
+    keywords,
+    metaRobots,
     icons: iconUrl ? { icon: iconUrl, shortcut: iconUrl } : undefined,
     openGraph: {
       title,
