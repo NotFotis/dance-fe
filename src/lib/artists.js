@@ -9,7 +9,7 @@ export async function getAllArtistsIds() {
      * [ { id: 1, ... }, { id: 2, ... } ]
      */
     const artists = await res.json();    
-    return artists.data.map(artist => String(artist.documentId));
+    return artists.data.map(artist => String(artist.slug));
   }
 
   // lib/artists.js

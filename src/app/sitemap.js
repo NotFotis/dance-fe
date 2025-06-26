@@ -16,9 +16,9 @@ export default async function sitemap() {
   ]);
   
   const dynamicPaths = [
-    ...eventIds.map(id => `events/${id}`),
-    ...newsIds.map(id => `news/${id}`),
-    ...artistsIds.map(id => `artists/${id}`)
+    ...eventIds.map(slug => `events/${slug}`),
+    ...newsIds.map(slug => `news/${slug}`),
+    ...artistsIds.map(slug => `artists/${slug}`)
   ];
 
   const allPaths = [...staticPaths, ...dynamicPaths];

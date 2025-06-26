@@ -9,7 +9,7 @@ export async function getAllEventIds() {
      * [ { id: 1, ... }, { id: 2, ... } ]
      */
     const events = await res.json();    
-    return events.data.map(event => String(event.documentId));
+    return events.data.map(event => String(event.slug));
   }
 
   // lib/events.js

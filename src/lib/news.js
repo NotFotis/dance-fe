@@ -9,5 +9,5 @@ export async function getAllNewsIds() {
      * [ { id: "a1", ... }, { id: "b2", ... } ]
      */
     const news = await res.json();     
-    return news.data.map(item => String(item.documentId));
+    return news.data.map(item => String(item.slug));
   }
