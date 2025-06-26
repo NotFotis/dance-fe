@@ -6,6 +6,7 @@ const fetcher = url => axios.get(url).then(res => res.data);
 
 export function useArtists({
   search = '',
+   genre = '',
   apiLocale = 'en',
   page = 1,
   pageSize = 16,
@@ -25,7 +26,10 @@ export function useArtists({
   if (search) {
     params.push(`filters[Name][$containsi]=${encodeURIComponent(search)}`);
   }
-
+  if (genre) {
+    // Assumes genre is the NAME of the genre. If you want to use id, change accordingly.
+    params.push(`filters[music_genres][name][$eq]=${encodeURIComponent(genre)}`);
+  }
   const url = `${API_URL}/artists?${params.join('&')}`;
 
   const { data, error } = useSWR(url, fetcher, {

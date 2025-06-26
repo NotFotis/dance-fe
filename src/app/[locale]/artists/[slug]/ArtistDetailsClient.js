@@ -139,19 +139,20 @@ export default function ArtistDetailsClient({ artist, events, news }) {
                         </div>
                       )}
                       {/* Gradient Overlay & Content */}
-                      <div
-                        className="absolute left-0 right-0 bottom-0 px-4 pb-6 pt-12 rounded-b-2xl flex flex-col justify-end"
+                    <div
+                      className="absolute left-0 right-0 bottom-0 px-4 pb-8 pt-0 rounded-b-2xl flex flex-col justify-end"
                         style={{
+                          height: "60%",
                           background: `
                             linear-gradient(
                               to top,
-                              rgba(0,0,0,0.70) 70%,
-                              rgba(0,0,0,0.25) 100%,
+                              rgba(0,0,0,0.60) 65%,  /* Softer at the bottom */
+                              rgba(0,0,0,0.35) 85%,  /* Even softer as it rises */
                               transparent 100%
                             )
                           `,
                         }}
-                      >
+                    >
                         <h3 className="font-bold text-lg mb-1 text-white text-center drop-shadow-lg">
                           {event.Title}
                         </h3>
@@ -215,19 +216,20 @@ export default function ArtistDetailsClient({ artist, events, news }) {
                         </div>
                       )}
                       {/* Gradient Overlay & Content */}
-                      <div
-                        className="absolute left-0 right-0 bottom-0 px-4 pb-6 pt-12 rounded-b-2xl flex flex-col justify-end"
+                    <div
+                      className="absolute left-0 right-0 bottom-0 px-4 pb-8 pt-0 rounded-b-2xl flex flex-col justify-end"
                         style={{
+                          height: "60%",
                           background: `
                             linear-gradient(
                               to top,
-                              rgba(0,0,0,0.70) 70%,
-                              rgba(0,0,0,0.25) 100%,
+                              rgba(0,0,0,0.60) 65%,  /* Softer at the bottom */
+                              rgba(0,0,0,0.35) 85%,  /* Even softer as it rises */
                               transparent 100%
                             )
                           `,
                         }}
-                      >
+                    >
                         <h3 className="font-bold text-lg mb-1 text-white text-center drop-shadow-lg">
                           {item.Title}
                         </h3>

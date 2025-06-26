@@ -28,7 +28,7 @@ export default function SpecialEventsBanner() {
     if (specialEvents.length <= 1) return;
     timeoutRef.current = setTimeout(() => {
       setIndex((i) => (i + 1) % specialEvents.length);
-    }, 3000);
+    }, 5000);
     return () => clearTimeout(timeoutRef.current);
   }, [index, specialEvents.length]);
 
