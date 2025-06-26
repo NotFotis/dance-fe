@@ -127,10 +127,16 @@ export default function EventsCarousel() {
                           `,
                         }}
                     >
-                      <h3 className="text-2xl font-bold text-white text-center drop-shadow-lg">
+                      <h3 className="text-2xl font-bold text-white text-center drop-shadow-lg"
+                          style={{
+                            textShadow: "0 2px 8px rgba(0,0,0,0.75)" // fallback extra shadow
+                          }}>
                         {evt.Title}
                       </h3>
-                      <p className="text-white text-sm mt-1 text-center drop-shadow-lg">
+                      <p className="text-white text-sm mt-1 text-center drop-shadow-lg"
+                                                style={{
+                            textShadow: "0 2px 8px rgba(0,0,0,0.75)" // fallback extra shadow
+                          }}>
                         {new Date(evt.Date).toLocaleDateString(undefined, {
                           month: "long",
                           day: "numeric",

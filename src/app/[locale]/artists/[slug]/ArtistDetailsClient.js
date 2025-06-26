@@ -153,10 +153,16 @@ export default function ArtistDetailsClient({ artist, events, news }) {
                           `,
                         }}
                     >
-                        <h3 className="font-bold text-lg mb-1 text-white text-center drop-shadow-lg">
+                        <h3 className="font-bold text-2xl mb-1 text-white text-center drop-shadow-lg"
+                                                  style={{
+                            textShadow: "0 2px 8px rgba(0,0,0,0.75)" // fallback extra shadow
+                          }}>
                           {event.Title}
                         </h3>
-                        <p className="text-white text-sm mb-2 text-center drop-shadow-lg">
+                        <p className="text-white text-sm mb-2 text-center drop-shadow-lg"
+                        style={{
+                            textShadow: "0 2px 8px rgba(0,0,0,0.75)" // fallback extra shadow
+                          }}>
                           {new Date(event.Date).toLocaleDateString('en-GB', {
                             day: 'numeric',
                             month: 'short',
@@ -230,10 +236,16 @@ export default function ArtistDetailsClient({ artist, events, news }) {
                           `,
                         }}
                     >
-                        <h3 className="font-bold text-lg mb-1 text-white text-center drop-shadow-lg">
+                        <h3 className="font-bold text-lg mb-1 text-white text-center drop-shadow-lg"
+                        style={{
+                            textShadow: "0 2px 8px rgba(0,0,0,0.75)" // fallback extra shadow
+                          }}>
                           {item.Title}
                         </h3>
-                        <p className="text-white text-sm mb-2 text-center drop-shadow-lg">
+                        <p className="text-white text-sm mb-2 text-center drop-shadow-lg"
+                        style={{
+                            textShadow: "0 2px 8px rgba(0,0,0,0.75)" // fallback extra shadow
+                          }}>
                           {new Date(item.publishedAt).toLocaleDateString('en-GB', {
                             day: 'numeric',
                             month: 'short',

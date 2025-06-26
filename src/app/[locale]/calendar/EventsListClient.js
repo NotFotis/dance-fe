@@ -240,7 +240,18 @@ export default function CalendarPage() {
                         ) : (
                           <div className="bg-gray-700 w-full h-full flex items-center justify-center"></div>
                         )}
-                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4 rounded-b-2xl">
+                        <div className="absolute bottom-0 left-0 right-0 p-4 rounded-b-2xl"                        
+                        style={{
+                          height: "60%",
+                          background: `
+                            linear-gradient(
+                              to top,
+                              rgba(0,0,0,0.60) 65%,  /* Softer at the bottom */
+                              rgba(0,0,0,0.35) 85%,  /* Even softer as it rises */
+                              transparent 100%
+                            )
+                          `,
+                        }}>
                           <h3 className="text-2xl font-bold text-white drop-shadow-lg">{evt.Title}</h3>
                           <p className="text-white text-sm drop-shadow-lg mt-1">
                             {new Date(evt.Date).toLocaleDateString(locale, { month: 'long', day: 'numeric', year: 'numeric' })}
