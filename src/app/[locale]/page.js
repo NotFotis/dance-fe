@@ -17,6 +17,7 @@ import FeaturedCarousel from "@/components/FeaturedCarousel";
 import SpecialEventsBanner from "@/components/SpecialEventsBanner";
 import SpecialEventsBanner2 from "@/components/SpecialEventsBanner2";
 import NewsletterSection from "@/components/Newsletter";
+import SpecialArtistsCarousel from "@/components/SpecialArtistsCarousel";
 
 export default function Home() {
   const t = useTranslations();
@@ -45,7 +46,9 @@ export default function Home() {
         <Carousel />
       </section>
       {/* <SpecialEventsBanner2 /> */}
-
+      <section id="artists" className="my-6 md:my-20 w-full px-3 md:px-6">
+        <SpecialArtistsCarousel />
+      </section>
       {/* Contact Form Section */}
       <section id="about" className="mt-8 md:mt-40 w-full px-3 md:px-6 py-8 md:py-12 mb-8 md:mb-20">
         <SwipeableStack apiUrl={process.env.NEXT_PUBLIC_API_URL} />

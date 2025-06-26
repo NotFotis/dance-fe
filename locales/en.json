@@ -280,6 +280,17 @@
         "joinDiscussion": "Join the discussion on Discord",
         "news": "Related News Articles",
         "noNews": "No news yet."
-    }
+    },
+    
+  "artistCarousel": {
+    "artists": "Featured Artists",
+    "allArtists": "All Artists",
+    "noImage": "No image",
+    "title": "Lineup",
+    "close": "Close",
+    "moreInfo": "More info"
+  }
+
+
 
 }    
