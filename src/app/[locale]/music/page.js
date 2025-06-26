@@ -36,13 +36,15 @@ export async function generateMetadata() {
   if (seo.shareImage?.data?.attributes?.url) {
     image = `${seo.shareImage.data.attributes.url}`;
   }
-
+  const keywords    = seo.keywords         || '';
+  const metaRobots  = seo.metaRobots       || '';
   // 3) Return the Metadata object
   return {
     title,
     description,
     alternates: { canonical },
-
+    keywords,
+    metaRobots,
     openGraph: {
       title,
       description,

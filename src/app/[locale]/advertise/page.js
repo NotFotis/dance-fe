@@ -8,41 +8,50 @@ export async function generateMetadata() {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const URL     = process.env.NEXT_PUBLIC_SITE_URL;
 
-  // 1) Fetch the singleton “Events Page Settings”
+  // 1) Fetch the singleton “Advertise Page Settings”
   const res = await fetch(
     `${API_URL}/advertise-page-setting?populate=seo`,
     { cache: 'no-store' }
   );
-  
+
   if (!res.ok) {
     console.warn('SEO fetch failed');
-    // still return some defaults…
     return {
       title: 'Advertise With Us',
       description: 'Latest updates from the dance world',
       alternates: { canonical: `${URL}/advertise` },
     };
   }
+
   const json = await res.json();
-  
   const attrs = json.data || {};
   const seo   = attrs.seo || {};
 
-  // 2) Normalize fields
+  // 2) Find the best image (media, string, or external)
+  let image;
+
+  if (seo.shareImage?.data?.attributes?.url) {
+    image = seo.shareImage.data.attributes.url.startsWith('http')
+      ? seo.shareImage.data.attributes.url
+      : `${URL}${seo.shareImage.data.attributes.url}`;
+  } else if (typeof seo.shareImage === 'string' && seo.shareImage.startsWith('http')) {
+    image = seo.shareImage;
+  } else if (seo.externalImageUrl && seo.externalImageUrl.startsWith('http')) {
+    image = seo.externalImageUrl;
+  }
+
   const title       = seo.metaTitle        || 'Advertise With Us';
   const description = seo.metaDescription  || 'Latest updates from the dance world';
   const canonical   = seo.canonicalURL     || `${URL}/advertise`;
-  let   image;
-  if (seo.shareImage?.data?.attributes?.url) {
-    image = `${seo.shareImage.data.attributes.url}`;
-  }
-
+  const keywords    = seo.keywords         || '';
+  const metaRobots  = seo.metaRobots       || '';
   // 3) Return the Metadata object
   return {
     title,
     description,
+        keywords,
+    metaRobots,
     alternates: { canonical },
-
     openGraph: {
       title,
       description,
@@ -51,7 +60,6 @@ export async function generateMetadata() {
       images: image ? [image] : [],
       type: 'website',
     },
-
     twitter: {
       card: 'summary_large_image',
       title,
@@ -64,3 +72,4 @@ export async function generateMetadata() {
 export default function EventsPage() {
   return <AdvertiseListClient />;
 }
+

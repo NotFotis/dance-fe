@@ -16,17 +16,21 @@ const geistMono = Geist_Mono({
 /**
  * Server‐side metadata generation from Strapi global collection
  */
-export async function generateMetadata({ params }) {
-  let siteName         = "dancetoday";
-  let siteDescription  = "all about dance music";
-  let defaultSeo       = {};
-  let favicon          = null;
+export async function generateMetadata() {
+  let siteName        = "dancetoday";
+  let siteDescription = "all about dance music";
+  let defaultSeo      = {};
+  let favicon         = null;
+
+  const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/global`,
+      `${process.env.NEXT_PUBLIC_API_URL}/global?populate=*`,
       { cache: "force-cache" }
     );
+    console.log(res);
+    
     if (!res.ok) throw new Error(`Status ${res.status}`);
     const json = await res.json();
     const data = json.data ?? null;
@@ -37,24 +41,40 @@ export async function generateMetadata({ params }) {
       defaultSeo      = data.defaultSeo      ?? defaultSeo;
       favicon         = data.favicon         ?? favicon;
     }
+    console.log(data);
+    
   } catch (err) {
-    // optional: log so you can debug production issues
     console.warn("Could not load global metadata, using defaults:", err);
   }
 
-  // now safe to read defaults or fetched values
+  // Title & description
   const title       = defaultSeo.metaTitle       ?? siteName;
   const description = defaultSeo.metaDescription ?? siteDescription;
-  const iconUrl     = favicon?.url
-    ? `${favicon.url}`
-    : undefined;
+
+  // Favicon: Strapi v4 media object or direct string
+  let iconUrl, iconWidth, iconHeight, iconAlt;
+  if (favicon?.url) {
+    iconUrl  = favicon.url.startsWith('http') ? favicon.url : `${BASE_URL}${favicon.url}`;
+    iconWidth = favicon.width;
+    iconHeight = favicon.height;
+    iconAlt   = favicon.alternativeText || favicon.name || "icon";
+  } else if (favicon?.data?.attributes?.url) {
+    // Strapi v4 REST population
+    iconUrl  = favicon.data.attributes.url.startsWith('http')
+      ? favicon.data.attributes.url
+      : `${BASE_URL}${favicon.data.attributes.url}`;
+    iconWidth = favicon.data.attributes.width;
+    iconHeight = favicon.data.attributes.height;
+    iconAlt   = favicon.data.attributes.alternativeText || favicon.data.attributes.name || "icon";
+  } else if (typeof favicon === 'string' && favicon.startsWith('http')) {
+    iconUrl = favicon;
+    iconAlt = "icon";
+  }
 
   return {
     title,
     description,
-    icons: iconUrl
-      ? { icon: iconUrl, shortcut: iconUrl }
-      : undefined,
+    icons: iconUrl ? { icon: iconUrl, shortcut: iconUrl } : undefined,
     openGraph: {
       title,
       description,
@@ -62,17 +82,17 @@ export async function generateMetadata({ params }) {
       images: iconUrl
         ? [{
             url: iconUrl,
-            width:  favicon.width,
-            height: favicon.height,
-            alt:    favicon.alternativeText,
+            width:  iconWidth,
+            height: iconHeight,
+            alt:    iconAlt,
           }]
         : [],
+      siteName,
     },
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
-    title,
-    description,
+    metadataBase: new URL(BASE_URL),
   };
 }
+
 
 // NOTE: accept a single props object and await it before using `params`
 export default async function LocaleLayout(props) {

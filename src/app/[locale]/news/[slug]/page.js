@@ -58,34 +58,71 @@ export default async function NewsPage({ params }) {
 
 // For SEO
 export async function generateMetadata({ params }) {
-  const { slug, locale } = await params;
+  const { slug, locale } = params;
   const news = await fetchNewsBySlug(slug, locale);
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
+  const PUBLIC_URL = process.env.NEXT_PUBLIC_URL;
+
   if (!news) {
     return {
       title: 'News Not Found',
       description: 'Couldn’t find that news item.',
+      openGraph: {
+        title: 'News Not Found',
+        description: 'Couldn’t find that news item.',
+      },
+      twitter: {
+        title: 'News Not Found',
+        description: 'Couldn’t find that news item.',
+      },
     };
   }
+
   const seo = news.seo || {};
-  const title = seo.metaTitle || news.Title;
+  const title = seo.metaTitle || news.Title || 'News';
   const description = seo.metaDescription || '';
-  let images;
+  const keywords = seo.keywords || '';
+  const metaRobots = seo.metaRobots || '';
+
+  // Find the best image from SEO, news image, or external sources
+  let images = [];
   if (seo.shareImage?.formats?.large?.url) {
     images = [seo.shareImage.formats.large.url];
   } else if (news.Image?.[0]?.formats?.large?.url) {
     images = [news.Image[0].formats.large.url];
+  } else if (seo.externalImageUrl) {
+    images = [seo.externalImageUrl];
+  } else if (news.externalImageUrl) {
+    images = [news.externalImageUrl];
   }
-  const absoluteImages = images?.map((src) =>
-    new URL(src, process.env.NEXT_PUBLIC_URL).toString()
+
+  // Always use absolute URLs
+  const absoluteImages = images.map((src) =>
+    src.startsWith('http') ? src : new URL(src, PUBLIC_URL).toString()
   );
+
+  const canonical = `${SITE_URL}/${locale}/news/${slug}`;
+
   return {
     title,
     description,
+    keywords,
+    metaRobots,
+    alternates: { canonical },
     openGraph: {
       title,
       description,
-      url: `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/news/${slug}`,
+      url: canonical,
+      siteName: 'dancetoday',
+      images: absoluteImages,
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
       images: absoluteImages,
     },
   };
 }
+

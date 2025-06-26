@@ -45,43 +45,81 @@ function buildLocaleToSlug(event, locale) {
 }
 
 export async function generateMetadata({ params }) {
-  const { slug, locale } = await params;
+  const { slug, locale } = params;
   const event = await fetchEventBySlug(slug, locale);
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
+  const PUBLIC_URL = process.env.NEXT_PUBLIC_URL;
+
   if (!event) {
     return {
       title: 'Event Not Found',
       description: 'We couldn’t find an event for that slug.',
+      openGraph: {
+        title: 'Event Not Found',
+        description: 'We couldn’t find an event for that slug.',
+      },
+      twitter: {
+        title: 'Event Not Found',
+        description: 'We couldn’t find an event for that slug.',
+      },
     };
   }
 
   const seo = event.seo || {};
-  const title = seo.metaTitle || event.Title;
+  const title =
+    seo.metaTitle ||
+    event.Title ||
+    'Dance Event';
   const description =
     seo.metaDescription ||
     event.description?.find(
       (block) => block.type === 'paragraph' && block.children?.[0]?.text
     )?.children[0].text ||
     '';
-  let images;
+
+  // Find the best image from SEO, event image, or external sources
+  let images = [];
   if (seo.shareImage?.formats?.large?.url) {
     images = [seo.shareImage.formats.large.url];
   } else if (event.Image?.[0]?.formats?.large?.url) {
     images = [event.Image[0].formats.large.url];
+  } else if (seo.externalImageUrl) {
+    images = [seo.externalImageUrl];
+  } else if (event.externalImageUrl) {
+    images = [event.externalImageUrl];
   }
-  const absoluteImages = images?.map((src) =>
-    new URL(src, process.env.NEXT_PUBLIC_URL).toString()
+
+  // Always use absolute URLs
+  const absoluteImages = images.map((src) =>
+    src.startsWith('http') ? src : new URL(src, PUBLIC_URL).toString()
   );
+  const keywords    = seo.keywords         || '';
+  const metaRobots  = seo.metaRobots       || '';
+  const canonical = seo.canonicalURL     || `${SITE_URL}/${locale}/events/${slug}`;
+
   return {
     title,
     description,
+        keywords,
+    metaRobots,
+    alternates: { canonical },
     openGraph: {
       title,
       description,
-      url: `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/events/${slug}`,
+      url: canonical,
+      siteName: 'dancetoday',
+      images: absoluteImages,
+      type: 'event',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
       images: absoluteImages,
     },
   };
 }
+
 
 export default async function EventPage({ params }) {
   const { slug, locale } = await params;

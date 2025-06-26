@@ -96,33 +96,68 @@ export default async function ArtistPage({ params }) {
 
 // SEO: Optional, like your news setup
 export async function generateMetadata({ params }) {
-  const { slug, locale } = await params;
+  const { slug, locale } = params;
   const artist = await fetchArtistBySlug(slug, locale);
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
+
   if (!artist) {
     return {
       title: 'Artist Not Found',
       description: 'Couldn’t find that artist.',
+      openGraph: {
+        title: 'Artist Not Found',
+        description: 'Couldn’t find that artist.',
+      },
+      twitter: {
+        title: 'Artist Not Found',
+        description: 'Couldn’t find that artist.',
+      },
     };
   }
-  const title = artist.Name;
-  const description = artist.description || '';
-  let images;
+
+  // Image: Try Strapi media first, fallback to spotifyImageUrl or externalImageUrl
+  let images = [];
   if (artist.Image?.formats?.large?.url) {
     images = [artist.Image.formats.large.url];
   } else if (artist.Image?.url) {
     images = [artist.Image.url];
+  } else if (artist.spotifyImageUrl) {
+    images = [artist.spotifyImageUrl];
+  } else if (artist.externalImageUrl) {
+    images = [artist.externalImageUrl];
   }
-  const absoluteImages = images?.map((src) =>
-    new URL(src, process.env.NEXT_PUBLIC_URL).toString()
+
+  // Ensure all images are absolute URLs
+  const absoluteImages = images.map(src =>
+    src.startsWith('http') ? src : new URL(src, SITE_URL).toString()
   );
+
+  const title = artist.Name || 'Dance Artist';
+  const description = artist.description || '';
+  const keywords    = seo.keywords         || '';
+  const metaRobots  = seo.metaRobots       || '';
+  const canonical = seo.canonicalURL || `${SITE_URL}/${locale}/artists/${slug}`;
+
   return {
     title,
     description,
+        keywords,
+    metaRobots,
+    alternates: { canonical },
     openGraph: {
       title,
       description,
-      url: `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/artists/${slug}`,
+      url: canonical,
+      siteName: 'dancetoday',
+      images: absoluteImages,
+      type: 'profile', // For artist, 'profile' is a good fit
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
       images: absoluteImages,
     },
   };
 }
+

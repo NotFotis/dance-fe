@@ -13,10 +13,9 @@ export async function generateMetadata() {
     `${API_URL}/about-page-setting?populate=seo`,
     { cache: 'no-store' }
   );
-  
+
   if (!res.ok) {
     console.warn('SEO fetch failed');
-    // still return some defaults…
     return {
       title: 'About Us',
       description: 'Latest updates from the dance world',
@@ -24,25 +23,34 @@ export async function generateMetadata() {
     };
   }
   const json = await res.json();
-  
   const attrs = json.data || {};
   const seo   = attrs.seo || {};
 
-  // 2) Normalize fields
+  // 2) Get the best image: media, string, or external
+  let image;
+
+  if (seo.shareImage?.data?.attributes?.url) {
+    image = seo.shareImage.data.attributes.url.startsWith('http')
+      ? seo.shareImage.data.attributes.url
+      : `${URL}${seo.shareImage.data.attributes.url}`;
+  } else if (typeof seo.shareImage === 'string' && seo.shareImage.startsWith('http')) {
+    image = seo.shareImage;
+  } else if (seo.externalImageUrl && seo.externalImageUrl.startsWith('http')) {
+    image = seo.externalImageUrl;
+  }
+
   const title       = seo.metaTitle        || 'About Us';
   const description = seo.metaDescription  || 'Latest updates from the dance world';
   const canonical   = seo.canonicalURL     || `${URL}/about`;
-  let   image;
-  if (seo.shareImage?.data?.attributes?.url) {
-    image = `${seo.shareImage.data.attributes.url}`;
-  }
+  const keywords    = seo.keywords         || '';
+  const metaRobots  = seo.metaRobots       || '';
 
-  // 3) Return the Metadata object
   return {
     title,
     description,
+    keywords,
+    metaRobots,
     alternates: { canonical },
-
     openGraph: {
       title,
       description,
@@ -51,7 +59,6 @@ export async function generateMetadata() {
       images: image ? [image] : [],
       type: 'website',
     },
-
     twitter: {
       card: 'summary_large_image',
       title,
@@ -60,6 +67,7 @@ export async function generateMetadata() {
     },
   };
 }
+
 
 export default function EventsPage() {
   return <AboutListClient />;
