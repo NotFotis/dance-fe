@@ -87,9 +87,7 @@ useEffect(() => {
           <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 mt-20">
             {/* Search bar left */}
             <div className="w-full md:w-1/3">
-              <label className="mb-2 uppercase tracking-wide text-sm md:text-right">
-                {t('search')}
-              </label>
+
               <input
                 type="text"
                 value={search}
@@ -100,7 +98,7 @@ useEffect(() => {
               />
             </div>
             {/* Genre Filter right */}
-            <div className="mb-10 flex justify-center">
+            <div className="flex justify-center">
               <select
                 value={selectedGenre}
                 onChange={e => setSelectedGenre(e.target.value)}
