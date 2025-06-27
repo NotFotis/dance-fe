@@ -108,9 +108,7 @@ export async function generateMetadata({ params }) {
       description,
       url: canonical,
       siteName: 'dancetoday',
-      images: absoluteImages,
-      type: 'event',
-    },
+      images: absoluteImages,    },
     twitter: {
       card: 'summary_large_image',
       title,

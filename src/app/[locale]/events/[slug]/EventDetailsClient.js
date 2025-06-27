@@ -196,7 +196,11 @@ export default function EventDetailsClient({ event }) {
                       <span className="text-xl font-medium group-hover:text-blue-300 transition">{artist.Name}</span>
                       {artist.Socials?.map((social, i2) => {
                         let Icon;
-                        switch (social.platform.toLowerCase()) {
+                        const platform = typeof social.platform === 'string'
+                          ? social.platform.toLowerCase()
+                          : '';
+                        
+                        switch (platform) {
                           case 'facebook': Icon = FaFacebook; break;
                           case 'instagram': Icon = FaInstagram; break;
                           case 'spotify': Icon = FaSpotify; break;
@@ -248,7 +252,10 @@ export default function EventDetailsClient({ event }) {
                       <span className="text-xl font-medium transition hover:text-gray-300">{artist.Name}</span>
                       {artist.Socials?.map((social, i2) => {
                         let Icon;
-                        switch (social.platform.toLowerCase()) {
+                        const platform = typeof social.platform === 'string'
+                          ? social.platform.toLowerCase()
+                          : '';
+                        switch (platform) {
                           case 'facebook': Icon = FaFacebook; break;
                           case 'instagram': Icon = FaInstagram; break;
                           case 'spotify': Icon = FaSpotify; break;

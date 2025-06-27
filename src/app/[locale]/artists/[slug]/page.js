@@ -133,10 +133,10 @@ export async function generateMetadata({ params }) {
   );
 
   const title = artist.Name || 'Dance Artist';
-  const description = artist.description || '';
-  const keywords    = seo.keywords         || '';
-  const metaRobots  = seo.metaRobots       || '';
-  const canonical = seo.canonicalURL || `${SITE_URL}/${locale}/artists/${slug}`;
+  const description = artist.seo?.metaDescription || '';
+  const keywords    = artist.seo?.keywords         || '';
+  const metaRobots  = artist.seo?.metaRobots       || '';
+  const canonical = artist.seo?.canonicalURL || `${SITE_URL}/${locale}/artists/${slug}`;
 
   return {
     title,

@@ -21,7 +21,8 @@ export function useArtists({
     'sort=Name:asc',
     'populate=Image',
     'populate=music_genres',
-    'populate=Socials'
+    'populate=Socials',
+    'populate=seo'
   ];
 
   if (search) {
