@@ -10,6 +10,7 @@ export function useArtists({
   apiLocale = 'en',
   page = 1,
   pageSize = 16,
+  specialArtist = false
 }) {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -29,6 +30,9 @@ export function useArtists({
   if (genre) {
     // Assumes genre is the NAME of the genre. If you want to use id, change accordingly.
     params.push(`filters[music_genres][name][$eq]=${encodeURIComponent(genre)}`);
+  }
+  if(specialArtist){
+    params.push(`filters[specialArtist][$eq]=true`);
   }
   const url = `${API_URL}/artists?${params.join('&')}`;
 

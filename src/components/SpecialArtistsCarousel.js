@@ -182,7 +182,7 @@ export default function SpecialArtistsCarousel() {
   const locale = useLocale();
   const t = useTranslations("artistCarousel");
   const apiLocale = locale === "el" ? "el-GR" : locale;
-  const { artists = [], isLoading } = useArtists({ apiLocale });
+  const { artists, isLoading } = useArtists({ apiLocale, specialArtist: true });
 
   const specialArtists = artists.filter(a => a.specialArtist);
   const [openIdx, setOpenIdx] = useState(null);
