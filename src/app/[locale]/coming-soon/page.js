@@ -2,7 +2,7 @@
 import { useState,useRef } from "react";
 import { useRouter } from "next/navigation";
 
-const UNLOCK_PASSWORD = process.env.NEXT_PUBLIC_COMING_SOON_PASSWORD || "changeme";
+const UNLOCK_PASSWORD = process.env.COMING_SOON_PASSWORD || "changeme";
 
 export default function ComingSoon() {
   const [showModal, setShowModal] = useState(false);
