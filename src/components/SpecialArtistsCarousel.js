@@ -34,18 +34,18 @@ function ArtistCard({ artist, isOpen, setOpen }) {
 
   return (
     <motion.div
-    layout
-    className={`relative flex flex-col items-center justify-center group cursor-pointer select-none bg-neutral-950 rounded-3xl shadow-2xl border border-white/10 ${isOpen ? "pointer-events-none" : ""}`}
-    style={{
+      layout
+      className={`relative flex flex-col items-center justify-center group cursor-pointer select-none bg-neutral-950 rounded-3xl shadow-2xl border border-white/10 ${isOpen ? "pointer-events-none" : ""}`}
+      style={{
         width: "100%",
         minHeight: 400,
         aspectRatio: "9 / 16",
         maxWidth: 410,
         margin: "0 auto",
         overflow: "hidden"
-    }}
-    onClick={goToArtist}
-    tabIndex={0}
+      }}
+      onClick={goToArtist}
+      tabIndex={0}
     >
       {/* Artist image */}
       <img
@@ -187,16 +187,21 @@ export default function SpecialArtistsCarousel() {
   const specialArtists = artists.filter(a => a.specialArtist);
   const [openIdx, setOpenIdx] = useState(null);
   const swiperRef = useRef(null);
-
+  const currentYear = new Date().getFullYear();
   if (isLoading || specialArtists.length === 0) return null;
 
   return (
     <div className="relative bg-transparent text-white py-16 mt-12">
       <div className="container mx-auto px-6 relative z-10">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
-          <h2 className="text-4xl md:text-5xl font-extrabold tracking-wide mb-4 md:mb-0">
-            {t("artists", { defaultValue: "Artists" })}
-          </h2>
+          <div className="flex flex-col mb-4 md:mb-0">
+            <h2 className="text-4xl md:text-5xl font-extrabold tracking-wide">
+              {t("artists{year}", { year: currentYear })}
+            </h2>
+            <p className="text-lg text-gray-300 font-normal mt-2">
+              {t('artistsSub', { defaultValue: "A selection of our special artists" })}
+            </p>
+          </div>
           <div className="flex items-center space-x-4">
             <button
               onClick={() => swiperRef.current?.slidePrev()}

@@ -283,7 +283,8 @@
     },
     
   "artistCarousel": {
-    "artists": "Featured Artists",
+    "artists{year}": "Danceartists {year}",
+    "artistsSub": "Artists you should watch",
     "allArtists": "All Artists",
     "noImage": "No image",
     "title": "Lineup",

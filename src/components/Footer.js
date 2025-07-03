@@ -48,14 +48,7 @@ export default function Footer() {
           <div className="flex flex-col lg:flex-row justify-between items-center">
             {/* Logo */}
             <div className="mb-6 lg:mb-0 overflow-hidden rounded-2xl shadow-xl">
-              <Image
-                src="/logo.jpg"
-                alt={t("dancetoday Media Logo")}
-                width={150}
-                height={50}
-                className="w-full h-32 object-cover object-contain"
-                priority
-              />
+              <header>dancetoday</header>
             </div>
 
             {/* Quick Links & Language */}

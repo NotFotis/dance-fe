@@ -53,10 +53,6 @@ export default function Home() {
       <section id="about" className="mt-8 md:mt-40 w-full px-3 md:px-6 py-8 md:py-12 mb-8 md:mb-20">
         <SwipeableStack apiUrl={process.env.NEXT_PUBLIC_API_URL} />
       </section>
-      
-      <section id="journey" className="my-6 md:my-20 w-full px-3 md:px-6">
-        <JourneySection />
-      </section>
 
       <section id="services" className="my-6 md:my-20 w-full px-3 md:px-6">
         <OurServices />

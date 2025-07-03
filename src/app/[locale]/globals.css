@@ -43,8 +43,8 @@ p {
 html {
   scroll-behavior: smooth;
 }
-h2,h3 {
-  font-family: 'Montserrat', Arial, sans-serif;
+h1,h2,h3 {
+  font-family: 'League Spartan', Arial, sans-serif;
   font-weight: 500;
 }
 /* Header styling: use YaroBold */
