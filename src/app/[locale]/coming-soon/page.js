@@ -40,7 +40,7 @@ export default function ComingSoon() {
   return (
     <div className="coming-soon-bg">
       <main className="cs-center">
-        <h1 className="cs-title">Something new is coming!</h1>
+        <h1 className="cs-title">Something new is coming</h1>
       </main>
       <footer className="cs-footer">
         <button
@@ -148,7 +148,7 @@ export default function ComingSoon() {
         }
 .cs-title {
   font-size: 5vw;         /* Responsive with viewport width */
-  font-size: clamp(2.2rem, 7vw, 8rem); /* Limits for both desktop and mobile */
+  font-size: clamp(2.2rem, 7vw, 6rem); /* Limits for both desktop and mobile */
   font-weight: 800;
   letter-spacing: -0.02em;
   margin-bottom: 2rem;
