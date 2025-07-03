@@ -1,34 +1,47 @@
 "use client";
-import { useState,useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 const UNLOCK_PASSWORD = process.env.NEXT_PUBLIC_COMING_SOON_PASSWORD || "changeme";
+// --- SET YOUR SONG'S BPM BELOW (Axwell - Behold is likely 126 BPM) ---
+const SONG_BPM = 124;
+const BEAT_INTERVAL = 58_000 / SONG_BPM; // ms per beat
 
 export default function ComingSoon() {
   const [showModal, setShowModal] = useState(false);
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-    const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [pulse, setPulse] = useState(false);
   const router = useRouter();
   const audioRef = useRef(null);
 
-  const handleUnlock = (e) => {
-    e.preventDefault();
-    console.log(process.env.NEXT_PUBLIC_COMING_SOON_PASSWORD);
-    
-    if (input === UNLOCK_PASSWORD) {
-      document.cookie = "site_unlocked=true; path=/";
-      setShowModal(false);
-      router.refresh();
-    } else {
-      setError("Wrong password!");
+  // 100vh fix for mobile
+  const [vh, setVh] = useState("100vh");
+  useEffect(() => {
+    function handleResize() { setVh(window.innerHeight + "px"); }
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // BEAT PULSE EFFECT
+  useEffect(() => {
+    let interval;
+    if (isPlaying) {
+      interval = setInterval(() => {
+        setPulse(true);
+        setTimeout(() => setPulse(false), 110); // fast "hit"
+      }, BEAT_INTERVAL);
     }
-  };
+    return () => clearInterval(interval);
+  }, [isPlaying]);
+
+  // Play/pause and pulse reset
   const handlePlaySong = () => {
     const audio = audioRef.current;
     if (!audio) return;
-
     if (audio.paused) {
       audio.play();
       setIsPlaying(true);
@@ -37,8 +50,50 @@ export default function ComingSoon() {
       setIsPlaying(false);
     }
   };
+
+  const handleUnlock = (e) => {
+    e.preventDefault();
+    if (input === UNLOCK_PASSWORD) {
+      document.cookie = "site_unlocked=true; path=/";
+      setShowModal(false);
+      router.refresh();
+    } else {
+      setError("Wrong password!");
+    }
+  };
+
+  // Minimal analog clock hand angles (update every second)
+  const [now, setNow] = useState(new Date());
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Clock hand degrees
+  const seconds = now.getSeconds();
+  const minutes = now.getMinutes();
+  const hours = now.getHours();
+  const secDeg = seconds * 6;         // 360/60
+  const minDeg = minutes * 6 + seconds * 0.1; // smooth
+  const hourDeg = ((hours % 12) * 30) + (minutes * 0.5); // 360/12 + smooth
+
   return (
-    <div className="coming-soon-bg">
+    <div className="coming-soon-bg" style={{ height: vh }}>
+      {/* CLOCK BG */}
+      <div className={`clock-bg ${pulse ? "pulse" : ""}`}>
+        <div className="clock-face">
+          {/* hour hand */}
+          <div className="hand hour" style={{ transform: `rotate(${hourDeg}deg)` }} />
+          {/* minute hand */}
+          <div className="hand minute" style={{ transform: `rotate(${minDeg}deg)` }} />
+          {/* second hand */}
+          <div className="hand second" style={{ transform: `rotate(${secDeg}deg)` }} />
+          {/* dot */}
+          <div className="clock-dot" />
+        </div>
+      </div>
+
+      {/* PAGE CONTENT */}
       <main className="cs-center">
         <h1 className="cs-title">Something new is coming</h1>
       </main>
@@ -70,8 +125,10 @@ export default function ComingSoon() {
         >
           <header>dancetoday</header>
         </button>
-        <audio ref={audioRef} src="/Swedish House Mafia - Wait So Long (Visualizer).mp3" /></footer>
+        <audio ref={audioRef} src="/axwell-behold_Ko5Ov23u.mp3" />
+      </footer>
 
+      {/* MODAL */}
       {showModal && (
         <div className="cs-modal-bg" onClick={() => setShowModal(false)}>
           <form
@@ -112,31 +169,98 @@ export default function ComingSoon() {
         </div>
       )}
 
+      {/* GLOBAL SCROLL LOCK */}
+      <style jsx global>{`
+        html, body, #__next {
+          height: 100%;
+          margin: 0;
+          padding: 0;
+          overflow: hidden !important;
+          box-sizing: border-box;
+        }
+      `}</style>
+      {/* PAGE/COMPONENT/ CLOCK STYLE */}
       <style jsx>{`
-.coming-soon-bg {
-  min-height: 100vh;
-  width: 100vw;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  font-family: 'Montserrat', 'Poppins', Arial, sans-serif;
-  /* animated gradient background */
-  background: linear-gradient(120deg, #191919, #222327, #111 70%);
-  background-size: 200% 200%;
-  animation: gradient-move 20s ease-in-out infinite;
-}
-@keyframes gradient-move {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
+        .coming-soon-bg {
+          min-height: 100vh;
+          height: 100vh;
+          width: 100vw;
+          max-width: 100vw;
+          max-height: 100vh;
+          color: #fff;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          font-family: 'Montserrat', 'Poppins', Arial, sans-serif;
+          background: linear-gradient(120deg, #191919, #222327, #111 70%);
+          background-size: 200% 200%;
+          animation: gradient-move 20s ease-in-out infinite;
+          overflow: hidden;
+          box-sizing: border-box;
+          position: relative;
+        }
+        @keyframes gradient-move {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+
+        /* CLOCK BACKGROUND */
+        .clock-bg {
+          position: absolute;
+          top: 50%; left: 50%;
+          transform: translate(-50%, -50%);
+          z-index: 0;
+          width: 38vw; height: 38vw;
+          min-width: 260px; min-height: 260px;
+          max-width: 540px; max-height: 540px;
+          opacity: 0.08;
+          pointer-events: none;
+          transition: opacity 0.5s, filter 0.22s, transform 0.3s;
+          filter: blur(0.2px);
+        }
+        .clock-bg.pulse {
+          opacity: 0.19;
+          transform: translate(-50%, -50%) scale(1.08);
+          filter: blur(1.2px) brightness(1.3);
+          transition: opacity 0.1s, transform 0.12s, filter 0.11s;
+        }
+        .clock-face {
+          position: relative;
+          width: 100%; height: 100%;
+          border-radius: 50%;
+          border: 2.4px solid #fff7;
+          box-shadow: 0 0 28px #fff1;
+          background: transparent;
+        }
+        .hand {
+          position: absolute;
+          bottom: 50%; left: 50%;
+          transform-origin: bottom center;
+          background: #fff;
+          border-radius: 2px;
+        }
+        .hand.hour {
+          width: 3.4px; height: 27%;
+          background: #fff6;
+        }
+        .hand.minute {
+          width: 2.2px; height: 38%;
+          background: #fff8;
+        }
+        .hand.second {
+          width: 1.2px; height: 43%;
+          background: #fff3;
+        }
+        .clock-dot {
+          position: absolute;
+          width: 13px; height: 13px;
+          left: 50%; bottom: 50%;
+          transform: translate(-50%, 50%);
+          background: #fff8;
+          border-radius: 50%;
+          box-shadow: 0 0 9px #fff8;
+        }
 
         .cs-center {
           flex: 1;
@@ -145,64 +269,21 @@ export default function ComingSoon() {
           align-items: center;
           justify-content: center;
           text-align: center;
+          min-height: 0;
+          z-index: 1;
+          position: relative;
         }
-.cs-title {
-  font-size: 5vw;         /* Responsive with viewport width */
-  font-size: clamp(2.2rem, 7vw, 6rem); /* Limits for both desktop and mobile */
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  margin-bottom: 2rem;
-  margin-top: 3rem;
-  line-height: 1.1;          /* Lower opacity */
-  text-shadow: 0 2px 5px #0006;
-  transition: font-size 0.3s;
-}
-
-@media (max-width: 700px) {
-  .coming-soon-bg {
-    padding: 0;
-  }
-  .cs-title {
-    font-size: clamp(2.2rem, 9vw, 3.4rem); /* Bigger on mobile */
-    margin-top: 1.5rem;
-    margin-bottom: 2.5rem;
-  }
-  .cs-footer {
-    flex-direction: column;
-    gap: 0.6rem;
-    padding: 0 0.5rem 0.8rem 0.5rem;
-    width: 100vw;
-  }
-  .cs-footer-divider {
-    display: none;
-  }
-  .cs-footer-left,
-  .cs-footer-right {
-    min-width: unset;
-    text-align: center;
-  }
-  .cs-modal {
-    min-width: 0;
-    width: 95vw;
-    padding: 1.2rem 0.7rem 1.2rem 0.7rem;
-  }
-  .cs-modal-password-wrap {
-    width: 100%;
-    min-width: 0;
-  }
-}
-
-@media (max-width: 420px) {
-  .cs-title {
-    font-size: 1.2rem;
-    margin-bottom: 2rem;
-  }
-  .cs-modal-password-wrap {
-    width: 98vw;
-    min-width: 0;
-  }
-}
-
+        .cs-title {
+          font-size: clamp(2.2rem, 7vw, 6rem);
+          font-weight: 800;
+          letter-spacing: -0.02em;
+          margin-bottom: 2rem;
+          margin-top: 3rem;
+          line-height: 1.1;
+          text-shadow: 0 2px 5px #0006;
+          transition: font-size 0.3s;
+          user-select: none;
+        }
         .cs-footer {
           display: flex;
           align-items: center;
@@ -211,6 +292,8 @@ export default function ComingSoon() {
           width: 100vw;
           box-sizing: border-box;
           position: relative;
+          flex-shrink: 0;
+          z-index: 1;
         }
         .cs-footer-divider {
           flex: 1;
@@ -253,9 +336,9 @@ export default function ComingSoon() {
           margin: 0;
           padding: 0;
         }
-        h1 {
-          margin: 0;
-        }
+
+        h1 { margin: 0; }
+
         /* Modal Styles */
         .cs-modal-bg {
           position: fixed;
@@ -266,6 +349,11 @@ export default function ComingSoon() {
           align-items: center;
           justify-content: center;
           animation: fade-in 0.2s;
+          height: 100vh;
+          width: 100vw;
+          overflow: hidden;
+          max-width: 100vw;
+          max-height: 100vh;
         }
         .cs-modal {
           background: #18191e;
@@ -277,6 +365,9 @@ export default function ComingSoon() {
           flex-direction: column;
           align-items: center;
           animation: popup-in 0.18s;
+          max-width: 98vw;
+          max-height: 98vh;
+          overflow: auto;
         }
         .cs-modal-title {
           font-size: 1.2rem;
@@ -289,6 +380,7 @@ export default function ComingSoon() {
           position: relative;
           width: 300px;
           margin-bottom: 1.1rem;
+          max-width: 96vw;
         }
         .cs-modal-input {
           padding: 0.7rem 1.1rem;
@@ -346,9 +438,59 @@ export default function ComingSoon() {
           margin-top: -0.5rem;
         }
         @media (max-width: 700px) {
-          .cs-title { font-size: 2rem; }
-          .cs-footer { padding: 0 1rem 0.7rem 1rem; }
-          .cs-modal { min-width: 0; width: 90vw; }
+          .coming-soon-bg {
+            padding: 0;
+            height: 100vh;
+            min-height: 100vh;
+            max-height: 100vh;
+          }
+          .clock-bg {
+            width: 72vw;
+            height: 72vw;
+            min-width: 150px; min-height: 150px;
+            max-width: 99vw; max-height: 99vw;
+          }
+          .cs-title {
+            font-size: clamp(2.2rem, 9vw, 3.4rem);
+            margin-top: 1.5rem;
+            margin-bottom: 2.5rem;
+          }
+          .cs-footer {
+            flex-direction: column;
+            gap: 0.6rem;
+            padding: 0 0.5rem 0.8rem 0.5rem;
+            width: 100vw;
+            flex-shrink: 0;
+          }
+          .cs-footer-divider {
+            display: none;
+          }
+          .cs-footer-left,
+          .cs-footer-right {
+            min-width: unset;
+            text-align: center;
+          }
+          .cs-modal {
+            min-width: 0;
+            width: 95vw;
+            padding: 1.2rem 0.7rem 1.2rem 0.7rem;
+            max-height: 98vh;
+          }
+          .cs-modal-password-wrap {
+            width: 100%;
+            min-width: 0;
+            max-width: 96vw;
+          }
+        }
+        @media (max-width: 420px) {
+          .cs-title {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+          }
+          .cs-modal-password-wrap {
+            width: 98vw;
+            min-width: 0;
+          }
         }
         @keyframes fade-in {
           from { opacity: 0; }
