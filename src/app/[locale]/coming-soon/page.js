@@ -151,10 +151,9 @@ export default function ComingSoon() {
   letter-spacing: -0.02em;
   margin-bottom: 2rem;
   margin-top: 3rem;
-  line-height: 1.1;
-  opacity: 0.7;          /* Lower opacity */
+  line-height: 1.1;          /* Lower opacity */
   text-shadow: 0 2px 5px #0006;
-  transition: opacity 0.3s, font-size 0.3s;
+  transition: font-size 0.3s;
 }
 
 @media (max-width: 700px) {
