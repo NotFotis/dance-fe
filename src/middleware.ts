@@ -5,7 +5,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 const locales = ['en', 'el'];
 const defaultLocale = 'en';
 const UNLOCK_COOKIE = 'site_unlocked';
-const UNLOCK_QUERY = 'letmein';
+const UNLOCK_QUERY = 'abracadabra';
 const COMING_SOON_PATH = '/coming-soon';
 
 // --- This part comes first: coming soon logic ---
