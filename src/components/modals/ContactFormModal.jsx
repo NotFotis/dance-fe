@@ -66,7 +66,7 @@ export default function ContactPage() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.4 }}
-              className="max-w-2xl mx-auto p-10 rounded-3xl shadow-xl space-y-8"
+              className="w-full max-w-2xl mx-auto px-2 sm:px-6 md:px-10 py-8 md:py-10 rounded-3xl shadow-xl space-y-8"
             >
               {/* Name Field */}
               <motion.div

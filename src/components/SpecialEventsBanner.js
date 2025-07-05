@@ -8,11 +8,10 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function SpecialEventsBanner() {
   const locale = useLocale();
   const apiLocale = locale === "el" ? "el-GR" : locale;
-  const { events = [], isLoading } = useEvents(apiLocale);
-  const now = new Date();
-  const specialEvents = events.filter(
-    evt => evt.specialEvent && evt.Date && new Date(evt.Date) >= now
-  );
+const { events = [], isLoading } = useEvents(apiLocale, true); // true = only specialEvents
+const now = new Date();
+const specialEvents = events.filter(evt => evt.Date && new Date(evt.Date) >= now);
+
 
   const [index, setIndex] = useState(0);
   const [showText, setShowText] = useState(false);

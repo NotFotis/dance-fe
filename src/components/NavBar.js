@@ -20,14 +20,10 @@ export default function Navbar({ brandName = "dancetoday", showCarousel = true ,
   const locale = useLocale();
   const URL = process.env.NEXT_PUBLIC_URL;
   const apiLocale = locale === 'el' ? 'el-GR' : locale;
-  const { events = [], isLoading } = useEvents(apiLocale);
-  const now = new Date();
-  const specialEvents = events.filter(
-    evt =>
-      evt.specialEvent &&
-      evt.Date &&
-      new Date(evt.Date) >= now
-  );
+const { events = [], isLoading } = useEvents(apiLocale, true); // true = only specialEvents
+const now = new Date();
+const specialEvents = events.filter(evt => evt.Date && new Date(evt.Date) >= now);
+
 
   const [isOpen, setIsOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);

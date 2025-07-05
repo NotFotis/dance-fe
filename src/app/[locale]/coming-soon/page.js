@@ -3,243 +3,85 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { FaDiscord, FaInstagram, FaFacebook } from "react-icons/fa";
 
-// --- FlipSplitDigit: real split-flap animation ---
-function FlipSplitDigit({ digit }) {
-  const [flipping, setFlipping] = useState(false);
-  const [prevDigit, setPrevDigit] = useState(digit);
-  const [phase, setPhase] = useState("idle"); // idle | top | bottom
-
+// --- Modern Animated Circular Clock ---
+function useTime() {
+  const [now, setNow] = useState(new Date());
   useEffect(() => {
-    if (digit !== prevDigit) {
-      setFlipping(true);
-      setPhase("top");
-      const t1 = setTimeout(() => setPhase("bottom"), 260);
-      const t2 = setTimeout(() => {
-        setFlipping(false);
-        setPrevDigit(digit);
-        setPhase("idle");
-      }, 520);
-      return () => { clearTimeout(t1); clearTimeout(t2); };
-    }
-  }, [digit, prevDigit]);
+    const timer = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+  return now;
+}
+
+function DigitalClock() {
+  const now = useTime();
+  const pad = n => String(n).padStart(2, "0");
+  const hours = pad(now.getHours());
+  const minutes = pad(now.getMinutes());
+  const seconds = pad(now.getSeconds());
 
   return (
-    <div className="flip-split-digit">
-      <div className="split-half split-top">
-        <span className="digit">{(phase === "top" && flipping) ? prevDigit : digit}</span>
-        {(phase === "top" && flipping) && (
-          <div className="flip-anim top">
-            <span className="digit">{digit}</span>
-            <div className="shadow" />
-          </div>
-        )}
-      </div>
-      <div className="split-gap" />
-      <div className="split-half split-bottom">
-        <span className="digit">{(phase === "bottom" && flipping) ? prevDigit : digit}</span>
-        {(phase === "bottom" && flipping) && (
-          <div className="flip-anim bottom">
-            <span className="digit">{digit}</span>
-            <div className="shadow" />
-          </div>
-        )}
+    <div className="digital-clock-wrap">
+      <div className="digits-row">
+        <span className="digits">{'['}</span>
+        <div className="digits-col">
+          <span className="digits">{hours}</span>
+        </div>
+        <span className="separator">:</span>
+        <div className="digits-col">
+          <span className="digits">{minutes}</span>
+        </div>
+
+                <span className="digits">{']'}</span>
       </div>
       <style jsx>{`
-        .flip-split-digit {
-          display: flex;
-          flex-direction: column;
-          width: 2.9em;
-          height: 4.1em;
-          background: #222326;
-          border-radius: 0.68em;
-          margin: 0 0.14em;
-          box-shadow: 0 4px 14px #1117;
-          position: relative;
-          perspective: 1100px;      /* <--- add perspective for 3D! */
-        }
-        .split-half {
+        .digital-clock-wrap {
           width: 100%;
-          height: 50%;
-          position: relative;
-          overflow: hidden;
           display: flex;
           align-items: center;
           justify-content: center;
-          background: inherit;
+          margin-bottom: 2.5rem;
         }
-        .split-top {
-          border-top-left-radius: 0.68em;
-          border-top-right-radius: 0.68em;
-          background: linear-gradient(180deg, #252629 80%, #222 100%);
+        .digits-row {
+          display: flex;
+          align-items: flex-end;
+          gap: clamp(0.6rem, 5vw, 2.1rem);
         }
-        .split-bottom {
-          border-bottom-left-radius: 0.68em;
-          border-bottom-right-radius: 0.68em;
-          background: linear-gradient(0deg, #222326 80%, #1a1a1c 100%);
+        .digits-col {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
         }
-        .digit {
-          font-size: 3.3em;
+        .digits {
+          font-size: clamp(2.6rem, 10vw, 4.5rem);
           font-weight: 900;
           color: #fff;
-          font-family: 'Montserrat', 'Poppins', Arial, sans-serif;
-          line-height: 0.96em;
-          user-select: none;
-          display: block;
+          text-shadow: 0 2px 14px #000b;
+          letter-spacing: 0.04em;
         }
-        .split-top .digit {
-          position: absolute;
-          left: 50%;
-          top: 20%;
-          transform: translate(-50%, 0);
-          height: 200%;
-          clip-path: inset(0 0 55% 0);
-        }
-        .split-bottom .digit {
-          position: absolute;
-          left: 50%;
-          top: -85%;
-          transform: translate(-50%, 0);
-          height: 200%;
-          clip-path: inset(35% 0 0 0);
-        }
-        .split-gap {
-          width: 100%;
-          height: 0.19em;
-          background: #19191a;
-        }
-        /* Flip Animation */
-        .flip-anim {
-          position: absolute;
-          left: 0; width: 100%;
-          height: 100%;
-          overflow: hidden;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          pointer-events: none;
-          z-index: 10;
-          backface-visibility: hidden;
-          transform-style: preserve-3d;   /* <-- crucial for 3D */
-        }
-        .flip-anim span.digit {
-          position: absolute;
-          left: 50%;
-          transform: translate(-50%, 0);
-          width: 100%;
-          height: 200%;
-        }
-        .flip-anim.top {
-          top: 0;
-          height: 100%;
-          border-top-left-radius: 0.68em;
-          border-top-right-radius: 0.68em;
-          background: linear-gradient(180deg, #252629 80%, #222 100%);
-          transform-origin: bottom center;
-          animation: flipTop3D 0.26s cubic-bezier(.4,0,.2,1) forwards;
-        }
-        .flip-anim.top .digit {
-          top: 10%;
-          clip-path: inset(0 0 55% 0);
-        }
-        .flip-anim.bottom {
-          bottom: 0;
-          height: 100%;
-          border-bottom-left-radius: 0.68em;
-          border-bottom-right-radius: 0.68em;
-          background: linear-gradient(0deg, #222326 80%, #1a1a1c 100%);
-          transform-origin: top center;
-          animation: flipBottom3D 0.26s cubic-bezier(.4,0,.2,1) forwards;
-        }
-        .flip-anim.bottom .digit {
-          top: -65%;
-          clip-path: inset(35% 0 0 0);
-        }
-        .flip-anim .shadow {
-          position: absolute;
-          left: 0; right: 0; top: 0; bottom: 0;
-          pointer-events: none;
-          border-radius: inherit;
-        }
-        .flip-anim.top .shadow {
-          background: linear-gradient(to bottom,rgba(0,0,0,0.14),rgba(0,0,0,0));
-          opacity: 0.42;
-        }
-        .flip-anim.bottom .shadow {
-          background: linear-gradient(to top,rgba(0,0,0,0.13),rgba(0,0,0,0));
-          opacity: 0.4;
-        }
-        @keyframes flipTop3D {
-          0% { transform: rotateX(0deg);}
-          100% { transform: rotateX(-90deg);}
-        }
-        @keyframes flipBottom3D {
-          0% { transform: rotateX(90deg);}
-          100% { transform: rotateX(0deg);}
-        }
-        @media (max-width: 700px) {
-          .flip-split-digit { width: 1.2em; height: 1.7em;}
-          .digit { font-size: 1.4em;}
-          .split-top .digit { top: 5%; }
-        }
-      `}</style>
-    </div>
-  );
-}
-
-
-
-// --- Responsive Flip Clock ---
-function pad(num) { return String(num).padStart(2, "0"); }
-function FlipSplitClock() {
-  const [hour, setHour] = useState(pad(new Date().getHours()));
-  const [minute, setMinute] = useState(pad(new Date().getMinutes()));
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const now = new Date();
-      setHour(pad(now.getHours()));
-      setMinute(pad(now.getMinutes()));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <div className="flipclock">
-      <FlipSplitDigit digit={hour[0]} />
-      <FlipSplitDigit digit={hour[1]} />
-      <div className="flip-colon">
-        <div>•</div>
-        <div>•</div>
-      </div>
-      <FlipSplitDigit digit={minute[0]} />
-      <FlipSplitDigit digit={minute[1]} />
-      <style jsx>{`
-        .flipclock {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.02em;
-          margin: 0 auto 1.6rem auto;
-          font-size: clamp(2.2rem, 10vw, 6.2rem); /* This controls ALL scaling */
-          user-select: none;
-          max-width: 100vw;
-          padding: 0.7em 0.1em 0.6em 0.1em;
-        }
-        .flip-colon {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          margin: 0 0.09em 0 0.13em;
-          font-size: 0.71em;
-          color: #eaeaea;
+        .label {
+          margin-top: 0.4em;
+          font-size: clamp(0.75rem, 2vw, 1.1rem);
+          font-weight: 700;
+          color: #fff;
+          letter-spacing: 0.10em;
           opacity: 0.82;
-          gap: 0.08em;
+          text-shadow: 0 1px 5px #0007;
+          text-transform: uppercase;
+        }
+        .separator {
+          font-size: clamp(2.4rem, 6vw, 3.5rem);
+          color: #fff;
+          margin: 0 0.1em;
+          font-weight: 800;
+          align-self: flex-end;
+          margin-bottom: 0.12em;
         }
       `}</style>
     </div>
   );
 }
+
 
 const UNLOCK_PASSWORD = process.env.NEXT_PUBLIC_COMING_SOON_PASSWORD || "changeme";
 
@@ -251,15 +93,6 @@ export default function ComingSoon() {
   const [isPlaying, setIsPlaying] = useState(false);
   const router = useRouter();
   const audioRef = useRef(null);
-
-  // 100vh fix for mobile
-  const [vh, setVh] = useState("100vh");
-  useEffect(() => {
-    function handleResize() { setVh(window.innerHeight + "px"); }
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   // Play/pause logic
   const handlePlaySong = () => {
@@ -305,10 +138,10 @@ export default function ComingSoon() {
   };
 
   return (
-    <div className="coming-soon-bg" style={{ height: vh }}>
-      <main className="cs-center">
+    <div className="coming-soon-bg" >
+      <main className="cs-center"  style={{ position: "relative", zIndex: 1 }}>
         <div className="headline">WE DANCE SOON</div>
-        <FlipSplitClock />
+        <DigitalClock  />
         <div className="socials">
           <a href={process.env.NEXT_PUBLIC_DISCORD_URL} target="_blank" rel="noopener noreferrer" className="social-link">
             <FaDiscord size={28} />
@@ -399,17 +232,31 @@ export default function ComingSoon() {
         }
       `}</style>
       <style jsx>{`
-        .coming-soon-bg {
-          min-height: 100vh;
-          height: 100vh;
-          width: 100vw;
-          color: #fff;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          font-family: 'Montserrat', 'Poppins', Arial, sans-serif;
-          overflow: hidden;
-        }
+  .coming-soon-bg {
+    min-height: 100vh;
+    height: 100vh;
+    width: 100vw;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-family: 'Montserrat', 'Poppins', Arial, sans-serif;
+    overflow: hidden;
+    position: relative;
+    background: #101012;
+  }
+  .coming-soon-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: 
+      linear-gradient(115deg, rgba(24,24,24,0.2) 0%, rgba(32,32,32,0.4) 100%),
+      url("/63913d117113967.60704191152f1.png") center center / cover no-repeat;
+    opacity: 1;
+    pointer-events: none;
+  }
+    
         .cs-center {
           flex: 1;
           display: flex;
@@ -643,6 +490,8 @@ export default function ComingSoon() {
           from { opacity: 0; transform: scale(0.9);}
           to { opacity: 1; transform: scale(1);}
         }
+            .coming-soon-bg > * { position: relative; z-index: 1; }
+
       `}</style>
     </div>
   );

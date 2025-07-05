@@ -79,7 +79,7 @@
     "register": "Register"
   },
     "music": {
-      "title": "Music Releases",
+      "title": "Music",
       "filterMonth": "Filter by Month",
       "filterGenre": "Filter by Genre",
       "all": "All",
@@ -99,7 +99,8 @@
       "noMusicFound": "No music releases found.",
       "artist": "Artist",
       "info": "Info",
-      "listen": "Listen"
+      "listen": "Listen",
+      "allGenres": "All Genres"
     },
     "news": {
       "loadingNews": "Loading news...",
@@ -290,6 +291,17 @@
     "title": "Lineup",
     "close": "Close",
     "moreInfo": "More info"
+  },
+
+  "genreDetails": {
+  "artists": "Artists",
+  "noArtists": "No artists yet.",
+  "events": "Upcoming Events",
+  "noEvents": "No events yet.",
+  "news": "Dance News",
+  "noNews": "No news yet.",
+  "previous": "Previous",
+  "next": "Next"
   }
 
 
