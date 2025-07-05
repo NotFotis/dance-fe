@@ -44,27 +44,27 @@ function CountdownClock() {
       <div className="flex flex-col items-center">
         {/* DIGITS */}
         <div className="flex items-end gap-4 md:gap-6 tabular-nums">
-          <span className="font-extrabold text-white text-4xl md:text-7xl lg:text-8xl drop-shadow-lg">[</span>
+          <span className="font-extrabold text-white text-4xl md:text-7xl lg:text-7xl drop-shadow-lg">[</span>
           <div className="flex flex-col items-center">
-            <span className="font-extrabold text-white text-4xl md:text-6xl lg:text-7xl drop-shadow-lg">{pad(days)}</span>
+            <span className="font-extrabold text-white text-4xl md:text-6xl lg:text-6xl drop-shadow-lg">{pad(days)}</span>
           </div>
-          <span className="font-extrabold text-white text-4xl md:text-7xl lg:text-8xl drop-shadow-lg">:</span>
+          <span className="font-extrabold text-white text-4xl md:text-7xl lg:text-6xl drop-shadow-lg">:</span>
           <div className="flex flex-col items-center">
-            <span className="font-extrabold text-white text-4xl md:text-6xl lg:text-7xl drop-shadow-lg">{pad(hours)}</span>
+            <span className="font-extrabold text-white text-4xl md:text-6xl lg:text-6xl drop-shadow-lg">{pad(hours)}</span>
           </div>
-          <span className="font-extrabold text-white text-4xl md:text-7xl lg:text-8xl drop-shadow-lg">:</span>
+          <span className="font-extrabold text-white text-4xl md:text-7xl lg:text-6xl drop-shadow-lg">:</span>
           <div className="flex flex-col items-center">
-            <span className="font-extrabold text-white text-4xl md:text-6xl lg:text-7xl drop-shadow-lg">{pad(minutes)}</span>
+            <span className="font-extrabold text-white text-4xl md:text-6xl lg:text-6xl drop-shadow-lg">{pad(minutes)}</span>
           </div>
-          <span className="font-extrabold text-white text-4xl md:text-7xl lg:text-8xl drop-shadow-lg">:</span>
+          <span className="font-extrabold text-white text-4xl md:text-7xl lg:text-6xl drop-shadow-lg">:</span>
           <div className="flex flex-col items-center">
-            <span className="font-extrabold text-white text-4xl md:text-6xl lg:text-7xl drop-shadow-lg">{pad(seconds)}</span>
+            <span className="font-extrabold text-white text-4xl md:text-6xl lg:text-6xl drop-shadow-lg">{pad(seconds)}</span>
           </div>
-          <span className="font-extrabold text-white text-4xl md:text-7xl lg:text-8xl drop-shadow-lg">]</span>
+          <span className="font-extrabold text-white text-4xl md:text-7xl lg:text-7xl drop-shadow-lg">]</span>
         </div>
         {/* LABELS */}
-        <div className="flex gap-4 md:gap-16 mt-2">
-          <span className="text-xs md:text-base lg:text-lg text-gray-200 font-semibold w-12 text-left tracking-wide">DAYS</span>
+        <div className="flex gap-4 md:gap-12 mt-2">
+          <span className="text-xs md:text-base lg:text-lg text-gray-200 font-semibold w-12 text-center tracking-wide">DAYS</span>
           <span className="w-1" />
           <span className="text-xs md:text-base lg:text-lg text-gray-200 font-semibold w-12 text-center tracking-wide">HRS</span>
           <span className="w-1" />
@@ -166,7 +166,7 @@ export default function ComingSoon() {
       alignItems: 'center'
     }}
   >
-    <div className="text-white font-extrabold text-2xl md:text-3xl lg:text-4xl mb-8 tracking-wide uppercase text-center drop-shadow-xl">
+    <div className="text-white font-extrabold text-2xl md:text-3xl lg:text-3xl xl:text-4xl mb-8 mt-8 tracking-wide uppercase text-center drop-shadow-xl">
           WE DANCE SOON
         </div>
         <CountdownClock  />
