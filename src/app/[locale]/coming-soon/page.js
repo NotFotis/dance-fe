@@ -180,7 +180,7 @@ export default function ComingSoon() {
           onClick={handlePlaySong}
           aria-label={isPlaying ? "Pause song" : "Play song"}
         >
-          <header>{isPlaying ? "Pause" : "Play"} dancetoday</header>
+          <header>dancetoday</header>
         </button>
         <audio ref={audioRef} src="/axwell-behold_Ko5Ov23u.mp3" />
       </footer>
