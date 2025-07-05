@@ -66,7 +66,7 @@ function CountdownClock() {
           </div>
           <span className="font-extrabold text-white text-4xl md:text-7xl lg:text-7xl drop-shadow-lg">]</span>
         </div>
-        <div className="flex gap-4 md:gap-12 mt-2">
+        <div className="flex gap-5 md:gap-12 mt-2">
           <span className="text-xs md:text-base lg:text-lg text-gray-200 font-semibold w-12 text-center tracking-wide">DAYS</span>
           <span className="w-1" />
           <span className="text-xs md:text-base lg:text-lg text-gray-200 font-semibold w-12 text-center tracking-wide">HRS</span>
