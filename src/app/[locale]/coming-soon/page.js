@@ -3,20 +3,19 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { FaDiscord, FaInstagram, FaFacebook } from "react-icons/fa";
 
-
+// --- Hydration-safe CountdownClock ---
 function CountdownClock() {
-  // Set the target date: October 1st, current year
-  const target = new Date();
-  target.setMonth(9 - 1); // JS months are 0-based (9 = October)
-  target.setDate(1);
-  target.setHours(0, 0, 0, 0);
+  // Calculate target date: October 1st, current year (or next if past)
+  const getTarget = () => {
+    const t = new Date();
+    t.setMonth(9 - 1);
+    t.setDate(1);
+    t.setHours(0, 0, 0, 0);
+    if (new Date() > t) t.setFullYear(t.getFullYear() + 1);
+    return t;
+  };
 
-  // If today is past October 1, use next year
-  if (new Date() > target) {
-    target.setFullYear(target.getFullYear() + 1);
-  }
-
-  function getTimeLeft() {
+  function getTimeLeft(target) {
     const now = new Date();
     const diff = target - now;
     if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
@@ -27,22 +26,27 @@ function CountdownClock() {
     return { days, hours, minutes, seconds };
   }
 
-  const [timeLeft, setTimeLeft] = useState(getTimeLeft());
+  const [timeLeft, setTimeLeft] = useState(null);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTimeLeft(getTimeLeft());
-    }, 1000);
+    const target = getTarget();
+    setTimeLeft(getTimeLeft(target)); // Initialize once client-side
+    const interval = setInterval(() => setTimeLeft(getTimeLeft(target)), 1000);
     return () => clearInterval(interval);
   }, []);
 
   const pad = n => String(n).padStart(2, "0");
+
+  if (!timeLeft) {
+    // Render nothing or a simple skeleton while mounting on client
+    return <div style={{ minHeight: 80 }} />;
+  }
+
   const { days, hours, minutes, seconds } = timeLeft;
 
   return (
     <div className="w-full flex items-center justify-center">
       <div className="flex flex-col items-center">
-        {/* DIGITS */}
         <div className="flex items-end gap-4 md:gap-6 tabular-nums">
           <span className="font-extrabold text-white text-4xl md:text-7xl lg:text-7xl drop-shadow-lg">[</span>
           <div className="flex flex-col items-center">
@@ -62,7 +66,6 @@ function CountdownClock() {
           </div>
           <span className="font-extrabold text-white text-4xl md:text-7xl lg:text-7xl drop-shadow-lg">]</span>
         </div>
-        {/* LABELS */}
         <div className="flex gap-4 md:gap-12 mt-2">
           <span className="text-xs md:text-base lg:text-lg text-gray-200 font-semibold w-12 text-center tracking-wide">DAYS</span>
           <span className="w-1" />
@@ -77,7 +80,7 @@ function CountdownClock() {
   );
 }
 
-
+// --- ComingSoon Page ---
 const UNLOCK_PASSWORD = process.env.NEXT_PUBLIC_COMING_SOON_PASSWORD || "changeme";
 
 export default function ComingSoon() {
@@ -92,6 +95,7 @@ export default function ComingSoon() {
   // BG preload (optional)
   const [bgLoaded, setBgLoaded] = useState(false);
   useEffect(() => {
+    if (typeof window === "undefined") return;
     const img = new window.Image();
     img.src = "/63913d117113967.60704191152f1.webp";
     img.onload = () => setBgLoaded(true);
@@ -154,37 +158,52 @@ export default function ComingSoon() {
       </div>
 
       {/* Centered Content */}
-<main className="flex-1 flex flex-col items-center justify-start z-10 relative">
-  <div
-    className="absolute left-1/2"
-    style={{
-      top: '53%',
-      transform: 'translate(-50%, -50%)',
-      width: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center'
-    }}
-  >
-    <div className="text-white font-extrabold text-2xl md:text-3xl lg:text-3xl xl:text-4xl mb-8 mt-8 tracking-wide uppercase text-center drop-shadow-xl">
-          WE DANCE SOON
-        </div>
-        <CountdownClock  />
-        <div className="flex gap-5 mt-8">
-          <a href={process.env.NEXT_PUBLIC_DISCORD_URL} target="_blank" rel="noopener noreferrer" className="rounded-full p-2 hover:scale-105 transition">
-            <FaDiscord size={28} className="text-white opacity-90 hover:opacity-100" />
-          </a>
-          <a href={process.env.NEXT_PUBLIC_INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="rounded-full p-2 hover:scale-105 transition">
-            <FaInstagram size={28} className="text-white opacity-90 hover:opacity-100" />
-          </a>
-          <a href={process.env.NEXT_PUBLIC_FACEBOOK_URL} target="_blank" rel="noopener noreferrer" className="rounded-full p-2 hover:scale-105 transition">
-            <FaFacebook size={28} className="text-white opacity-90 hover:opacity-100" />
-          </a>
-        </div>
+      <main className="flex-1 flex flex-col items-center justify-start z-10 relative">
+        <div
+          className="absolute left-1/2"
+          style={{
+            top: "53%",
+            transform: "translate(-50%, -50%)",
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <div className="text-white font-extrabold text-2xl md:text-3xl lg:text-3xl xl:text-4xl mb-8 mt-8 tracking-wide uppercase text-center drop-shadow-xl">
+            WE DANCE SOON
+          </div>
+          <CountdownClock />
+          <div className="flex gap-5 mt-8">
+            <a
+              href={process.env.NEXT_PUBLIC_DISCORD_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full p-2 hover:scale-105 transition"
+            >
+              <FaDiscord size={28} className="text-white opacity-90 hover:opacity-100" />
+            </a>
+            <a
+              href={process.env.NEXT_PUBLIC_INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full p-2 hover:scale-105 transition"
+            >
+              <FaInstagram size={28} className="text-white opacity-90 hover:opacity-100" />
+            </a>
+            <a
+              href={process.env.NEXT_PUBLIC_FACEBOOK_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full p-2 hover:scale-105 transition"
+            >
+              <FaFacebook size={28} className="text-white opacity-90 hover:opacity-100" />
+            </a>
+          </div>
         </div>
       </main>
 
-      {/* Footer (always visible) */}
+      {/* Footer */}
       <footer
         className="z-20 relative w-full flex items-center justify-between px-6 md:px-10 pb-7"
         style={{ paddingBottom: "max(1.75rem, env(safe-area-inset-bottom))" }}
@@ -192,9 +211,15 @@ export default function ComingSoon() {
         <button
           className="bg-transparent border-none p-0 m-0 cursor-pointer min-w-[34px] flex items-center group"
           aria-label="Enter admin password"
-          onClick={() => { setShowModal(true); setInput(""); setError(""); }}
+          onClick={() => {
+            setShowModal(true);
+            setInput("");
+            setError("");
+          }}
         >
-          <span className="text-white text-2xl font-extrabold group-hover:text-gray-400 transition"><header>d</header></span>
+          <span className="text-white text-2xl font-extrabold group-hover:text-gray-400 transition">
+            <header>d</header>
+          </span>
         </button>
         <div className="flex-1 border-b border-[#303030] mx-6" />
         <button
@@ -202,17 +227,22 @@ export default function ComingSoon() {
           onClick={handlePlaySong}
           aria-label={isPlaying ? "Pause song" : "Play song"}
         >
-          <span><header>dancetoday</header></span>
+          <span>
+            <header>dancetoday</header>
+          </span>
         </button>
         <audio ref={audioRef} src="/axwell-behold_Ko5Ov23u.mp3" />
       </footer>
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center" onClick={() => setShowModal(false)}>
+        <div
+          className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center"
+          onClick={() => setShowModal(false)}
+        >
           <form
             className="bg-[#18191e] rounded-2xl p-8 min-w-[300px] max-w-[96vw] shadow-2xl flex flex-col items-center"
-            onClick={e => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
             onSubmit={handleUnlock}
             autoComplete="off"
           >
@@ -223,7 +253,10 @@ export default function ComingSoon() {
                 className="w-full py-3 px-4 pr-12 rounded-lg bg-[#24242a] text-white text-base outline-none font-medium tracking-wide"
                 autoFocus
                 value={input}
-                onChange={e => { setInput(e.target.value); setError(""); }}
+                onChange={e => {
+                  setInput(e.target.value);
+                  setError("");
+                }}
                 placeholder="Password"
               />
               <button
@@ -235,14 +268,22 @@ export default function ComingSoon() {
               >
                 {showPassword ? (
                   // Eye Off Icon
-                  <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path stroke="#888" strokeWidth="2" d="M3 3l18 18M9.95 9.953A3.5 3.5 0 0116.95 16.95m-1.122-1.122a3.5 3.5 0 01-4.829-4.829m-6.633 2C5.523 6.545 12 5 12 5s6.477 1.545 9.634 7.001a1 1 0 010 1c-1.305 2.27-3.1 4.21-5.45 5.44" /></svg>
+                  <svg width="22" height="22" fill="none" viewBox="0 0 24 24">
+                    <path stroke="#888" strokeWidth="2" d="M3 3l18 18M9.95 9.953A3.5 3.5 0 0116.95 16.95m-1.122-1.122a3.5 3.5 0 01-4.829-4.829m-6.633 2C5.523 6.545 12 5 12 5s6.477 1.545 9.634 7.001a1 1 0 010 1c-1.305 2.27-3.1 4.21-5.45 5.44" />
+                  </svg>
                 ) : (
                   // Eye Icon
-                  <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="8" ry="5.5" stroke="#888" strokeWidth="2"/><circle cx="12" cy="12" r="2.5" fill="#888"/></svg>
+                  <svg width="22" height="22" fill="none" viewBox="0 0 24 24">
+                    <ellipse cx="12" cy="12" rx="8" ry="5.5" stroke="#888" strokeWidth="2" />
+                    <circle cx="12" cy="12" r="2.5" fill="#888" />
+                  </svg>
                 )}
               </button>
             </div>
-            <button type="submit" className="py-3 px-8 rounded-lg bg-white text-black font-bold text-base mt-2 mb-3 hover:bg-gray-200 transition">
+            <button
+              type="submit"
+              className="py-3 px-8 rounded-lg bg-white text-black font-bold text-base mt-2 mb-3 hover:bg-gray-200 transition"
+            >
               Enter
             </button>
             {error && <div className="text-red-500 text-base mt-1">{error}</div>}
