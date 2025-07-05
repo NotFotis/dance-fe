@@ -111,11 +111,11 @@ export default function ComingSoon() {
 
 <div className="min-h-screen flex flex-col bg-black">
   <main className="flex-1 flex flex-col items-center justify-center relative z-10">
-    <div className="text-white font-extrabold text-2xl md:text-3xl lg:text-4xl mb-8 tracking-wide uppercase text-center drop-shadow-xl">
+    <div className="text-white font-extrabold text-2xl md:text-3xl lg:text-4xl mb-8 mt-8 tracking-wide uppercase text-center drop-shadow-xl">
       WE DANCE SOON
     </div>
     <DigitalClock />
-    <div className="flex gap-5 mt-5">
+    <div className="flex gap-5">
       <a href={process.env.NEXT_PUBLIC_DISCORD_URL} target="_blank" rel="noopener noreferrer" className="rounded-full p-2 hover:scale-105 transition">
         <FaDiscord size={28} className="text-white opacity-90 hover:opacity-100" />
       </a>
