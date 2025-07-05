@@ -19,8 +19,8 @@ function DigitalClock() {
   const minutes = pad(now.getMinutes());
 
   return (
-    <div className="w-full flex items-center justify-center mb-10">
-      <div className="flex items-end gap-6 md:gap-8">
+    <div className="w-full flex items-center justify-center ">
+      <div className="flex items-end gap-5 md:gap-6">
         <span className="font-extrabold text-white text-5xl md:text-7xl lg:text-8xl drop-shadow-lg ">[</span>
         <span className="font-extrabold text-white text-5xl md:text-7xl lg:text-8xl drop-shadow-lg">{hours}</span>
         <span className="font-extrabold text-white text-5xl md:text-7xl lg:text-8xl drop-shadow-lg ">:</span>
@@ -115,7 +115,7 @@ export default function ComingSoon() {
       WE DANCE SOON
     </div>
     <DigitalClock />
-    <div className="flex gap-5">
+    <div className="flex gap-5 mt-8">
       <a href={process.env.NEXT_PUBLIC_DISCORD_URL} target="_blank" rel="noopener noreferrer" className="rounded-full p-2 hover:scale-105 transition">
         <FaDiscord size={28} className="text-white opacity-90 hover:opacity-100" />
       </a>
