@@ -3,33 +3,80 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { FaDiscord, FaInstagram, FaFacebook } from "react-icons/fa";
 
-function useTime() {
-  const [now, setNow] = useState(new Date());
-  useEffect(() => {
-    const timer = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
-  return now;
-}
 
-function DigitalClock() {
-  const now = useTime();
+function CountdownClock() {
+  // Set the target date: October 1st, current year
+  const target = new Date();
+  target.setMonth(9 - 1); // JS months are 0-based (9 = October)
+  target.setDate(1);
+  target.setHours(0, 0, 0, 0);
+
+  // If today is past October 1, use next year
+  if (new Date() > target) {
+    target.setFullYear(target.getFullYear() + 1);
+  }
+
+  function getTimeLeft() {
+    const now = new Date();
+    const diff = target - now;
+    if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+    return { days, hours, minutes, seconds };
+  }
+
+  const [timeLeft, setTimeLeft] = useState(getTimeLeft());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimeLeft(getTimeLeft());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   const pad = n => String(n).padStart(2, "0");
-  const hours = pad(now.getHours());
-  const minutes = pad(now.getMinutes());
+  const { days, hours, minutes, seconds } = timeLeft;
 
   return (
     <div className="w-full flex items-center justify-center">
-      <div className="flex items-end gap-5 md:gap-6">
-        <span className="font-extrabold text-white text-5xl md:text-7xl lg:text-8xl drop-shadow-lg">[</span>
-        <span className="font-extrabold text-white text-5xl md:text-7xl lg:text-8xl drop-shadow-lg">{hours}</span>
-        <span className="font-extrabold text-white text-5xl md:text-7xl lg:text-8xl drop-shadow-lg">:</span>
-        <span className="font-extrabold text-white text-5xl md:text-7xl lg:text-8xl drop-shadow-lg">{minutes}</span>
-        <span className="font-extrabold text-white text-5xl md:text-7xl lg:text-8xl drop-shadow-lg">]</span>
+      <div className="flex flex-col items-center">
+        {/* DIGITS */}
+        <div className="flex items-end gap-4 md:gap-6 tabular-nums">
+          <span className="font-extrabold text-white text-4xl md:text-7xl lg:text-8xl drop-shadow-lg">[</span>
+          <div className="flex flex-col items-center">
+            <span className="font-extrabold text-white text-4xl md:text-6xl lg:text-7xl drop-shadow-lg">{pad(days)}</span>
+          </div>
+          <span className="font-extrabold text-white text-4xl md:text-7xl lg:text-8xl drop-shadow-lg">:</span>
+          <div className="flex flex-col items-center">
+            <span className="font-extrabold text-white text-4xl md:text-6xl lg:text-7xl drop-shadow-lg">{pad(hours)}</span>
+          </div>
+          <span className="font-extrabold text-white text-4xl md:text-7xl lg:text-8xl drop-shadow-lg">:</span>
+          <div className="flex flex-col items-center">
+            <span className="font-extrabold text-white text-4xl md:text-6xl lg:text-7xl drop-shadow-lg">{pad(minutes)}</span>
+          </div>
+          <span className="font-extrabold text-white text-4xl md:text-7xl lg:text-8xl drop-shadow-lg">:</span>
+          <div className="flex flex-col items-center">
+            <span className="font-extrabold text-white text-4xl md:text-6xl lg:text-7xl drop-shadow-lg">{pad(seconds)}</span>
+          </div>
+          <span className="font-extrabold text-white text-4xl md:text-7xl lg:text-8xl drop-shadow-lg">]</span>
+        </div>
+        {/* LABELS */}
+        <div className="flex gap-4 md:gap-16 mt-2">
+          <span className="text-xs md:text-base lg:text-lg text-gray-200 font-semibold w-12 text-left tracking-wide">DAYS</span>
+          <span className="w-1" />
+          <span className="text-xs md:text-base lg:text-lg text-gray-200 font-semibold w-12 text-center tracking-wide">HRS</span>
+          <span className="w-1" />
+          <span className="text-xs md:text-base lg:text-lg text-gray-200 font-semibold w-12 text-center tracking-wide">MIN</span>
+          <span className="w-1" />
+          <span className="text-xs md:text-base lg:text-lg text-gray-200 font-semibold w-12 text-center tracking-wide">SEC</span>
+        </div>
       </div>
     </div>
   );
 }
+
 
 const UNLOCK_PASSWORD = process.env.NEXT_PUBLIC_COMING_SOON_PASSWORD || "changeme";
 
@@ -122,7 +169,7 @@ export default function ComingSoon() {
     <div className="text-white font-extrabold text-2xl md:text-3xl lg:text-4xl mb-8 tracking-wide uppercase text-center drop-shadow-xl">
           WE DANCE SOON
         </div>
-        <DigitalClock />
+        <CountdownClock  />
         <div className="flex gap-5 mt-8">
           <a href={process.env.NEXT_PUBLIC_DISCORD_URL} target="_blank" rel="noopener noreferrer" className="rounded-full p-2 hover:scale-105 transition">
             <FaDiscord size={28} className="text-white opacity-90 hover:opacity-100" />
