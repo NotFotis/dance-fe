@@ -19,13 +19,13 @@ function DigitalClock() {
   const minutes = pad(now.getMinutes());
 
   return (
-    <div className="w-full flex items-center justify-center ">
+    <div className="w-full flex items-center justify-center">
       <div className="flex items-end gap-5 md:gap-6">
-        <span className="font-extrabold text-white text-5xl md:text-7xl lg:text-8xl drop-shadow-lg ">[</span>
+        <span className="font-extrabold text-white text-5xl md:text-7xl lg:text-8xl drop-shadow-lg">[</span>
         <span className="font-extrabold text-white text-5xl md:text-7xl lg:text-8xl drop-shadow-lg">{hours}</span>
-        <span className="font-extrabold text-white text-5xl md:text-7xl lg:text-8xl drop-shadow-lg ">:</span>
+        <span className="font-extrabold text-white text-5xl md:text-7xl lg:text-8xl drop-shadow-lg">:</span>
         <span className="font-extrabold text-white text-5xl md:text-7xl lg:text-8xl drop-shadow-lg">{minutes}</span>
-        <span className="font-extrabold text-white text-5xl md:text-7xl lg:text-8xl drop-shadow-lg ">]</span>
+        <span className="font-extrabold text-white text-5xl md:text-7xl lg:text-8xl drop-shadow-lg">]</span>
       </div>
     </div>
   );
@@ -41,8 +41,9 @@ export default function ComingSoon() {
   const [isPlaying, setIsPlaying] = useState(false);
   const router = useRouter();
   const audioRef = useRef(null);
-  const [bgLoaded, setBgLoaded] = useState(false);
 
+  // BG preload (optional)
+  const [bgLoaded, setBgLoaded] = useState(false);
   useEffect(() => {
     const img = new window.Image();
     img.src = "/63913d117113967.60704191152f1.webp";
@@ -93,61 +94,73 @@ export default function ComingSoon() {
   };
 
   return (
-    <div className="relative min-h-screen w-full flex flex-col justify-between font-montserrat bg-black overflow-hidden">
-      {/* BG layers */}
-      <div className="absolute inset-0 z-0">
-        {/* Fast fallback gradient */}
-        <div className="absolute inset-0 " />
-        {/* Blurry placeholder */}
-
-        {/* Actual BG */}
+    <div className="min-h-dvh w-full flex flex-col font-montserrat bg-black overflow-hidden relative">
+      {/* BG image and overlay */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
         <img
           src="/63913d117113967.60704191152f1.webp"
           alt=""
-          className={`absolute inset-0 w-full h-full object-cover`}
+          className="absolute inset-0 w-full h-full object-cover"
           draggable={false}
         />
+        <div className="absolute inset-0 bg-black/40" />
       </div>
 
-<div className="min-h-screen flex flex-col bg-black">
-  <main className="flex-1 flex flex-col items-center justify-center relative z-10">
-    <div className="text-white font-extrabold text-2xl md:text-3xl lg:text-4xl mb-8 mt-8 tracking-wide uppercase text-center drop-shadow-xl">
-      WE DANCE SOON
-    </div>
-    <DigitalClock />
-    <div className="flex gap-5 mt-8">
-      <a href={process.env.NEXT_PUBLIC_DISCORD_URL} target="_blank" rel="noopener noreferrer" className="rounded-full p-2 hover:scale-105 transition">
-        <FaDiscord size={28} className="text-white opacity-90 hover:opacity-100" />
-      </a>
-      <a href={process.env.NEXT_PUBLIC_INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="rounded-full p-2 hover:scale-105 transition">
-        <FaInstagram size={28} className="text-white opacity-90 hover:opacity-100" />
-      </a>
-      <a href={process.env.NEXT_PUBLIC_FACEBOOK_URL} target="_blank" rel="noopener noreferrer" className="rounded-full p-2 hover:scale-105 transition">
-        <FaFacebook size={28} className="text-white opacity-90 hover:opacity-100" />
-      </a>
-    </div>
-  </main>
-  <footer className="flex items-center justify-between px-10 pb-7 w-full relative z-10">
-    <button
-      className="bg-transparent border-none p-0 m-0 cursor-pointer min-w-[34px] flex items-center group"
-      aria-label="Enter admin password"
-      onClick={() => { setShowModal(true); setInput(""); setError(""); }}
-    >
-      <span className="text-white text-2xl font-extrabold group-hover:text-gray-400 transition"><header>d</header></span>
-    </button>
-    <div className="flex-1 border-b border-[#303030] mx-6" />
-    <button
-      className="bg-transparent border-none cursor-pointer p-0 text-[#ccc] text-base font-medium min-w-[120px] text-right"
-      onClick={handlePlaySong}
-      aria-label={isPlaying ? "Pause song" : "Play song"}
-    >
-      <span><header>dancetoday</header></span>
-    </button>
-    <audio ref={audioRef} src="/axwell-behold_Ko5Ov23u.mp3" />
-  </footer>
-</div>
+      {/* Centered Content */}
+<main className="flex-1 flex flex-col items-center justify-start z-10 relative">
+  <div
+    className="absolute left-1/2"
+    style={{
+      top: '53%',
+      transform: 'translate(-50%, -50%)',
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center'
+    }}
+  >
+    <div className="text-white font-extrabold text-2xl md:text-3xl lg:text-4xl mb-8 tracking-wide uppercase text-center drop-shadow-xl">
+          WE DANCE SOON
+        </div>
+        <DigitalClock />
+        <div className="flex gap-5 mt-8">
+          <a href={process.env.NEXT_PUBLIC_DISCORD_URL} target="_blank" rel="noopener noreferrer" className="rounded-full p-2 hover:scale-105 transition">
+            <FaDiscord size={28} className="text-white opacity-90 hover:opacity-100" />
+          </a>
+          <a href={process.env.NEXT_PUBLIC_INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="rounded-full p-2 hover:scale-105 transition">
+            <FaInstagram size={28} className="text-white opacity-90 hover:opacity-100" />
+          </a>
+          <a href={process.env.NEXT_PUBLIC_FACEBOOK_URL} target="_blank" rel="noopener noreferrer" className="rounded-full p-2 hover:scale-105 transition">
+            <FaFacebook size={28} className="text-white opacity-90 hover:opacity-100" />
+          </a>
+        </div>
+        </div>
+      </main>
 
+      {/* Footer (always visible) */}
+      <footer
+        className="z-20 relative w-full flex items-center justify-between px-6 md:px-10 pb-7"
+        style={{ paddingBottom: "max(1.75rem, env(safe-area-inset-bottom))" }}
+      >
+        <button
+          className="bg-transparent border-none p-0 m-0 cursor-pointer min-w-[34px] flex items-center group"
+          aria-label="Enter admin password"
+          onClick={() => { setShowModal(true); setInput(""); setError(""); }}
+        >
+          <span className="text-white text-2xl font-extrabold group-hover:text-gray-400 transition"><header>d</header></span>
+        </button>
+        <div className="flex-1 border-b border-[#303030] mx-6" />
+        <button
+          className="bg-transparent border-none cursor-pointer p-0 text-[#ccc] text-base font-medium min-w-[120px] text-right"
+          onClick={handlePlaySong}
+          aria-label={isPlaying ? "Pause song" : "Play song"}
+        >
+          <span><header>dancetoday</header></span>
+        </button>
+        <audio ref={audioRef} src="/axwell-behold_Ko5Ov23u.mp3" />
+      </footer>
 
+      {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center" onClick={() => setShowModal(false)}>
           <form
