@@ -231,7 +231,7 @@ export default function ComingSoon() {
             <header>dancetoday</header>
           </span>
         </button>
-        <audio ref={audioRef} src="/axwell-behold_Ko5Ov23u.mp3" />
+        <audio ref={audioRef} src="/dance clock.mp3" />
       </footer>
 
       {/* Modal */}
