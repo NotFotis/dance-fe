@@ -8,7 +8,7 @@ function CountdownClock({ onFirstTick }) {
   // Calculate target date: October 1st, current year (or next if past)
   const getTarget = () => {
     const t = new Date();
-    t.setMonth(9 - 1);
+    t.setMonth(10 - 1);
     t.setDate(1);
     t.setHours(0, 0, 0, 0);
     if (new Date() > t) t.setFullYear(t.getFullYear() + 1);
