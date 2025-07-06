@@ -7,7 +7,7 @@ import { FaDiscord, FaInstagram, FaFacebook, FaTiktok } from "react-icons/fa";
 function CountdownClock({ onTick, countdownStart }) {
   const getTarget = () => {
     const t = new Date();
-    t.setMonth(9 - 1);
+    t.setMonth(10 - 1);
     t.setDate(1);
     t.setHours(0, 0, 0, 0);
     if (new Date() > t) t.setFullYear(t.getFullYear() + 1);
