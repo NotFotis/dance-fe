@@ -1,10 +1,10 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { FaDiscord, FaInstagram, FaFacebook } from "react-icons/fa";
+import { FaDiscord, FaInstagram, FaFacebook, FaTiktok } from "react-icons/fa";
 
 // --- Hydration-safe CountdownClock ---
-function CountdownClock() {
+function CountdownClock({ onFirstTick }) {
   // Calculate target date: October 1st, current year (or next if past)
   const getTarget = () => {
     const t = new Date();
@@ -27,13 +27,29 @@ function CountdownClock() {
   }
 
   const [timeLeft, setTimeLeft] = useState(null);
+  const [hasTicked, setHasTicked] = useState(false);
 
   useEffect(() => {
     const target = getTarget();
-    setTimeLeft(getTimeLeft(target)); // Initialize once client-side
-    const interval = setInterval(() => setTimeLeft(getTimeLeft(target)), 1000);
+    setTimeLeft(getTimeLeft(target));
+    let prev = getTimeLeft(target);
+
+    const interval = setInterval(() => {
+      const current = getTimeLeft(target);
+      setTimeLeft(current);
+
+      // Detect the "first tick"
+      if (!hasTicked && JSON.stringify(current) !== JSON.stringify(prev)) {
+        setHasTicked(true);
+        if (onFirstTick) onFirstTick();
+      }
+      prev = current;
+    }, 1000);
+
     return () => clearInterval(interval);
+    // eslint-disable-next-line
   }, []);
+
 
   const pad = n => String(n).padStart(2, "0");
 
@@ -91,6 +107,23 @@ export default function ComingSoon() {
   const [isPlaying, setIsPlaying] = useState(false);
   const router = useRouter();
   const audioRef = useRef(null);
+  const [musicReady, setMusicReady] = useState(false);
+// In your ComingSoon component, replace isPlaying with isMuted:
+const [isMuted, setIsMuted] = useState(false);
+
+const handleToggleMute = () => {
+  const audio = audioRef.current;
+  if (!audio) return;
+  audio.muted = !audio.muted;
+  setIsMuted(audio.muted);
+};
+
+// Make sure to always update muted state if audio element changes (just in case)
+useEffect(() => {
+  const audio = audioRef.current;
+  if (!audio) return;
+  audio.muted = isMuted;
+}, [isMuted]);
 
   // BG preload (optional)
   const [bgLoaded, setBgLoaded] = useState(false);
@@ -113,24 +146,41 @@ export default function ComingSoon() {
       setIsPlaying(false);
     }
   };
-
-  // AUTOPLAY & LOOP
   useEffect(() => {
+    if (!musicReady) return;
     const audio = audioRef.current;
-    if (audio) {
-      audio.loop = true;
+    if (!audio) return;
+    // Only play if not already playing
+    if (audio.paused) {
       const playPromise = audio.play();
       if (playPromise && typeof playPromise.then === "function") {
-        playPromise.then(() => setIsPlaying(true)).catch(() => {});
+        playPromise.then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
       }
-      const updateState = () => setIsPlaying(!audio.paused);
-      audio.addEventListener("play", updateState);
-      audio.addEventListener("pause", updateState);
-      return () => {
-        audio.removeEventListener("play", updateState);
-        audio.removeEventListener("pause", updateState);
-      };
     }
+  }, [musicReady]);
+  // Try autoplay on mount
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    audio.loop = true;
+
+    const tryPlay = () => {
+      if (audio.paused) {
+        const playPromise = audio.play();
+        if (playPromise && typeof playPromise.then === "function") {
+          playPromise.then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+        }
+      }
+    };
+
+    window.addEventListener("click", tryPlay, { once: true });
+    window.addEventListener("keydown", tryPlay, { once: true });
+
+    return () => {
+      window.removeEventListener("click", tryPlay, { once: true });
+      window.removeEventListener("keydown", tryPlay, { once: true });
+    };
   }, []);
 
   const handleUnlock = (e) => {
@@ -173,8 +223,16 @@ export default function ComingSoon() {
           <div className="text-white font-extrabold text-2xl md:text-3xl lg:text-3xl xl:text-4xl mb-8 mt-8 tracking-wide uppercase text-center drop-shadow-xl">
             WE DANCE SOON
           </div>
-          <CountdownClock />
+          <CountdownClock onFirstTick={() => setMusicReady(true)} />
           <div className="flex gap-5 mt-8">
+                        <a
+              href={process.env.NEXT_PUBLIC_INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full p-2 hover:scale-105 transition"
+            >
+              <FaInstagram size={28} className="text-white opacity-90 hover:opacity-100" />
+            </a>
             <a
               href={process.env.NEXT_PUBLIC_DISCORD_URL}
               target="_blank"
@@ -184,12 +242,12 @@ export default function ComingSoon() {
               <FaDiscord size={28} className="text-white opacity-90 hover:opacity-100" />
             </a>
             <a
-              href={process.env.NEXT_PUBLIC_INSTAGRAM_URL}
+              href={process.env.NEXT_PUBLIC_TIKTOK_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="rounded-full p-2 hover:scale-105 transition"
             >
-              <FaInstagram size={28} className="text-white opacity-90 hover:opacity-100" />
+              <FaTiktok size={28} className="text-white opacity-90 hover:opacity-100" />
             </a>
             <a
               href={process.env.NEXT_PUBLIC_FACEBOOK_URL}
@@ -204,35 +262,46 @@ export default function ComingSoon() {
       </main>
 
       {/* Footer */}
-      <footer
-        className="z-20 relative w-full flex items-center justify-between px-6 md:px-10 pb-7"
-        style={{ paddingBottom: "max(1.75rem, env(safe-area-inset-bottom))" }}
-      >
-        <button
-          className="bg-transparent border-none p-0 m-0 cursor-pointer min-w-[34px] flex items-center group"
-          aria-label="Enter admin password"
-          onClick={() => {
-            setShowModal(true);
-            setInput("");
-            setError("");
-          }}
-        >
-          <span className="text-white text-2xl font-extrabold group-hover:text-gray-400 transition">
-            <header>d</header>
-          </span>
-        </button>
-        <div className="flex-1 border-b border-[#303030] mx-6" />
-        <button
-          className="bg-transparent border-none cursor-pointer p-0 text-[#ccc] text-base font-medium min-w-[120px] text-right"
-          onClick={handlePlaySong}
-          aria-label={isPlaying ? "Pause song" : "Play song"}
-        >
-          <span>
-            <header>dancetoday</header>
-          </span>
-        </button>
-        <audio ref={audioRef} src="/dance clock.mp3" />
-      </footer>
+<footer
+  className="z-20 relative w-full flex items-center justify-between px-6 md:px-10 pb-7"
+  style={{ paddingBottom: "max(1.75rem, env(safe-area-inset-bottom))" }}
+>
+  <button
+    className="bg-transparent border-none p-0 m-0 cursor-pointer min-w-[34px] flex items-center group"
+    aria-label="Enter admin password"
+    onClick={() => {
+      setShowModal(true);
+      setInput("");
+      setError("");
+    }}
+  >
+    <span className="text-white text-2xl font-extrabold group-hover:text-gray-400 transition">
+      <header>d</header>
+    </span>
+  </button>
+  <div className="flex-1 border-b border-[#303030] mx-6" />
+  <button
+    className="bg-transparent border-none cursor-pointer p-0 text-[#ccc] text-base font-medium min-w-[120px] text-right flex items-center gap-2"
+    onClick={handleToggleMute}
+    aria-label={isMuted ? "Unmute music" : "Mute music"}
+  >
+    {isMuted ? (
+      // Unmute icon (simple speaker)
+      <svg width="20" height="20" fill="none" viewBox="0 0 20 20"><path d="M3 7v6h4l5 5V2l-5 5H3z" stroke="#ccc" strokeWidth="2" /></svg>
+    ) : (
+      // Mute icon (speaker with X)
+      <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
+        <path d="M3 7v6h4l5 5V2l-5 5H3z" stroke="#ccc" strokeWidth="2"/>
+        <path d="M15 7l3 3m0 0l-3 3" stroke="#ccc" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+    )}
+    <span>
+      <header>dancetoday</header>
+    </span>
+  </button>
+  <audio ref={audioRef} src="/dance clock.mp3" />
+</footer>
+
 
       {/* Modal */}
       {showModal && (
