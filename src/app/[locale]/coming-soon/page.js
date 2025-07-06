@@ -4,11 +4,10 @@ import { useRouter } from "next/navigation";
 import { FaDiscord, FaInstagram, FaFacebook, FaTiktok } from "react-icons/fa";
 
 // --- Hydration-safe CountdownClock ---
-function CountdownClock({ onFirstTick }) {
-  // Calculate target date: October 1st, current year (or next if past)
+function CountdownClock({ onTick, countdownStart }) {
   const getTarget = () => {
     const t = new Date();
-    t.setMonth(10 - 1);
+    t.setMonth(9 - 1);
     t.setDate(1);
     t.setHours(0, 0, 0, 0);
     if (new Date() > t) t.setFullYear(t.getFullYear() + 1);
@@ -18,45 +17,32 @@ function CountdownClock({ onFirstTick }) {
   function getTimeLeft(target) {
     const now = new Date();
     const diff = target - now;
-    if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0, now };
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
     const minutes = Math.floor((diff / (1000 * 60)) % 60);
     const seconds = Math.floor((diff / 1000) % 60);
-    return { days, hours, minutes, seconds };
+    return { days, hours, minutes, seconds, now };
   }
 
   const [timeLeft, setTimeLeft] = useState(null);
-  const [hasTicked, setHasTicked] = useState(false);
 
   useEffect(() => {
     const target = getTarget();
     setTimeLeft(getTimeLeft(target));
-    let prev = getTimeLeft(target);
-
     const interval = setInterval(() => {
       const current = getTimeLeft(target);
       setTimeLeft(current);
-
-      // Detect the "first tick"
-      if (!hasTicked && JSON.stringify(current) !== JSON.stringify(prev)) {
-        setHasTicked(true);
-        if (onFirstTick) onFirstTick();
+      if (onTick) {
+        // ms elapsed since mounting (i.e., sync anchor)
+        onTick(current.now);
       }
-      prev = current;
     }, 1000);
-
     return () => clearInterval(interval);
-    // eslint-disable-next-line
-  }, []);
-
+  }, [onTick]);
 
   const pad = n => String(n).padStart(2, "0");
-
-  if (!timeLeft) {
-    // Render nothing or a simple skeleton while mounting on client
-    return <div style={{ minHeight: 80 }} />;
-  }
+  if (!timeLeft) return <div style={{ minHeight: 80 }} />;
 
   const { days, hours, minutes, seconds } = timeLeft;
 
@@ -104,26 +90,12 @@ export default function ComingSoon() {
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
+const [isMuted, setIsMuted] = useState(false);
   const router = useRouter();
   const audioRef = useRef(null);
-  const [musicReady, setMusicReady] = useState(false);
-// In your ComingSoon component, replace isPlaying with isMuted:
-const [isMuted, setIsMuted] = useState(false);
 
-const handleToggleMute = () => {
-  const audio = audioRef.current;
-  if (!audio) return;
-  audio.muted = !audio.muted;
-  setIsMuted(audio.muted);
-};
-
-// Make sure to always update muted state if audio element changes (just in case)
-useEffect(() => {
-  const audio = audioRef.current;
-  if (!audio) return;
-  audio.muted = isMuted;
-}, [isMuted]);
+  // This is our "zero" time for sync, i.e. when page loaded
+  const countdownStartRef = useRef(Date.now());
 
   // BG preload (optional)
   const [bgLoaded, setBgLoaded] = useState(false);
@@ -134,54 +106,69 @@ useEffect(() => {
     img.onload = () => setBgLoaded(true);
   }, []);
 
-  // Play/pause logic
-  const handlePlaySong = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (audio.paused) {
-      audio.play();
-      setIsPlaying(true);
-    } else {
-      audio.pause();
-      setIsPlaying(false);
-    }
-  };
-  useEffect(() => {
-    if (!musicReady) return;
-    const audio = audioRef.current;
-    if (!audio) return;
-    // Only play if not already playing
-    if (audio.paused) {
-      const playPromise = audio.play();
-      if (playPromise && typeof playPromise.then === "function") {
-        playPromise.then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
-      }
-    }
-  }, [musicReady]);
-  // Try autoplay on mount
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
+  // Sync audio to countdown every tick (true sync)
+const [audioHasStarted, setAudioHasStarted] = useState(false);
 
+const handleCountdownTick = (now) => {
+  const audio = audioRef.current;
+  if (!audio) return;
+  const elapsed = Math.floor((now - countdownStartRef.current) / 1000);
+
+  if (!audioHasStarted) {
+    // On first tick, set sync point!
+    if (audio.duration && !isNaN(audio.duration) && audio.duration > 2) {
+      audio.currentTime = elapsed % audio.duration;
+    }
+    audio.muted = isMuted;
     audio.loop = true;
+    const playPromise = audio.play();
+    setAudioHasStarted(true);
+    if (playPromise && typeof playPromise.then === "function") {
+      playPromise.catch(() => {});
+    }
+  }
+  // Only update mute state every tick (not currentTime!)
+  audio.muted = isMuted;
+};
 
+
+
+  // Allow user to toggle mute/unmute
+  const handleToggleMute = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.muted = !audio.muted;
+    setIsMuted(audio.muted);
+  };
+
+  // Still allow play on user interaction (for browsers that block autoplay)
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.loop = true;
     const tryPlay = () => {
       if (audio.paused) {
+        audio.muted = isMuted;
         const playPromise = audio.play();
         if (playPromise && typeof playPromise.then === "function") {
-          playPromise.then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+          playPromise.catch(() => {});
         }
       }
     };
-
     window.addEventListener("click", tryPlay, { once: true });
     window.addEventListener("keydown", tryPlay, { once: true });
-
     return () => {
       window.removeEventListener("click", tryPlay, { once: true });
       window.removeEventListener("keydown", tryPlay, { once: true });
     };
-  }, []);
+  }, [isMuted]);
+
+  // Always keep audio.muted state in sync with state
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.muted = isMuted;
+  }, [isMuted]);
 
   const handleUnlock = (e) => {
     e.preventDefault();
@@ -223,9 +210,9 @@ useEffect(() => {
           <div className="text-white font-extrabold text-2xl md:text-3xl lg:text-3xl xl:text-4xl mb-8 mt-8 tracking-wide uppercase text-center drop-shadow-xl">
             WE DANCE SOON
           </div>
-          <CountdownClock onFirstTick={() => setMusicReady(true)} />
+          <CountdownClock onTick={handleCountdownTick} countdownStart={countdownStartRef.current} />
           <div className="flex gap-5 mt-8">
-                        <a
+            <a
               href={process.env.NEXT_PUBLIC_INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
@@ -262,46 +249,45 @@ useEffect(() => {
       </main>
 
       {/* Footer */}
-<footer
-  className="z-20 relative w-full flex items-center justify-between px-6 md:px-10 pb-7"
-  style={{ paddingBottom: "max(1.75rem, env(safe-area-inset-bottom))" }}
->
-  <button
-    className="bg-transparent border-none p-0 m-0 cursor-pointer min-w-[34px] flex items-center group"
-    aria-label="Enter admin password"
-    onClick={() => {
-      setShowModal(true);
-      setInput("");
-      setError("");
-    }}
-  >
-    <span className="text-white text-2xl font-extrabold group-hover:text-gray-400 transition">
-      <header>d</header>
-    </span>
-  </button>
-  <div className="flex-1 border-b border-[#303030] mx-6" />
-  <button
-    className="bg-transparent border-none cursor-pointer p-0 text-[#ccc] text-base font-medium min-w-[120px] text-right flex items-center gap-2"
-    onClick={handleToggleMute}
-    aria-label={isMuted ? "Unmute music" : "Mute music"}
-  >
-    {isMuted ? (
-      // Unmute icon (simple speaker)
-      <svg width="20" height="20" fill="none" viewBox="0 0 20 20"><path d="M3 7v6h4l5 5V2l-5 5H3z" stroke="#ccc" strokeWidth="2" /></svg>
-    ) : (
-      // Mute icon (speaker with X)
-      <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
-        <path d="M3 7v6h4l5 5V2l-5 5H3z" stroke="#ccc" strokeWidth="2"/>
-        <path d="M15 7l3 3m0 0l-3 3" stroke="#ccc" strokeWidth="2" strokeLinecap="round" />
-      </svg>
-    )}
-    <span>
-      <header>dancetoday</header>
-    </span>
-  </button>
-  <audio ref={audioRef} src="/dance clock.mp3" />
-</footer>
-
+      <footer
+        className="z-20 relative w-full flex items-center justify-between px-6 md:px-10 pb-7"
+        style={{ paddingBottom: "max(1.75rem, env(safe-area-inset-bottom))" }}
+      >
+        <button
+          className="bg-transparent border-none p-0 m-0 cursor-pointer min-w-[34px] flex items-center group"
+          aria-label="Enter admin password"
+          onClick={() => {
+            setShowModal(true);
+            setInput("");
+            setError("");
+          }}
+        >
+          <span className="text-white text-2xl font-extrabold group-hover:text-gray-400 transition">
+            <header>d</header>
+          </span>
+        </button>
+        <div className="flex-1 border-b border-[#303030] mx-6" />
+        <button
+          className="bg-transparent border-none cursor-pointer p-0 text-[#ccc] text-base font-medium min-w-[120px] text-right flex items-center gap-2"
+          onClick={handleToggleMute}
+          aria-label={isMuted ? "Unmute music" : "Mute music"}
+        >
+          {isMuted ? (
+            // Unmute icon (simple speaker)
+            <svg width="20" height="20" fill="none" viewBox="0 0 20 20"><path d="M3 7v6h4l5 5V2l-5 5H3z" stroke="#ccc" strokeWidth="2" /></svg>
+          ) : (
+            // Mute icon (speaker with X)
+            <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
+              <path d="M3 7v6h4l5 5V2l-5 5H3z" stroke="#ccc" strokeWidth="2"/>
+              <path d="M15 7l3 3m0 0l-3 3" stroke="#ccc" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          )}
+          <span>
+            <header>dancetoday</header>
+          </span>
+        </button>
+        <audio ref={audioRef} src="/dance clock.mp3" />
+      </footer>
 
       {/* Modal */}
       {showModal && (
