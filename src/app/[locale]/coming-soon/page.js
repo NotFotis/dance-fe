@@ -131,16 +131,6 @@ const handleCountdownTick = (now) => {
   audio.muted = isMuted;
 };
 
-
-
-  // Allow user to toggle mute/unmute
-  const handleToggleMute = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.muted = !audio.muted;
-    setIsMuted(audio.muted);
-  };
-
   // Still allow play on user interaction (for browsers that block autoplay)
   useEffect(() => {
     const audio = audioRef.current;
@@ -267,15 +257,10 @@ const handleCountdownTick = (now) => {
           </span>
         </button>
         <div className="flex-1 border-b border-[#303030] mx-6" />
-        <button
-          className="bg-transparent border-none cursor-pointer p-0 text-[#ccc] text-base font-medium min-w-[120px] text-right flex items-center gap-2"
-          onClick={handleToggleMute}
-          aria-label={isMuted ? "Unmute music" : "Mute music"}
-        >
           <span>
-            <header>dancetoday</header>
+            <header className="bg-transparent border-none p-0 text-[#ccc] text-base font-medium min-w-[120px] text-right flex items-center gap-2"
+              >dancetoday</header>
           </span>
-        </button>
         <audio ref={audioRef} src="/dance clock.mp3" />
       </footer>
 
