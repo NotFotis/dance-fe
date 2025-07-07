@@ -178,3 +178,12 @@ header {
 .mySwiper .swiper-pagination-bullet-active {
   background: #000;        /* bg-black for active */
 }
+
+video,
+video:focus,
+video::-moz-focus-inner {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}

@@ -37,7 +37,7 @@ export default function TypingText() {
   return (
     <div className="max-w-screen-2xl flex h-screen items-center justify-center bg-transparent">
       <header
-        className="font-bold text-3xl text-white text-center sm:text-6xl md:text-8xl relative w-full"
+        className="font-bold text-3xl text-white text-center sm:text-6xl md:text-7xl relative w-full"
         style={{
           minHeight: "1em", // fallback if font fails
         }}

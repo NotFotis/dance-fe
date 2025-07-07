@@ -88,15 +88,20 @@ export default function AnimatedBackground({ showOnHomeOnly = true }) {
   return (
     <>
       {/* Video background */}
-      <video
-        className="fixed inset-0 w-screen h-screen object-cover blur pointer-events-none z-[-20]"
-        src="/3868677-hd_1920_1080_25fps.mp4"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-      />
+<div className="fixed inset-0 w-screen h-screen z-[-21] overflow-hidden bg-black">
+  <video
+    className="w-full h-full object-cover blur pointer-events-none"
+    src="/3868677-hd_1920_1080_25fps.mp4"
+    autoPlay
+    muted
+    loop
+    playsInline
+    preload="auto"
+    disablePictureInPicture
+    tabIndex={-1}
+  />
+</div>
+
 
       {/* Noise overlay */}
       <div
