@@ -33,20 +33,22 @@ function ArtistCard({ artist, isOpen, setOpen }) {
   };
 
   return (
-    <motion.div
-      layout
-      className={`relative flex flex-col items-center justify-center group cursor-pointer select-none bg-neutral-950 rounded-3xl shadow-2xl border border-white/10 ${isOpen ? "pointer-events-none" : ""}`}
-      style={{
-        width: "100%",
-        minHeight: 400,
-        aspectRatio: "9 / 16",
-        maxWidth: 410,
-        margin: "0 auto",
-        overflow: "hidden"
-      }}
-      onClick={goToArtist}
-      tabIndex={0}
-    >
+<motion.div
+  layout
+  className={`relative flex flex-col items-center justify-center group cursor-pointer select-none bg-neutral-950 rounded-3xl shadow-2xl border-2 border-transparent hover:border-white transition-all duration-300 ${isOpen ? "pointer-events-none" : ""}`}
+  style={{
+    width: "100%",
+    minHeight: 400,
+    aspectRatio: "9 / 16",
+    maxWidth: 410,
+    margin: "0 auto",
+    overflow: "hidden",
+    boxSizing: "border-box"
+  }}
+  onClick={goToArtist}
+  tabIndex={0}
+>
+
       {/* Artist image */}
       <img
         src={
@@ -58,7 +60,7 @@ function ArtistCard({ artist, isOpen, setOpen }) {
         alt={artist.Name}
         className="absolute inset-0 w-full h-full object-cover rounded-3xl"
         style={{
-          filter: isOpen ? "blur(6px) brightness(0.7)" : "brightness(0.85)",
+          filter: isOpen ? "blur(6px) brightness(1)" : "brightness(1)",
           zIndex: 0,
           pointerEvents: "none"
         }}
@@ -186,7 +188,8 @@ export default function SpecialArtistsCarousel() {
 
   const specialArtists = artists.filter(a => a.specialArtist);
   const [openIdx, setOpenIdx] = useState(null);
-  const swiperRef = useRef(null);
+const swiperRef = useRef(null);
+const [swiperInstance, setSwiperInstance] = useState(null);
   const currentYear = new Date().getFullYear();
   if (isLoading || specialArtists.length === 0) return null;
 
@@ -204,13 +207,13 @@ export default function SpecialArtistsCarousel() {
           </div>
           <div className="flex items-center space-x-4">
             <button
-              onClick={() => swiperRef.current?.slidePrev()}
+              onClick={() => swiperInstance?.slidePrev()}
               className="py-2 px-2 border border-white text-white rounded-full uppercase tracking-wider font-medium hover:bg-white hover:text-black transition"
             >
               <ChevronLeft size={20} />
             </button>
             <button
-              onClick={() => swiperRef.current?.slideNext()}
+              onClick={() => swiperInstance?.slideNext()}
               className="py-2 px-2 border border-white text-white rounded-full uppercase tracking-wider font-medium hover:bg-white hover:text-black transition"
             >
               <ChevronRight size={20} />
@@ -224,7 +227,7 @@ export default function SpecialArtistsCarousel() {
           </div>
         </div>
         <Swiper
-          ref={swiperRef}
+          onSwiper={setSwiperInstance}
           modules={[Pagination, Navigation]}
           spaceBetween={32}
           slidesPerView={1}
@@ -239,7 +242,9 @@ export default function SpecialArtistsCarousel() {
         >
           {specialArtists.map((artist, idx) => (
             <SwiperSlide key={artist.id || idx}>
-              <div className="flex items-center justify-center h-full w-full py-4">
+<div
+  className="flex items-center justify-center h-full w-full py-4 border-2 border-transparent"
+>
                 <ArtistCard
                   artist={artist}
                   isOpen={openIdx === idx}
