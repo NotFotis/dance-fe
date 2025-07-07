@@ -49,7 +49,7 @@ function CountdownClock({ onTick, countdownStart }) {
   return (
     <div className="w-full flex items-center justify-center">
       <div className="flex flex-col items-center">
-        <div className="flex items-end gap-4 md:gap-6 tabular-nums">
+        <div className="flex items-end gap-4  tabular-nums">
           <span className="font-extrabold text-white text-4xl md:text-7xl lg:text-7xl drop-shadow-lg">[</span>
           <div className="flex flex-col items-center">
             <span className="font-extrabold text-white text-4xl md:text-6xl lg:text-6xl drop-shadow-lg">{pad(days)}</span>
@@ -68,7 +68,7 @@ function CountdownClock({ onTick, countdownStart }) {
           </div>
           <span className="font-extrabold text-white text-4xl md:text-7xl lg:text-7xl drop-shadow-lg">]</span>
         </div>
-        <div className="flex gap-5 md:gap-12 mt-2">
+        <div className="flex gap-5 md:gap-10 mt-2">
           <span className="text-xs md:text-base lg:text-lg text-gray-200 font-semibold w-12 text-center tracking-wide">DAYS</span>
           <span className="w-1" />
           <span className="text-xs md:text-base lg:text-lg text-gray-200 font-semibold w-12 text-center tracking-wide">HRS</span>
@@ -272,16 +272,6 @@ const handleCountdownTick = (now) => {
           onClick={handleToggleMute}
           aria-label={isMuted ? "Unmute music" : "Mute music"}
         >
-          {isMuted ? (
-            // Unmute icon (simple speaker)
-            <svg width="20" height="20" fill="none" viewBox="0 0 20 20"><path d="M3 7v6h4l5 5V2l-5 5H3z" stroke="#ccc" strokeWidth="2" /></svg>
-          ) : (
-            // Mute icon (speaker with X)
-            <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
-              <path d="M3 7v6h4l5 5V2l-5 5H3z" stroke="#ccc" strokeWidth="2"/>
-              <path d="M15 7l3 3m0 0l-3 3" stroke="#ccc" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-          )}
           <span>
             <header>dancetoday</header>
           </span>
