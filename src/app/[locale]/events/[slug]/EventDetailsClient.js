@@ -298,7 +298,7 @@ export default function EventDetailsClient({ event }) {
             <p key="no-description" className="text-center">{t('noDescription')}</p>
           )}
         </div>
-      <div className="w-full max-w-screen-2xl mx-auto bg-black bg-opacity-50 rounded-2xl shadow-xl divide-y divide-gray-700 text-center">
+      <div className="w-full max-w-screen-2xl mx-auto bg-black bg-opacity-50 shadow-xl divide-y divide-gray-700 text-center">
                           {event.tickets && (
             <a
               href={event.tickets}

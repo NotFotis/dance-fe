@@ -85,75 +85,37 @@ export default function AnimatedBackground({ showOnHomeOnly = true }) {
     };
   }, [shouldShowLines]);
 
-return (
-  <>
-    {/* Animated abstract background */}
-    <section className="radial-bg" />
-    {/* Noise overlay to eliminate banding */}
-    <div className="noise-overlay" />
-    {/* Animated canvas with lines */}
-    {shouldShowLines && <canvas ref={canvasRef} className="lines-canvas" />}
+  return (
+    <>
+      {/* Video background */}
+      <video
+        className="fixed inset-0 w-screen h-screen object-cover blur pointer-events-none z-[-20]"
+        src="/3868677-hd_1920_1080_25fps.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+      />
 
-    <style jsx>{`
-      .radial-bg {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: -2;
-        background: linear-gradient(
-          135deg,
-          rgba(10,10,10,1) 0%,
-          rgba(11,11,11,0.995) 7%,
-          rgba(12,12,12,0.99) 14%,
-          rgba(13,13,13,0.985) 21%,
-          rgba(14,14,14,0.98) 28%,
-          rgba(15,15,15,0.978) 35%,
-          rgba(16,16,16,0.976) 42%,
-          rgba(17,17,17,0.974) 49%,
-          rgba(18,18,18,0.972) 56%,
-          rgba(19,19,19,0.97) 63%,
-          rgba(20,20,20,0.968) 70%,
-          rgba(17,17,17,0.966) 77%,
-          rgba(14,14,14,0.964) 85%,
-          rgba(0,0,0,1) 100%
-        );
-        background-size: 200% 200%;
-        animation: animateBackground 60s ease-in-out infinite;
-      }
-      .noise-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        z-index: -1;
-        pointer-events: none;
-        opacity: 0.07;
-        /* SVG seamless noise (no requests, cross-browser) */
-        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><filter id='noise'><feTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23noise)'/></svg>");
-        background-repeat: repeat;
-        background-size: 140px 140px;
-        mix-blend-mode: overlay;
-      }
-      .lines-canvas {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: 0;
-      }
-      @keyframes animateBackground {
-        0% { background-position: 100% 100%; }
-        50% { background-position: 0% 0%; }
-        100% { background-position: 100% 100%; }
-      }
-    `}</style>
-  </>
-);
+      {/* Noise overlay */}
+      <div
+        className="fixed inset-0 w-full h-full z-[-10] pointer-events-none opacity-10 mix-blend-overlay"
+        style={{
+          backgroundImage:
+            "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><filter id='noise'><feTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23noise)'/></svg>\")",
+          backgroundRepeat: "repeat",
+          backgroundSize: "140px 140px",
+        }}
+      />
 
+      {/* Animated canvas lines */}
+      {shouldShowLines && (
+        <canvas
+          ref={canvasRef}
+          className="fixed inset-0 w-full h-full pointer-events-none z-0"
+        />
+      )}
+    </>
+  );
 }
