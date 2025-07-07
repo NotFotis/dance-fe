@@ -191,7 +191,7 @@ const handleCountdownTick = (now) => {
           className="absolute inset-0 w-full h-full object-cover"
           draggable={false}
         />
-        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0" />
       </div>
 
       {/* Centered Content */}
