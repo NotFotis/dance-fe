@@ -283,6 +283,8 @@
     "noNews": "Δεν υπάρχουν άρθρα ακόμα."
 },
   "artistCarousel": {
+        "artists{year}": "Danceartists {year}",
+    "artistsSub": "Καλλιτέχνες που θα μας απασχολήσουν",
     "artists": "Προτεινόμενοι Καλλιτέχνες",
     "allArtists": "Όλοι οι Καλλιτέχνες",
     "noImage": "Χωρίς εικόνα",
