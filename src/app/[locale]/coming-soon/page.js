@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { FaDiscord, FaInstagram, FaFacebook, FaTiktok } from "react-icons/fa";
 
 // --- Hydration-safe CountdownClock ---
+// (no changes here)
 function CountdownClock({ onTick, countdownStart }) {
   const getTarget = () => {
     const t = new Date();
@@ -34,7 +35,6 @@ function CountdownClock({ onTick, countdownStart }) {
       const current = getTimeLeft(target);
       setTimeLeft(current);
       if (onTick) {
-        // ms elapsed since mounting (i.e., sync anchor)
         onTick(current.now);
       }
     }, 1000);
@@ -90,14 +90,12 @@ export default function ComingSoon() {
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isMuted, setIsMuted] = useState(false); // <--- Starts muted, change to false if you want unmuted by default
+  const [isMuted, setIsMuted] = useState(false);
   const router = useRouter();
   const audioRef = useRef(null);
 
-  // This is our "zero" time for sync, i.e. when page loaded
   const countdownStartRef = useRef(Date.now());
 
-  // BG preload (optional)
   const [bgLoaded, setBgLoaded] = useState(false);
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -106,7 +104,6 @@ export default function ComingSoon() {
     img.onload = () => setBgLoaded(true);
   }, []);
 
-  // Sync audio to countdown every tick (true sync)
   const [audioHasStarted, setAudioHasStarted] = useState(false);
 
   const handleCountdownTick = (now) => {
@@ -115,7 +112,6 @@ export default function ComingSoon() {
     const elapsed = Math.floor((now - countdownStartRef.current) / 1000);
 
     if (!audioHasStarted) {
-      // On first tick, set sync point!
       if (audio.duration && !isNaN(audio.duration) && audio.duration > 2) {
         audio.currentTime = elapsed % audio.duration;
       }
@@ -127,11 +123,9 @@ export default function ComingSoon() {
         playPromise.catch(() => {});
       }
     }
-    // Only update mute state every tick (not currentTime!)
     audio.muted = isMuted;
   };
 
-  // Still allow play on user interaction (for browsers that block autoplay)
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -153,14 +147,12 @@ export default function ComingSoon() {
     };
   }, [isMuted]);
 
-  // Always keep audio.muted state in sync with state
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
     audio.muted = isMuted;
   }, [isMuted]);
 
-  // --- Auto-mute on tab/page hidden ---
   useEffect(() => {
     const handleVisibility = () => {
       if (document.visibilityState === "hidden") {
@@ -182,8 +174,19 @@ export default function ComingSoon() {
     }
   };
 
+  // Handle global mute toggle (only if not modal)
+  const handleGlobalClick = (e) => {
+    if (!showModal) {
+      setIsMuted((prev) => !prev);
+    }
+  };
+
   return (
-    <div className="min-h-dvh w-full flex flex-col font-montserrat bg-black overflow-hidden relative">
+    <div
+      className="min-h-dvh w-full flex flex-col font-montserrat bg-black overflow-hidden relative"
+      onClick={handleGlobalClick}
+      style={{ cursor: "pointer" }} // show clickable cursor
+    >
       {/* BG image and overlay */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <img
@@ -218,6 +221,7 @@ export default function ComingSoon() {
               target="_blank"
               rel="noopener noreferrer"
               className="rounded-full p-2 hover:scale-105 transition"
+              tabIndex={-1}
             >
               <FaInstagram size={28} className="text-white opacity-90 hover:opacity-100" />
             </a>
@@ -226,6 +230,7 @@ export default function ComingSoon() {
               target="_blank"
               rel="noopener noreferrer"
               className="rounded-full p-2 hover:scale-105 transition"
+              tabIndex={-1}
             >
               <FaDiscord size={28} className="text-white opacity-90 hover:opacity-100" />
             </a>
@@ -234,6 +239,7 @@ export default function ComingSoon() {
               target="_blank"
               rel="noopener noreferrer"
               className="rounded-full p-2 hover:scale-105 transition"
+              tabIndex={-1}
             >
               <FaTiktok size={28} className="text-white opacity-90 hover:opacity-100" />
             </a>
@@ -242,6 +248,7 @@ export default function ComingSoon() {
               target="_blank"
               rel="noopener noreferrer"
               className="rounded-full p-2 hover:scale-105 transition"
+              tabIndex={-1}
             >
               <FaFacebook size={28} className="text-white opacity-90 hover:opacity-100" />
             </a>
@@ -257,7 +264,8 @@ export default function ComingSoon() {
         <button
           className="bg-transparent border-none p-0 m-0 cursor-pointer min-w-[34px] flex items-center group"
           aria-label="Enter admin password"
-          onClick={() => {
+          onClick={e => {
+            e.stopPropagation();
             setShowModal(true);
             setInput("");
             setError("");
@@ -268,31 +276,9 @@ export default function ComingSoon() {
           </span>
         </button>
         <div className="flex-1 border-b border-[#303030] mx-6" />
-        <span className="flex items-center gap-2">
-          <header className="bg-transparent border-none p-0 text-[#ccc] text-base font-medium min-w-[120px] text-right flex items-center gap-2">
-            dancetoday
-          </header>
-          {/* --- Mute button --- */}
-          <button
-            className="ml-2 p-2 flex items-center justify-center"
-            aria-label={isMuted ? "Unmute" : "Mute"}
-            onClick={() => setIsMuted(m => !m)}
-            type="button"
-          >
-            {isMuted ? (
-              // Mute icon
-              <svg width="26" height="26" fill="none" viewBox="0 0 24 24">
-                <path d="M9 9v6h4l5 5V4l-5 5H9z" stroke="#fff" strokeWidth="2" fill="none"/>
-                <line x1="18" y1="6" x2="8" y2="20" stroke="#fff" strokeWidth="2" />
-              </svg>
-            ) : (
-              // Volume icon
-              <svg width="26" height="26" fill="none" viewBox="0 0 24 24">
-                <path d="M9 9v6h4l5 5V4l-5 5H9z" stroke="#fff" strokeWidth="2" fill="none"/>
-              </svg>
-            )}
-          </button>
-        </span>
+        <header className="bg-transparent border-none p-0 text-[#ccc] text-base font-medium min-w-[120px] text-right flex items-center gap-2">
+          dancetoday
+        </header>
         <audio ref={audioRef} src="/dance clock.mp3" />
       </footer>
 
@@ -329,12 +315,10 @@ export default function ComingSoon() {
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
-                  // Eye Off Icon
                   <svg width="22" height="22" fill="none" viewBox="0 0 24 24">
                     <path stroke="#888" strokeWidth="2" d="M3 3l18 18M9.95 9.953A3.5 3.5 0 0116.95 16.95m-1.122-1.122a3.5 3.5 0 01-4.829-4.829m-6.633 2C5.523 6.545 12 5 12 5s6.477 1.545 9.634 7.001a1 1 0 010 1c-1.305 2.27-3.1 4.21-5.45 5.44" />
                   </svg>
                 ) : (
-                  // Eye Icon
                   <svg width="22" height="22" fill="none" viewBox="0 0 24 24">
                     <ellipse cx="12" cy="12" rx="8" ry="5.5" stroke="#888" strokeWidth="2" />
                     <circle cx="12" cy="12" r="2.5" fill="#888" />
