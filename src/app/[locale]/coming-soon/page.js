@@ -49,7 +49,7 @@ function CountdownClock({ onTick, countdownStart }) {
   return (
     <div className="w-full flex items-center justify-center">
       <div className="flex flex-col items-center">
-        <div className="flex items-end gap-4  tabular-nums">
+        <div className="flex items-end gap-4 tabular-nums">
           <span className="font-extrabold text-white text-4xl md:text-7xl lg:text-7xl drop-shadow-lg">[</span>
           <div className="flex flex-col items-center">
             <span className="font-extrabold text-white text-4xl md:text-6xl lg:text-6xl drop-shadow-lg">{pad(days)}</span>
@@ -90,7 +90,7 @@ export default function ComingSoon() {
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(false); // <--- Starts muted, change to false if you want unmuted by default
   const router = useRouter();
   const audioRef = useRef(null);
 
@@ -107,29 +107,29 @@ const [isMuted, setIsMuted] = useState(false);
   }, []);
 
   // Sync audio to countdown every tick (true sync)
-const [audioHasStarted, setAudioHasStarted] = useState(false);
+  const [audioHasStarted, setAudioHasStarted] = useState(false);
 
-const handleCountdownTick = (now) => {
-  const audio = audioRef.current;
-  if (!audio) return;
-  const elapsed = Math.floor((now - countdownStartRef.current) / 1000);
+  const handleCountdownTick = (now) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const elapsed = Math.floor((now - countdownStartRef.current) / 1000);
 
-  if (!audioHasStarted) {
-    // On first tick, set sync point!
-    if (audio.duration && !isNaN(audio.duration) && audio.duration > 2) {
-      audio.currentTime = elapsed % audio.duration;
+    if (!audioHasStarted) {
+      // On first tick, set sync point!
+      if (audio.duration && !isNaN(audio.duration) && audio.duration > 2) {
+        audio.currentTime = elapsed % audio.duration;
+      }
+      audio.muted = isMuted;
+      audio.loop = true;
+      const playPromise = audio.play();
+      setAudioHasStarted(true);
+      if (playPromise && typeof playPromise.then === "function") {
+        playPromise.catch(() => {});
+      }
     }
+    // Only update mute state every tick (not currentTime!)
     audio.muted = isMuted;
-    audio.loop = true;
-    const playPromise = audio.play();
-    setAudioHasStarted(true);
-    if (playPromise && typeof playPromise.then === "function") {
-      playPromise.catch(() => {});
-    }
-  }
-  // Only update mute state every tick (not currentTime!)
-  audio.muted = isMuted;
-};
+  };
 
   // Still allow play on user interaction (for browsers that block autoplay)
   useEffect(() => {
@@ -159,6 +159,17 @@ const handleCountdownTick = (now) => {
     if (!audio) return;
     audio.muted = isMuted;
   }, [isMuted]);
+
+  // --- Auto-mute on tab/page hidden ---
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.visibilityState === "hidden") {
+        setIsMuted(true);
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, []);
 
   const handleUnlock = (e) => {
     e.preventDefault();
@@ -257,10 +268,31 @@ const handleCountdownTick = (now) => {
           </span>
         </button>
         <div className="flex-1 border-b border-[#303030] mx-6" />
-          <span>
-            <header className="bg-transparent border-none p-0 text-[#ccc] text-base font-medium min-w-[120px] text-right flex items-center gap-2"
-              >dancetoday</header>
-          </span>
+        <span className="flex items-center gap-2">
+          <header className="bg-transparent border-none p-0 text-[#ccc] text-base font-medium min-w-[120px] text-right flex items-center gap-2">
+            dancetoday
+          </header>
+          {/* --- Mute button --- */}
+          <button
+            className="ml-2 p-2 flex items-center justify-center"
+            aria-label={isMuted ? "Unmute" : "Mute"}
+            onClick={() => setIsMuted(m => !m)}
+            type="button"
+          >
+            {isMuted ? (
+              // Mute icon
+              <svg width="26" height="26" fill="none" viewBox="0 0 24 24">
+                <path d="M9 9v6h4l5 5V4l-5 5H9z" stroke="#fff" strokeWidth="2" fill="none"/>
+                <line x1="18" y1="6" x2="8" y2="20" stroke="#fff" strokeWidth="2" />
+              </svg>
+            ) : (
+              // Volume icon
+              <svg width="26" height="26" fill="none" viewBox="0 0 24 24">
+                <path d="M9 9v6h4l5 5V4l-5 5H9z" stroke="#fff" strokeWidth="2" fill="none"/>
+              </svg>
+            )}
+          </button>
+        </span>
         <audio ref={audioRef} src="/dance clock.mp3" />
       </footer>
 
@@ -272,7 +304,7 @@ const handleCountdownTick = (now) => {
         >
           <form
             className="bg-[#18191e] rounded-2xl p-8 min-w-[300px] max-w-[96vw] shadow-2xl flex flex-col items-center"
-            onClick={(e) => e.stopPropagation()}
+            onClick={e => e.stopPropagation()}
             onSubmit={handleUnlock}
             autoComplete="off"
           >
