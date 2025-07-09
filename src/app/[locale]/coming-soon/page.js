@@ -226,12 +226,6 @@ export default function ComingSoon() {
             aria-label="Unmute music"
           >
             PRESS TO ENTER
-<svg width={40} height={40} viewBox="0 0 24 24" fill="none">
-  <path d="M3 9v6h4l5 5V4L7 9H3z" fill="white"/>
-  <path d="M16.5 12c0-1.77-1-3.29-2.5-4.03v8.06A4.99 4.99 0 0016.5 12z" fill="white"/>
-  <path d="M19.5 12c0-3.04-1.64-5.64-4.5-6.32v2.06a6.005 6.005 0 010 8.52v2.06c2.86-.68 4.5-3.28 4.5-6.32z" fill="white"/>
-</svg>
-
           </button>
         </div>
       )}
