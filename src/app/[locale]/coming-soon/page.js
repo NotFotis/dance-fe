@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { FaDiscord, FaInstagram, FaFacebook, FaTiktok } from "react-icons/fa";
 
 // --- Hydration-safe CountdownClock ---
-// (no changes here)
 function CountdownClock({ onTick, countdownStart }) {
   const getTarget = () => {
     const t = new Date();
@@ -90,13 +89,16 @@ export default function ComingSoon() {
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
+  const [showUnmuteOverlay, setShowUnmuteOverlay] = useState(true);
+  const [audioHasStarted, setAudioHasStarted] = useState(false);
+  const [bgLoaded, setBgLoaded] = useState(false);
   const router = useRouter();
   const audioRef = useRef(null);
 
   const countdownStartRef = useRef(Date.now());
 
-  const [bgLoaded, setBgLoaded] = useState(false);
+  // preload background
   useEffect(() => {
     if (typeof window === "undefined") return;
     const img = new window.Image();
@@ -104,28 +106,35 @@ export default function ComingSoon() {
     img.onload = () => setBgLoaded(true);
   }, []);
 
-  const [audioHasStarted, setAudioHasStarted] = useState(false);
+  // Overlay hides after first interaction or unmuting
+  useEffect(() => {
+    if (!showUnmuteOverlay) return;
+    const hide = () => setShowUnmuteOverlay(false);
+    window.addEventListener("click", hide, { once: true });
+    window.addEventListener("keydown", hide, { once: true });
+    return () => {
+      window.removeEventListener("click", hide, { once: true });
+      window.removeEventListener("keydown", hide, { once: true });
+    };
+  }, [showUnmuteOverlay]);
 
-  const handleCountdownTick = (now) => {
+  // Overlay auto-hides if muted is false
+  useEffect(() => {
+    if (!isMuted) setShowUnmuteOverlay(false);
+  }, [isMuted]);
+
+  const handleUnmute = e => {
+    e.stopPropagation();
+    setIsMuted(false);
     const audio = audioRef.current;
-    if (!audio) return;
-    const elapsed = Math.floor((now - countdownStartRef.current) / 1000);
-
-    if (!audioHasStarted) {
-      if (audio.duration && !isNaN(audio.duration) && audio.duration > 2) {
-        audio.currentTime = elapsed % audio.duration;
-      }
-      audio.muted = isMuted;
-      audio.loop = true;
-      const playPromise = audio.play();
-      setAudioHasStarted(true);
-      if (playPromise && typeof playPromise.then === "function") {
-        playPromise.catch(() => {});
-      }
+    if (audio && audio.paused) {
+      audio.muted = false;
+      audio.play().catch(() => {});
     }
-    audio.muted = isMuted;
+    setShowUnmuteOverlay(false);
   };
 
+  // Play audio on user gesture if paused
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -163,6 +172,26 @@ export default function ComingSoon() {
     return () => document.removeEventListener("visibilitychange", handleVisibility);
   }, []);
 
+  const handleCountdownTick = (now) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const elapsed = Math.floor((now - countdownStartRef.current) / 1000);
+
+    if (!audioHasStarted) {
+      if (audio.duration && !isNaN(audio.duration) && audio.duration > 2) {
+        audio.currentTime = elapsed % audio.duration;
+      }
+      audio.muted = isMuted;
+      audio.loop = true;
+      const playPromise = audio.play();
+      setAudioHasStarted(true);
+      if (playPromise && typeof playPromise.then === "function") {
+        playPromise.catch(() => {});
+      }
+    }
+    audio.muted = isMuted;
+  };
+
   const handleUnlock = (e) => {
     e.preventDefault();
     if (input === UNLOCK_PASSWORD) {
@@ -185,8 +214,28 @@ export default function ComingSoon() {
     <div
       className="min-h-dvh w-full flex flex-col font-montserrat bg-black overflow-hidden relative"
       onClick={handleGlobalClick}
-      style={{ cursor: "pointer" }} // show clickable cursor
+      style={{ cursor: "pointer" }}
     >
+      {/* -- UNMUTE OVERLAY -- */}
+      {showUnmuteOverlay && (
+        <div className="fixed inset-0 z-[999] flex  items-center justify-center bg-black/90 backdrop-blur-sm transition-all">
+          <button
+            className="flex flex-col bg-transparent items-center justify-center rounded-full px-10 py-7 shadow-2xl font-bold text-2xl gap-3 transition"
+            style={{ minWidth: 50, minHeight: 50 }}
+            onClick={handleUnmute}
+            aria-label="Unmute music"
+          >
+            PRESS TO ENTER
+<svg width={40} height={40} viewBox="0 0 24 24" fill="none">
+  <path d="M3 9v6h4l5 5V4L7 9H3z" fill="white"/>
+  <path d="M16.5 12c0-1.77-1-3.29-2.5-4.03v8.06A4.99 4.99 0 0016.5 12z" fill="white"/>
+  <path d="M19.5 12c0-3.04-1.64-5.64-4.5-6.32v2.06a6.005 6.005 0 010 8.52v2.06c2.86-.68 4.5-3.28 4.5-6.32z" fill="white"/>
+</svg>
+
+          </button>
+        </div>
+      )}
+
       {/* BG image and overlay */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <img
