@@ -3,7 +3,6 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { FaDiscord, FaInstagram, FaFacebook, FaTiktok } from "react-icons/fa";
 
-// --- Hydration-safe CountdownClock ---
 function CountdownClock({ onTick, countdownStart }) {
   const getTarget = () => {
     const t = new Date();
@@ -13,7 +12,6 @@ function CountdownClock({ onTick, countdownStart }) {
     if (new Date() > t) t.setFullYear(t.getFullYear() + 1);
     return t;
   };
-
   function getTimeLeft(target) {
     const now = new Date();
     const diff = target - now;
@@ -24,9 +22,7 @@ function CountdownClock({ onTick, countdownStart }) {
     const seconds = Math.floor((diff / 1000) % 60);
     return { days, hours, minutes, seconds, now };
   }
-
   const [timeLeft, setTimeLeft] = useState(null);
-
   useEffect(() => {
     const target = getTarget();
     setTimeLeft(getTimeLeft(target));
@@ -39,12 +35,9 @@ function CountdownClock({ onTick, countdownStart }) {
     }, 1000);
     return () => clearInterval(interval);
   }, [onTick]);
-
   const pad = n => String(n).padStart(2, "0");
   if (!timeLeft) return <div style={{ minHeight: 80 }} />;
-
   const { days, hours, minutes, seconds } = timeLeft;
-
   return (
     <div className="w-full flex items-center justify-center">
       <div className="flex flex-col items-center">
@@ -81,7 +74,6 @@ function CountdownClock({ onTick, countdownStart }) {
   );
 }
 
-// --- ComingSoon Page ---
 const UNLOCK_PASSWORD = process.env.NEXT_PUBLIC_COMING_SOON_PASSWORD || "changeme";
 
 export default function ComingSoon() {
@@ -93,12 +85,13 @@ export default function ComingSoon() {
   const [showUnmuteOverlay, setShowUnmuteOverlay] = useState(true);
   const [audioHasStarted, setAudioHasStarted] = useState(false);
   const [bgLoaded, setBgLoaded] = useState(false);
+  const [pressed, setPressed] = useState(false);
+  const [fadeIn, setFadeIn] = useState(false);
+
   const router = useRouter();
   const audioRef = useRef(null);
-
   const countdownStartRef = useRef(Date.now());
 
-  // preload background
   useEffect(() => {
     if (typeof window === "undefined") return;
     const img = new window.Image();
@@ -106,7 +99,6 @@ export default function ComingSoon() {
     img.onload = () => setBgLoaded(true);
   }, []);
 
-  // Overlay hides after first interaction or unmuting
   useEffect(() => {
     if (!showUnmuteOverlay) return;
     const hide = () => setShowUnmuteOverlay(false);
@@ -118,13 +110,14 @@ export default function ComingSoon() {
     };
   }, [showUnmuteOverlay]);
 
-  // Overlay auto-hides if muted is false
   useEffect(() => {
     if (!isMuted) setShowUnmuteOverlay(false);
   }, [isMuted]);
 
   const handleUnmute = e => {
     e.stopPropagation();
+    setPressed(true);
+    setTimeout(() => setPressed(false), 180);
     setIsMuted(false);
     const audio = audioRef.current;
     if (audio && audio.paused) {
@@ -132,9 +125,9 @@ export default function ComingSoon() {
       audio.play().catch(() => {});
     }
     setShowUnmuteOverlay(false);
+    setFadeIn(true); // <--- trigger fade in
   };
 
-  // Play audio on user gesture if paused
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -203,7 +196,6 @@ export default function ComingSoon() {
     }
   };
 
-  // Handle global mute toggle (only if not modal)
   const handleGlobalClick = (e) => {
     if (!showModal) {
       setIsMuted((prev) => !prev);
@@ -212,18 +204,27 @@ export default function ComingSoon() {
 
   return (
     <div
-      className="min-h-dvh w-full flex flex-col font-montserrat bg-black overflow-hidden relative"
+      className={`min-h-dvh w-full flex flex-col font-montserrat bg-black overflow-hidden relative
+        ${fadeIn ? "fade-in-welcome" : ""}
+      `}
       onClick={handleGlobalClick}
       style={{ cursor: "pointer" }}
     >
       {/* -- UNMUTE OVERLAY -- */}
       {showUnmuteOverlay && (
-        <div className="fixed inset-0 z-[999] flex  items-center justify-center bg-black/90 backdrop-blur-sm transition-all">
+        <div className="fixed inset-0 z-[999] flex  items-center justify-center bg-black transition-all">
           <button
-            className="flex flex-col bg-transparent items-center justify-center rounded-full px-10 py-7 shadow-2xl font-bold text-2xl gap-3 transition"
-            style={{ minWidth: 50, minHeight: 50 }}
+            className={`
+              flex flex-col bg-transparent items-center justify-center rounded-full px-10 py-7 shadow-2xl font-bold text-2xl gap-3
+              min-w-[50px] min-h-[50px]
+              transition-transform duration-150
+              animate-bounce
+              ${pressed ? "scale-110" : "scale-100"}
+            `}
+            style={{ background: "rgba(0,0,0,1)" }}
             onClick={handleUnmute}
             aria-label="Unmute music"
+            onAnimationEnd={() => setPressed(false)}
           >
             PRESS TO ENTER
           </button>

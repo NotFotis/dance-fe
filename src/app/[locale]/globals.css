@@ -187,3 +187,14 @@ video::-moz-focus-inner {
   box-shadow: none !important;
   background: transparent !important;
 }
+@keyframes fadeInWelcome {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.fade-in-welcome {
+  animation: fadeInWelcome 1s ease both;
+}
