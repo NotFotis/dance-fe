@@ -204,9 +204,7 @@ export default function ComingSoon() {
 
   return (
     <div
-      className={`min-h-dvh w-full flex flex-col font-montserrat bg-black overflow-hidden relative
-        ${fadeIn ? "fade-in-welcome" : ""}
-      `}
+      className={`min-h-dvh w-full flex flex-col font-montserrat bg-black overflow-hidden relative`}
       onClick={handleGlobalClick}
       style={{ cursor: "pointer" }}
     >
@@ -218,7 +216,6 @@ export default function ComingSoon() {
               flex flex-col bg-transparent items-center justify-center rounded-full px-10 py-7 shadow-2xl font-bold text-2xl gap-3
               min-w-[50px] min-h-[50px]
               transition-transform duration-150
-              animate-bounce
               ${pressed ? "scale-110" : "scale-100"}
             `}
             style={{ background: "rgba(0,0,0,1)" }}
