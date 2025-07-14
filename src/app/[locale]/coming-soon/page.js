@@ -79,8 +79,8 @@ const UNLOCK_PASSWORD = process.env.NEXT_PUBLIC_COMING_SOON_PASSWORD || "changem
 
 export default function ComingSoon() {
   const [showUnmuteOverlay, setShowUnmuteOverlay] = useState(true);
-  const [showMain, setShowMain] = useState(false);
   const [isFadingOut, setIsFadingOut] = useState(false);
+  const [showMain, setShowMain] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
@@ -105,10 +105,10 @@ export default function ComingSoon() {
     if (!showUnmuteOverlay) return;
     const hide = () => setShowUnmuteOverlay(false);
     window.addEventListener("click", hide, { once: true });
-    window.addEventListener("keydown", hide, { once: true });
+    // window.addEventListener("keydown", hide, { once: true });
     return () => {
       window.removeEventListener("click", hide, { once: true });
-      window.removeEventListener("keydown", hide, { once: true });
+      // window.removeEventListener("keydown", hide, { once: true });
     };
   }, [showUnmuteOverlay]);
 
@@ -130,7 +130,7 @@ export default function ComingSoon() {
     }
     setTimeout(() => {
       setShowUnmuteOverlay(false); // unmount overlay after fade
-      setShowMain(true);
+      setShowMain(true); // show main content (no animation)
       setIsFadingOut(false);
     }, 300); // match fade duration
   };
@@ -204,15 +204,10 @@ export default function ComingSoon() {
   };
 
   const handleGlobalClick = (e) => {
-    setShowMain(true); // Only now show main content (with animation)
+    setShowMain(true); // Only now show main content
     if (!showModal) {
       setIsMuted((prev) => !prev);
     }
-  };
-
-  const pageAnimation = {
-    hidden: { opacity: 0, scale: 0.92 },
-    visible: { opacity: 1, scale: 1, transition: { duration: 0.1, ease: [0.2, 0.04, 0.23, 0.2] } }
   };
 
   return (
@@ -229,7 +224,7 @@ export default function ComingSoon() {
             initial={{ opacity: 1 }}
             animate={{ opacity: isFadingOut ? 0 : 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.5 }}
             style={{ pointerEvents: isFadingOut ? "none" : "auto" }}
           >
             <motion.button
@@ -264,13 +259,7 @@ export default function ComingSoon() {
 
       {/* MAIN CONTENT */}
       {showMain && (
-        <motion.main
-          key={showMain ? 'main-visible' : 'main-hidden'}
-          className="flex-1 flex flex-col items-center justify-start z-10 relative"
-          initial="hidden"
-          animate="visible"
-          variants={pageAnimation}
-        >
+        <main className="flex-1 flex flex-col items-center justify-start z-10 relative">
           <div
             className="absolute left-1/2"
             style={{
@@ -325,7 +314,7 @@ export default function ComingSoon() {
               </a>
             </div>
           </div>
-        </motion.main>
+        </main>
       )}
 
       {/* Footer and Modal */}
