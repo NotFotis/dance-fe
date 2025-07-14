@@ -2,8 +2,10 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { FaDiscord, FaInstagram, FaFacebook, FaTiktok } from "react-icons/fa";
+import { motion } from "framer-motion";
 
 function CountdownClock({ onTick, countdownStart }) {
+  // ... same as before ...
   const getTarget = () => {
     const t = new Date();
     t.setMonth(10 - 1);
@@ -77,16 +79,18 @@ function CountdownClock({ onTick, countdownStart }) {
 const UNLOCK_PASSWORD = process.env.NEXT_PUBLIC_COMING_SOON_PASSWORD || "changeme";
 
 export default function ComingSoon() {
+  // Always start with overlay visible and main hidden
+  const [showUnmuteOverlay, setShowUnmuteOverlay] = useState(true);
+  const [showMain, setShowMain] = useState(false);
+
   const [showModal, setShowModal] = useState(false);
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
-  const [showUnmuteOverlay, setShowUnmuteOverlay] = useState(true);
   const [audioHasStarted, setAudioHasStarted] = useState(false);
   const [bgLoaded, setBgLoaded] = useState(false);
   const [pressed, setPressed] = useState(false);
-  const [fadeIn, setFadeIn] = useState(false);
 
   const router = useRouter();
   const audioRef = useRef(null);
@@ -114,6 +118,7 @@ export default function ComingSoon() {
     if (!isMuted) setShowUnmuteOverlay(false);
   }, [isMuted]);
 
+  // Animation on press
   const handleUnmute = e => {
     e.stopPropagation();
     setPressed(true);
@@ -125,7 +130,7 @@ export default function ComingSoon() {
       audio.play().catch(() => {});
     }
     setShowUnmuteOverlay(false);
-    setFadeIn(true); // <--- trigger fade in
+    setShowMain(true); // Only now show main content (with animation)
   };
 
   useEffect(() => {
@@ -197,9 +202,15 @@ export default function ComingSoon() {
   };
 
   const handleGlobalClick = (e) => {
+        setShowMain(true); // Only now show main content (with animation)
     if (!showModal) {
       setIsMuted((prev) => !prev);
     }
+  };
+
+  const pageAnimation = {
+    hidden: { opacity: 0, scale: 0.92 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.7, ease: [0.4, 0.04, 0.23, 0.97] } }
   };
 
   return (
@@ -208,7 +219,7 @@ export default function ComingSoon() {
       onClick={handleGlobalClick}
       style={{ cursor: "pointer" }}
     >
-      {/* -- UNMUTE OVERLAY -- */}
+      {/* UNMUTE OVERLAY */}
       {showUnmuteOverlay && (
         <div className="fixed inset-0 z-[999] flex  items-center justify-center bg-black transition-all">
           <button
@@ -239,89 +250,99 @@ export default function ComingSoon() {
         <div className="absolute inset-0" />
       </div>
 
-      {/* Centered Content */}
-      <main className="flex-1 flex flex-col items-center justify-start z-10 relative">
-        <div
-          className="absolute left-1/2"
-          style={{
-            top: "53%",
-            transform: "translate(-50%, -50%)",
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <div className="text-white font-extrabold text-2xl md:text-3xl lg:text-3xl xl:text-4xl mb-8 mt-8 tracking-wide uppercase text-center drop-shadow-xl">
-            WE DANCE SOON
+      {/* MAIN CONTENT (showMain controls appearance and animation) */}
+        {showMain && (
+          <motion.main
+            key={showMain ? 'main-visible' : 'main-hidden'} // Key forces remount/animation
+            className="flex-1 flex flex-col items-center justify-start z-10 relative"
+            initial="hidden"
+            animate="visible"
+            variants={pageAnimation}
+          >
+          <div
+            className="absolute left-1/2"
+            style={{
+              top: "53%",
+              transform: "translate(-50%, -50%)",
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <div className="text-white font-extrabold text-2xl md:text-3xl lg:text-3xl xl:text-4xl mb-8 mt-8 tracking-wide uppercase text-center drop-shadow-xl">
+              WE DANCE SOON
+            </div>
+            <CountdownClock onTick={handleCountdownTick} countdownStart={countdownStartRef.current} />
+            <div className="flex gap-5 mt-8">
+              <a
+                href={process.env.NEXT_PUBLIC_INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full p-2 hover:scale-105 transition"
+                tabIndex={-1}
+              >
+                <FaInstagram size={28} className="text-white opacity-90 hover:opacity-100" />
+              </a>
+              <a
+                href={process.env.NEXT_PUBLIC_DISCORD_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full p-2 hover:scale-105 transition"
+                tabIndex={-1}
+              >
+                <FaDiscord size={28} className="text-white opacity-90 hover:opacity-100" />
+              </a>
+              <a
+                href={process.env.NEXT_PUBLIC_TIKTOK_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full p-2 hover:scale-105 transition"
+                tabIndex={-1}
+              >
+                <FaTiktok size={28} className="text-white opacity-90 hover:opacity-100" />
+              </a>
+              <a
+                href={process.env.NEXT_PUBLIC_FACEBOOK_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full p-2 hover:scale-105 transition"
+                tabIndex={-1}
+              >
+                <FaFacebook size={28} className="text-white opacity-90 hover:opacity-100" />
+              </a>
+            </div>
           </div>
-          <CountdownClock onTick={handleCountdownTick} countdownStart={countdownStartRef.current} />
-          <div className="flex gap-5 mt-8">
-            <a
-              href={process.env.NEXT_PUBLIC_INSTAGRAM_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full p-2 hover:scale-105 transition"
-              tabIndex={-1}
-            >
-              <FaInstagram size={28} className="text-white opacity-90 hover:opacity-100" />
-            </a>
-            <a
-              href={process.env.NEXT_PUBLIC_DISCORD_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full p-2 hover:scale-105 transition"
-              tabIndex={-1}
-            >
-              <FaDiscord size={28} className="text-white opacity-90 hover:opacity-100" />
-            </a>
-            <a
-              href={process.env.NEXT_PUBLIC_TIKTOK_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full p-2 hover:scale-105 transition"
-              tabIndex={-1}
-            >
-              <FaTiktok size={28} className="text-white opacity-90 hover:opacity-100" />
-            </a>
-            <a
-              href={process.env.NEXT_PUBLIC_FACEBOOK_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full p-2 hover:scale-105 transition"
-              tabIndex={-1}
-            >
-              <FaFacebook size={28} className="text-white opacity-90 hover:opacity-100" />
-            </a>
-          </div>
-        </div>
-      </main>
+        </motion.main>
+      )}
 
-      {/* Footer */}
-      <footer
-        className="z-20 relative w-full flex items-center justify-between px-6 md:px-10 pb-7"
-        style={{ paddingBottom: "max(1.75rem, env(safe-area-inset-bottom))" }}
-      >
-        <button
-          className="bg-transparent border-none p-0 m-0 cursor-pointer min-w-[34px] flex items-center group"
-          aria-label="Enter admin password"
-          onClick={e => {
-            e.stopPropagation();
-            setShowModal(true);
-            setInput("");
-            setError("");
-          }}
+      {/* Footer and Modal: only when main content is showing */}
+      {showMain && (
+        <footer
+          className="z-20 relative w-full flex items-center justify-between px-6 md:px-10 pb-7"
+          style={{ paddingBottom: "max(1.75rem, env(safe-area-inset-bottom))" }}
         >
-          <span className="text-white text-2xl font-extrabold group-hover:text-gray-400 transition">
-            <header>d</header>
-          </span>
-        </button>
-        <div className="flex-1 border-b border-[#303030] mx-6" />
-        <header className="bg-transparent border-none p-0 text-[#ccc] text-base font-medium min-w-[120px] text-right flex items-center gap-2">
-          dancetoday
-        </header>
-        <audio ref={audioRef} src="/dance clock.mp3" />
-      </footer>
+          <button
+            className="bg-transparent border-none p-0 m-0 cursor-pointer min-w-[34px] flex items-center group"
+            aria-label="Enter admin password"
+            onClick={e => {
+              e.stopPropagation();
+              setShowModal(true);
+              setInput("");
+              setError("");
+            }}
+          >
+            <span className="text-white text-2xl font-extrabold group-hover:text-gray-400 transition">
+              <header>d</header>
+            </span>
+          </button>
+          <div className="flex-1 border-b border-[#303030] mx-6" />
+          <header className="bg-transparent border-none p-0 text-[#ccc] text-base font-medium min-w-[120px] text-right flex items-center gap-2">
+            dancetoday
+          </header>
+          <audio ref={audioRef} src="/dance clock.mp3" />
+        </footer>
+      )}
 
       {/* Modal */}
       {showModal && (

@@ -195,6 +195,3 @@ video::-moz-focus-inner {
     opacity: 1;
   }
 }
-.fade-in-welcome {
-  animation: fadeInWelcome 1s ease both;
-}
