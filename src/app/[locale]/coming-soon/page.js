@@ -2,10 +2,9 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { FaDiscord, FaInstagram, FaFacebook, FaTiktok } from "react-icons/fa";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 function CountdownClock({ onTick, countdownStart }) {
-  // ... same as before ...
   const getTarget = () => {
     const t = new Date();
     t.setMonth(10 - 1);
@@ -79,10 +78,9 @@ function CountdownClock({ onTick, countdownStart }) {
 const UNLOCK_PASSWORD = process.env.NEXT_PUBLIC_COMING_SOON_PASSWORD || "changeme";
 
 export default function ComingSoon() {
-  // Always start with overlay visible and main hidden
   const [showUnmuteOverlay, setShowUnmuteOverlay] = useState(true);
   const [showMain, setShowMain] = useState(false);
-
+  const [isFadingOut, setIsFadingOut] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
@@ -118,19 +116,23 @@ export default function ComingSoon() {
     if (!isMuted) setShowUnmuteOverlay(false);
   }, [isMuted]);
 
-  // Animation on press
+  // Animation on press & fade-out
   const handleUnmute = e => {
     e.stopPropagation();
     setPressed(true);
     setTimeout(() => setPressed(false), 180);
+    setIsFadingOut(true); // start fade-out
     setIsMuted(false);
     const audio = audioRef.current;
     if (audio && audio.paused) {
       audio.muted = false;
       audio.play().catch(() => {});
     }
-    setShowUnmuteOverlay(false);
-    setShowMain(true); // Only now show main content (with animation)
+    setTimeout(() => {
+      setShowUnmuteOverlay(false); // unmount overlay after fade
+      setShowMain(true);
+      setIsFadingOut(false);
+    }, 300); // match fade duration
   };
 
   useEffect(() => {
@@ -202,7 +204,7 @@ export default function ComingSoon() {
   };
 
   const handleGlobalClick = (e) => {
-        setShowMain(true); // Only now show main content (with animation)
+    setShowMain(true); // Only now show main content (with animation)
     if (!showModal) {
       setIsMuted((prev) => !prev);
     }
@@ -210,7 +212,7 @@ export default function ComingSoon() {
 
   const pageAnimation = {
     hidden: { opacity: 0, scale: 0.92 },
-    visible: { opacity: 1, scale: 1, transition: { duration: 0.7, ease: [0.4, 0.04, 0.23, 0.97] } }
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.1, ease: [0.2, 0.04, 0.23, 0.2] } }
   };
 
   return (
@@ -219,25 +221,35 @@ export default function ComingSoon() {
       onClick={handleGlobalClick}
       style={{ cursor: "pointer" }}
     >
-      {/* UNMUTE OVERLAY */}
-      {showUnmuteOverlay && (
-        <div className="fixed inset-0 z-[999] flex  items-center justify-center bg-black transition-all">
-          <button
-            className={`
-              flex flex-col bg-transparent items-center justify-center rounded-full px-10 py-7 shadow-2xl font-bold text-2xl gap-3
-              min-w-[50px] min-h-[50px]
-              transition-transform duration-150
-              ${pressed ? "scale-110" : "scale-100"}
-            `}
-            style={{ background: "rgba(0,0,0,1)" }}
-            onClick={handleUnmute}
-            aria-label="Unmute music"
-            onAnimationEnd={() => setPressed(false)}
+      {/* UNMUTE OVERLAY (fade-out) */}
+      <AnimatePresence>
+        {showUnmuteOverlay && (
+          <motion.div
+            className="fixed inset-0 z-[999] flex items-center justify-center bg-black"
+            initial={{ opacity: 1 }}
+            animate={{ opacity: isFadingOut ? 0 : 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            style={{ pointerEvents: isFadingOut ? "none" : "auto" }}
           >
-            PRESS TO ENTER
-          </button>
-        </div>
-      )}
+            <motion.button
+              className={`
+                flex flex-col bg-transparent items-center justify-center rounded-full px-10 py-7 shadow-2xl font-bold text-2xl gap-3
+                min-w-[50px] min-h-[50px]
+                transition-transform duration-150
+                ${pressed ? "scale-110" : "scale-100"}
+              `}
+              style={{ background: "rgba(0,0,0,1)" }}
+              whileTap={{ scale: 1.08 }}
+              aria-label="Unmute music"
+              onClick={handleUnmute}
+              onAnimationEnd={() => setPressed(false)}
+            >
+              PRESS TO ENTER
+            </motion.button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* BG image and overlay */}
       <div className="absolute inset-0 z-0 pointer-events-none">
@@ -250,15 +262,15 @@ export default function ComingSoon() {
         <div className="absolute inset-0" />
       </div>
 
-      {/* MAIN CONTENT (showMain controls appearance and animation) */}
-        {showMain && (
-          <motion.main
-            key={showMain ? 'main-visible' : 'main-hidden'} // Key forces remount/animation
-            className="flex-1 flex flex-col items-center justify-start z-10 relative"
-            initial="hidden"
-            animate="visible"
-            variants={pageAnimation}
-          >
+      {/* MAIN CONTENT */}
+      {showMain && (
+        <motion.main
+          key={showMain ? 'main-visible' : 'main-hidden'}
+          className="flex-1 flex flex-col items-center justify-start z-10 relative"
+          initial="hidden"
+          animate="visible"
+          variants={pageAnimation}
+        >
           <div
             className="absolute left-1/2"
             style={{
@@ -316,7 +328,7 @@ export default function ComingSoon() {
         </motion.main>
       )}
 
-      {/* Footer and Modal: only when main content is showing */}
+      {/* Footer and Modal */}
       {showMain && (
         <footer
           className="z-20 relative w-full flex items-center justify-between px-6 md:px-10 pb-7"
