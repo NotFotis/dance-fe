@@ -90,10 +90,14 @@ export default function ComingSoon() {
   const [bgLoaded, setBgLoaded] = useState(false);
   const [pressed, setPressed] = useState(false);
 
+  const [pausedAt, setPausedAt] = useState(null);
+  const [wasPlaying, setWasPlaying] = useState(false);
+
   const router = useRouter();
   const audioRef = useRef(null);
   const countdownStartRef = useRef(Date.now());
 
+  // Preload BG image
   useEffect(() => {
     if (typeof window === "undefined") return;
     const img = new window.Image();
@@ -101,6 +105,7 @@ export default function ComingSoon() {
     img.onload = () => setBgLoaded(true);
   }, []);
 
+  // Unmute overlay - click to enter
   useEffect(() => {
     if (!showUnmuteOverlay) return;
     const hide = () => setShowUnmuteOverlay(false);
@@ -135,6 +140,7 @@ export default function ComingSoon() {
     }, 300); // match fade duration
   };
 
+  // Attempt to play audio on first interaction
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -162,25 +168,46 @@ export default function ComingSoon() {
     audio.muted = isMuted;
   }, [isMuted]);
 
+  // Handle tab visibility: pause and remember, then resume
   useEffect(() => {
-    const handleVisibility = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    function handleVisibility() {
       if (document.visibilityState === "hidden") {
-        setIsMuted(true);
+        setWasPlaying(!audio.paused);
+        setPausedAt(audio.currentTime);
+        audio.pause();
+      } else if (document.visibilityState === "visible") {
+        if (wasPlaying && pausedAt != null) {
+          audio.currentTime = pausedAt;
+          audio.muted = isMuted;
+          audio.play().catch(() => {});
+        }
       }
-    };
+    }
+
     document.addEventListener("visibilitychange", handleVisibility);
     return () => document.removeEventListener("visibilitychange", handleVisibility);
-  }, []);
+    // eslint-disable-next-line
+  }, [isMuted, wasPlaying, pausedAt]);
 
+  // Reset pause state when audio is unmuted and played by user
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!isMuted && audio && !audio.paused) {
+      setPausedAt(null);
+      setWasPlaying(false);
+    }
+  }, [isMuted]);
+
+  // Handle countdown ticks (start audio only once)
   const handleCountdownTick = (now) => {
     const audio = audioRef.current;
     if (!audio) return;
-    const elapsed = Math.floor((now - countdownStartRef.current) / 1000);
 
     if (!audioHasStarted) {
-      if (audio.duration && !isNaN(audio.duration) && audio.duration > 2) {
-        audio.currentTime = elapsed % audio.duration;
-      }
+      // DO NOT set audio.currentTime here, just play from start
       audio.muted = isMuted;
       audio.loop = true;
       const playPromise = audio.play();
